@@ -1,14 +1,14 @@
 ﻿/*------------------------------------------------------------------
-    Copyright ? : All rights reserved
+    Copyright © : All rights reserved
     Author      : 邓晓峰
 ------------------------------------------------------------------*/
 
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Runtime.Serialization;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System;
-using System.Runtime.Serialization;
 
 namespace Nirge.Core
 {
