@@ -43,8 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataEventArgs.cs" />
-    <Compile Include="ObjPool.cs" />
+    <Compile Include="CDataEventArgs.cs" />
+    <Compile Include="CObjPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
