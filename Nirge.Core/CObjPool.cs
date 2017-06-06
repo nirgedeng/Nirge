@@ -63,11 +63,11 @@ namespace Nirge.Core
 
     #region 
 
-    public static class ObjPool
+    public static class CObjPool
     {
         #region
 
-        static class Alloc<T>
+        static class CAlloc<T>
         {
             static ConcurrentStack<T> _objs;
 
@@ -98,7 +98,7 @@ namespace Nirge.Core
 
         static T AlwaysFetch<T>()
         {
-            var obj = Alloc<T>.Fetch();
+            var obj = CAlloc<T>.Fetch();
             if (obj == null) {
                 return (T)FormatterServices.GetUninitializedObject(typeof(T));
             }
@@ -167,7 +167,7 @@ namespace Nirge.Core
         public static void Back<T>(T obj) where T : IObjDtor
         {
             obj.Destroy();
-            Alloc<T>.Back(obj);
+            CAlloc<T>.Back(obj);
         }
 
         #endregion
@@ -176,7 +176,7 @@ namespace Nirge.Core
 
         public static Stack<T> Fetch<T>(out Stack<T> obj)
         {
-            obj = Alloc<Stack<T>>.Fetch();
+            obj = CAlloc<Stack<T>>.Fetch();
             if (obj == null) {
                 obj = new Stack<T>();
             }
@@ -186,13 +186,13 @@ namespace Nirge.Core
         {
             if (obj != null) {
                 obj.Clear();
-                Alloc<Stack<T>>.Back(obj);
+                CAlloc<Stack<T>>.Back(obj);
             }
         }
 
         public static Queue<T> Fetch<T>(out Queue<T> obj)
         {
-            obj = Alloc<Queue<T>>.Fetch();
+            obj = CAlloc<Queue<T>>.Fetch();
             if (obj == null) {
                 obj = new Queue<T>();
             }
@@ -202,13 +202,13 @@ namespace Nirge.Core
         {
             if (obj != null) {
                 obj.Clear();
-                Alloc<Queue<T>>.Back(obj);
+                CAlloc<Queue<T>>.Back(obj);
             }
         }
 
         public static List<T> Fetch<T>(out List<T> obj)
         {
-            obj = Alloc<List<T>>.Fetch();
+            obj = CAlloc<List<T>>.Fetch();
             if (obj == null) {
                 obj = new List<T>();
             }
@@ -218,13 +218,13 @@ namespace Nirge.Core
         {
             if (obj != null) {
                 obj.Clear();
-                Alloc<List<T>>.Back(obj);
+                CAlloc<List<T>>.Back(obj);
             }
         }
 
         public static Dictionary<TKey, TValue> Fetch<TKey, TValue>(out Dictionary<TKey, TValue> obj)
         {
-            obj = Alloc<Dictionary<TKey, TValue>>.Fetch();
+            obj = CAlloc<Dictionary<TKey, TValue>>.Fetch();
             if (obj == null) {
                 obj = new Dictionary<TKey, TValue>();
             }
@@ -234,7 +234,7 @@ namespace Nirge.Core
         {
             if (obj != null) {
                 obj.Clear();
-                Alloc<Dictionary<TKey, TValue>>.Back(obj);
+                CAlloc<Dictionary<TKey, TValue>>.Back(obj);
             }
         }
 

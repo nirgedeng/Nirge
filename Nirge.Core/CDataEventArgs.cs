@@ -13,43 +13,43 @@ namespace Nirge.Core
 {
     #region 
 
-    public class DataEventArgs
+    public class CDataEventArgs
     {
-        public static DataEventArgs<TArg1> Create<TArg1>(TArg1 arg1)
+        public static CDataEventArgs<TArg1> Create<TArg1>(TArg1 arg1)
         {
-            return new DataEventArgs<TArg1>(arg1);
+            return new CDataEventArgs<TArg1>(arg1);
         }
-        public static DataEventArgs<TArg1, TArg2> Create<TArg1, TArg2>(TArg1 arg1, TArg2 arg2)
+        public static CDataEventArgs<TArg1, TArg2> Create<TArg1, TArg2>(TArg1 arg1, TArg2 arg2)
         {
-            return new DataEventArgs<TArg1, TArg2>(arg1, arg2);
+            return new CDataEventArgs<TArg1, TArg2>(arg1, arg2);
         }
-        public static DataEventArgs<TArg1, TArg2, TArg3> Create<TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3)
+        public static CDataEventArgs<TArg1, TArg2, TArg3> Create<TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3)
         {
-            return new DataEventArgs<TArg1, TArg2, TArg3>(arg1, arg2, arg3);
+            return new CDataEventArgs<TArg1, TArg2, TArg3>(arg1, arg2, arg3);
         }
-        public static DataEventArgs<TArg1, TArg2, TArg3, TArg4> Create<TArg1, TArg2, TArg3, TArg4>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4> Create<TArg1, TArg2, TArg3, TArg4>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
         {
-            return new DataEventArgs<TArg1, TArg2, TArg3, TArg4>(arg1, arg2, arg3, arg4);
+            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4>(arg1, arg2, arg3, arg4);
         }
-        public static DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5> Create<TArg1, TArg2, TArg3, TArg4, TArg5>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5> Create<TArg1, TArg2, TArg3, TArg4, TArg5>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
         {
-            return new DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5>(arg1, arg2, arg3, arg4, arg5);
+            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5>(arg1, arg2, arg3, arg4, arg5);
         }
-        public static DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
         {
-            return new DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(arg1, arg2, arg3, arg4, arg5, arg6);
+            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(arg1, arg2, arg3, arg4, arg5, arg6);
         }
-        public static DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
         {
-            return new DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
         }
-        public static DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
         {
-            return new DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
         }
-        public static DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
         {
-            return new DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         }
     }
 
@@ -57,7 +57,7 @@ namespace Nirge.Core
 
     #region 
 
-    public class DataEventArgs<TArg1> : EventArgs, IObjCtor<TArg1>, IObjDtor
+    public class CDataEventArgs<TArg1> : EventArgs, IObjCtor<TArg1>, IObjDtor
     {
         public TArg1 Arg1
         {
@@ -65,7 +65,7 @@ namespace Nirge.Core
             set;
         }
 
-        public DataEventArgs(TArg1 arg1)
+        public CDataEventArgs(TArg1 arg1)
         {
             Init(arg1);
         }
@@ -80,7 +80,7 @@ namespace Nirge.Core
         }
     }
 
-    public class DataEventArgs<TArg1, TArg2> : EventArgs, IObjCtor<TArg1, TArg2>, IObjDtor
+    public class CDataEventArgs<TArg1, TArg2> : EventArgs, IObjCtor<TArg1, TArg2>, IObjDtor
     {
         public TArg1 Arg1
         {
@@ -93,7 +93,7 @@ namespace Nirge.Core
             set;
         }
 
-        public DataEventArgs(TArg1 arg1, TArg2 arg2)
+        public CDataEventArgs(TArg1 arg1, TArg2 arg2)
         {
             Init(arg1, arg2);
         }
@@ -110,7 +110,7 @@ namespace Nirge.Core
         }
     }
 
-    public class DataEventArgs<TArg1, TArg2, TArg3> : EventArgs, IObjCtor<TArg1, TArg2, TArg3>, IObjDtor
+    public class CDataEventArgs<TArg1, TArg2, TArg3> : EventArgs, IObjCtor<TArg1, TArg2, TArg3>, IObjDtor
     {
         public TArg1 Arg1
         {
@@ -128,7 +128,7 @@ namespace Nirge.Core
             set;
         }
 
-        public DataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3)
+        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3)
         {
             Init(arg1, arg2, arg3);
         }
@@ -147,7 +147,7 @@ namespace Nirge.Core
         }
     }
 
-    public class DataEventArgs<TArg1, TArg2, TArg3, TArg4> : EventArgs, IObjCtor<TArg1, TArg2, TArg3, TArg4>, IObjDtor
+    public class CDataEventArgs<TArg1, TArg2, TArg3, TArg4> : EventArgs, IObjCtor<TArg1, TArg2, TArg3, TArg4>, IObjDtor
     {
         public TArg1 Arg1
         {
@@ -170,7 +170,7 @@ namespace Nirge.Core
             set;
         }
 
-        public DataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
+        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
         {
             Init(arg1, arg2, arg3, arg4);
         }
@@ -191,7 +191,7 @@ namespace Nirge.Core
         }
     }
 
-    public class DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5> : EventArgs, IObjCtor<TArg1, TArg2, TArg3, TArg4, TArg5>, IObjDtor
+    public class CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5> : EventArgs, IObjCtor<TArg1, TArg2, TArg3, TArg4, TArg5>, IObjDtor
     {
         public TArg1 Arg1
         {
@@ -219,7 +219,7 @@ namespace Nirge.Core
             set;
         }
 
-        public DataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
+        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
         {
             Init(arg1, arg2, arg3, arg4, arg5);
         }
@@ -242,7 +242,7 @@ namespace Nirge.Core
         }
     }
 
-    public class DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> : EventArgs, IObjCtor<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>, IObjDtor
+    public class CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> : EventArgs, IObjCtor<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>, IObjDtor
     {
         public TArg1 Arg1
         {
@@ -275,7 +275,7 @@ namespace Nirge.Core
             set;
         }
 
-        public DataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
+        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
         {
             Init(arg1, arg2, arg3, arg4, arg5, arg6);
         }
@@ -300,7 +300,7 @@ namespace Nirge.Core
         }
     }
 
-    public class DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> : EventArgs, IObjCtor<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>, IObjDtor
+    public class CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> : EventArgs, IObjCtor<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>, IObjDtor
     {
         public TArg1 Arg1
         {
@@ -338,7 +338,7 @@ namespace Nirge.Core
             set;
         }
 
-        public DataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
+        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
         {
             Init(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
         }
@@ -365,7 +365,7 @@ namespace Nirge.Core
         }
     }
 
-    public class DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> : EventArgs, IObjCtor<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>, IObjDtor
+    public class CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> : EventArgs, IObjCtor<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>, IObjDtor
     {
         public TArg1 Arg1
         {
@@ -408,7 +408,7 @@ namespace Nirge.Core
             set;
         }
 
-        public DataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
+        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
         {
             Init(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
         }
@@ -437,7 +437,7 @@ namespace Nirge.Core
         }
     }
 
-    public class DataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> : EventArgs, IObjCtor<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>, IObjDtor
+    public class CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> : EventArgs, IObjCtor<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>, IObjDtor
     {
         public TArg1 Arg1
         {
@@ -485,7 +485,7 @@ namespace Nirge.Core
             set;
         }
 
-        public DataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
+        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
         {
             Init(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         }
