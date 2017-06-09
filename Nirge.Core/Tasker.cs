@@ -107,7 +107,7 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _log.Error("[Task] ", exception);
+                                _log.Error("[Task] Exec Exception!", exception);
                             }
                         }
                         while (--_eTasksCount > 0);
