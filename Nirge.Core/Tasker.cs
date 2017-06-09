@@ -37,7 +37,7 @@ namespace Nirge.Core
             _procs = new List<Thread>(procs);
             for (var i = 0; i < procs; ++i)
             {
-                var e = new Thread(_Proc);
+                var e = new Thread(Callback);
                 e.IsBackground = true;
                 _procs.Add(e);
             }
@@ -77,7 +77,7 @@ namespace Nirge.Core
                 Monitor.Pulse(_tasks);
             }
         }
-        void _Proc()
+        void Callback()
         {
             lock (_tasks)
             {
