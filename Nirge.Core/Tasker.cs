@@ -14,7 +14,7 @@ using System;
 
 namespace Nirge.Core
 {
-    public class Tasker
+    public class CTasker
     {
         List<Thread> _procs;
         ILog _log;
@@ -32,7 +32,7 @@ namespace Nirge.Core
             }
         }
 
-        Tasker(int procs, ILog log)
+        CTasker(int procs, ILog log)
         {
             _procs = new List<Thread>(procs);
             for (var i = 0; i < procs; ++i)
@@ -50,7 +50,7 @@ namespace Nirge.Core
             foreach (var i in _procs)
                 i.Start();
         }
-        public Tasker(ILog log)
+        public CTasker(ILog log)
         :
         this(1, log)
         {
