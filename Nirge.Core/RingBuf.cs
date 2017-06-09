@@ -109,7 +109,7 @@ namespace Nirge.Core
                 return false;
             }
 
-            if (count < UsedCapacity)
+            if (count > UsedCapacity)
             {
                 buf = null;
                 return false;
