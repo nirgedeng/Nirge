@@ -43,9 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Call.cs" />
     <Compile Include="DataEventArgs.cs" />
+    <Compile Include="ITask.cs" />
     <Compile Include="ObjPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
