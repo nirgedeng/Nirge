@@ -20,15 +20,15 @@ namespace Nirge.Core
         ILog _log;
         Queue<ITask> _tasks;
         int _tasksCount;
-        Queue<ITask> _eTasks;
-        int _eTasksCount;
+        Queue<ITask> _tasksAfter;
+        int _tasksAfterCount;
         bool _quit;
 
         public int TasksCount
         {
             get
             {
-                return _tasksCount + _eTasksCount;
+                return _tasksCount + _tasksAfterCount;
             }
         }
 
@@ -45,7 +45,7 @@ namespace Nirge.Core
             _log = log;
 
             _tasks = new Queue<ITask>(32);
-            _eTasks = new Queue<ITask>(32);
+            _tasksAfter = new Queue<ITask>(32);
 
             foreach (var proc in _procs)
                 proc.Start();
@@ -92,25 +92,25 @@ namespace Nirge.Core
                     }
                     else
                     {
-                        for (int i = 0, len = _tasksCount; i < len; ++i)
-                            _eTasks.Enqueue(_tasks.Dequeue());
-                        _eTasksCount = _tasksCount;
+                        while (_tasks.Count > 0)
+                            _tasksAfter.Enqueue(_tasks.Dequeue());
+                        _tasksAfterCount = _tasksCount;
                         _tasksCount = 0;
                         Monitor.Exit(_tasks);
 
                         do
                         {
-                            var task = _eTasks.Dequeue();
+                            var task = _tasksAfter.Dequeue();
                             try
                             {
                                 task.Exec();
                             }
                             catch (Exception exception)
                             {
-                                _log.Error("[Task] Exec exception!", exception);
+                                _log.Error(string.Format("[Task]Exec exception, type:\"{0}\"", task.GetType()), exception);
                             }
                         }
-                        while (--_eTasksCount > 0);
+                        while (--_tasksAfterCount > 0);
 
                         Monitor.Enter(_tasks);
                     }
