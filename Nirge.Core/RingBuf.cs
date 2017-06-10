@@ -101,25 +101,18 @@ namespace Nirge.Core
             return true;
         }
 
-        public bool Read(int count, out byte[] buf)
+        public bool Read(byte[] buf, int offset, int count)
         {
+            if (buf == null)
+                return false;
             if (count == 0)
-            {
-                buf = null;
                 return false;
-            }
-
             if (count > UsedCapacity)
-            {
-                buf = null;
                 return false;
-            }
-
-            buf = new byte[count];
 
             if (_head > _tail)
             {
-                Buffer.BlockCopy(_buf, _tail, buf, 0, count);
+                Buffer.BlockCopy(_buf, _tail, buf, offset, count);
                 _tail += count;
             }
             else
@@ -128,13 +121,13 @@ namespace Nirge.Core
                 if (p < count)
                 {
                     var q = count - p;
-                    Buffer.BlockCopy(_buf, _tail, buf, 0, p);
-                    Buffer.BlockCopy(_buf, 0, buf, p, q);
+                    Buffer.BlockCopy(_buf, _tail, buf, offset, p);
+                    Buffer.BlockCopy(_buf, 0, buf, offset + p, q);
                     _tail = q;
                 }
                 else
                 {
-                    Buffer.BlockCopy(_buf, _tail, buf, 0, count);
+                    Buffer.BlockCopy(_buf, _tail, buf, offset, count);
                     _tail += count;
                 }
             }

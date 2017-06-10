@@ -37,7 +37,7 @@ namespace Nirge.Core
             _procs = new List<Thread>(procs);
             for (var i = 0; i < procs; ++i)
             {
-                var e = new Thread(Callback);
+                var e = new Thread(Callback, 8388608);
                 e.IsBackground = true;
                 _procs.Add(e);
             }
@@ -47,8 +47,8 @@ namespace Nirge.Core
             _tasks = new Queue<ITask>(32);
             _eTasks = new Queue<ITask>(32);
 
-            foreach (var i in _procs)
-                i.Start();
+            foreach (var proc in _procs)
+                proc.Start();
         }
         public CTasker(ILog log)
         :
@@ -107,7 +107,7 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _log.Error("[Task] Exec Exception!", exception);
+                                _log.Error("[Task] Exec exception!", exception);
                             }
                         }
                         while (--_eTasksCount > 0);
