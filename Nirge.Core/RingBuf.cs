@@ -110,31 +110,50 @@ namespace Nirge.Core
             if (count > UsedCapacity)
                 return false;
 
-            if (_head > _tail)
-            {
-                Buffer.BlockCopy(_buf, _tail, buf, offset, count);
-                _tail += count;
-            }
-            else
-            {
-                var p = _buf.Length - _tail;
-                if (p < count)
-                {
-                    var q = count - p;
-                    Buffer.BlockCopy(_buf, _tail, buf, offset, p);
-                    Buffer.BlockCopy(_buf, 0, buf, offset + p, q);
-                    _tail = q;
-                }
-                else
-                {
-                    Buffer.BlockCopy(_buf, _tail, buf, offset, count);
-                    _tail += count;
-                }
-            }
-
+            Read(ref _tail, buf, offset, count);
             _used -= count;
 
             return true;
+        }
+
+        public bool Peek(byte[] buf, int offset, int count)
+        {
+            if (buf == null)
+                return false;
+            if (count == 0)
+                return false;
+            if (count > UsedCapacity)
+                return false;
+
+            var tail = _tail;
+            Read(ref tail, buf, offset, count);
+
+            return true;
+        }
+
+        void Read(ref int tail, byte[] buf, int offset, int count)
+        {
+            if (_head > tail)
+            {
+                Buffer.BlockCopy(_buf, tail, buf, offset, count);
+                tail += count;
+            }
+            else
+            {
+                var p = _buf.Length - tail;
+                if (p < count)
+                {
+                    var q = count - p;
+                    Buffer.BlockCopy(_buf, tail, buf, offset, p);
+                    Buffer.BlockCopy(_buf, 0, buf, offset + p, q);
+                    tail = q;
+                }
+                else
+                {
+                    Buffer.BlockCopy(_buf, tail, buf, offset, count);
+                    tail += count;
+                }
+            }
         }
     }
 }

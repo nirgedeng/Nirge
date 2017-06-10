@@ -21,20 +21,20 @@ namespace RingBuf
             a.Write(c, 0, 3);
             Console.WriteLine(a.UnusedCapacity);
 
-            byte[] b1;
-            a.Read(3, out b1);
-            var d = new byte[] { 7, 8, 9, };
+            byte[] b1 = new byte[3];
+            a.Read(b1, 0, 3);
             Console.WriteLine(a.UnusedCapacity);
 
+            var d = new byte[] { 7, 8, 9, };
             a.Write(d, 0, 3);
             Console.WriteLine(a.UnusedCapacity);
 
-            byte[] c1;
-            a.Read(3, out c1);
+            byte[] c1 = new byte[3];
+            a.Read(c1, 0, 3);
             Console.WriteLine(a.UnusedCapacity);
 
-            byte[] d1;
-            a.Read(3, out d1);
+            byte[] d1 = new byte[3];
+            a.Read(d1, 0, 3);
             Console.WriteLine(a.UnusedCapacity);
         }
     }
