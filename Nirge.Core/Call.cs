@@ -12,7 +12,7 @@ using System;
 
 namespace Nirge.Core
 {
-    public class CCall : ITask, IEquatable<Action>, IEquatable<CCall>
+    public class CCall : ITask, IObjCtor<Action>, IObjDtor, IEquatable<Action>, IEquatable<CCall>
     {
         #region
 
@@ -63,7 +63,16 @@ namespace Nirge.Core
 
         private CCall(Action callback)
         {
+            Init(callback);
+        }
+
+        public void Init(Action callback)
+        {
             _callback = callback;
+        }
+        public void Destroy()
+        {
+            _callback = null;
         }
 
         public void Exec()
@@ -101,7 +110,7 @@ namespace Nirge.Core
             return _callback.GetHashCode();
         }
     }
-    public class CCall<TArg1> : ITask, IEquatable<Action<TArg1>>, IEquatable<CCall<TArg1>>
+    public class CCall<TArg1> : ITask, IObjCtor<Action<TArg1>, TArg1>, IObjDtor, IEquatable<Action<TArg1>>, IEquatable<CCall<TArg1>>
     {
         Action<TArg1> _callback;
 
@@ -113,8 +122,18 @@ namespace Nirge.Core
 
         internal CCall(Action<TArg1> callback, TArg1 arg1)
         {
+            Init(callback, arg1);
+        }
+
+        public void Init(Action<TArg1> callback, TArg1 arg1)
+        {
             _callback = callback;
             Arg1 = arg1;
+        }
+        public void Destroy()
+        {
+            _callback = null;
+            Arg1 = default(TArg1);
         }
 
         public void Exec()
@@ -152,7 +171,7 @@ namespace Nirge.Core
             return _callback.GetHashCode();
         }
     }
-    public class CCall<TArg1, TArg2> : ITask, IEquatable<Action<TArg1, TArg2>>, IEquatable<CCall<TArg1, TArg2>>
+    public class CCall<TArg1, TArg2> : ITask, IObjCtor<Action<TArg1, TArg2>, TArg1, TArg2>, IObjDtor, IEquatable<Action<TArg1, TArg2>>, IEquatable<CCall<TArg1, TArg2>>
     {
         Action<TArg1, TArg2> _callback;
 
@@ -169,9 +188,20 @@ namespace Nirge.Core
 
         internal CCall(Action<TArg1, TArg2> callback, TArg1 arg1, TArg2 arg2)
         {
+            Init(callback, arg1, arg2);
+        }
+
+        public void Init(Action<TArg1, TArg2> callback, TArg1 arg1, TArg2 arg2)
+        {
             _callback = callback;
             Arg1 = arg1;
             Arg2 = arg2;
+        }
+        public void Destroy()
+        {
+            _callback = null;
+            Arg1 = default(TArg1);
+            Arg2 = default(TArg2);
         }
 
         public void Exec()
@@ -210,7 +240,7 @@ namespace Nirge.Core
         }
     }
 
-    public class CCall<TArg1, TArg2, TArg3> : ITask, IEquatable<Action<TArg1, TArg2, TArg3>>, IEquatable<CCall<TArg1, TArg2, TArg3>>
+    public class CCall<TArg1, TArg2, TArg3> : ITask, IObjCtor<Action<TArg1, TArg2, TArg3>, TArg1, TArg2, TArg3>, IObjDtor, IEquatable<Action<TArg1, TArg2, TArg3>>, IEquatable<CCall<TArg1, TArg2, TArg3>>
     {
         Action<TArg1, TArg2, TArg3> _callback;
 
@@ -232,10 +262,22 @@ namespace Nirge.Core
 
         internal CCall(Action<TArg1, TArg2, TArg3> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3)
         {
+            Init(callback, arg1, arg2, arg3);
+        }
+
+        public void Init(Action<TArg1, TArg2, TArg3> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3)
+        {
             _callback = callback;
             Arg1 = arg1;
             Arg2 = arg2;
             Arg3 = arg3;
+        }
+        public void Destroy()
+        {
+            _callback = null;
+            Arg1 = default(TArg1);
+            Arg2 = default(TArg2);
+            Arg3 = default(TArg3);
         }
 
         public void Exec()
@@ -274,7 +316,7 @@ namespace Nirge.Core
         }
     }
 
-    public class CCall<TArg1, TArg2, TArg3, TArg4> : ITask, IEquatable<Action<TArg1, TArg2, TArg3, TArg4>>, IEquatable<CCall<TArg1, TArg2, TArg3, TArg4>>
+    public class CCall<TArg1, TArg2, TArg3, TArg4> : ITask, IObjCtor<Action<TArg1, TArg2, TArg3, TArg4>, TArg1, TArg2, TArg3, TArg4>, IObjDtor, IEquatable<Action<TArg1, TArg2, TArg3, TArg4>>, IEquatable<CCall<TArg1, TArg2, TArg3, TArg4>>
     {
         Action<TArg1, TArg2, TArg3, TArg4> _callback;
 
@@ -301,11 +343,24 @@ namespace Nirge.Core
 
         internal CCall(Action<TArg1, TArg2, TArg3, TArg4> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
         {
+            Init(callback, arg1, arg2, arg3, arg4);
+        }
+
+        public void Init(Action<TArg1, TArg2, TArg3, TArg4> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
+        {
             _callback = callback;
             Arg1 = arg1;
             Arg2 = arg2;
             Arg3 = arg3;
             Arg4 = arg4;
+        }
+        public void Destroy()
+        {
+            _callback = null;
+            Arg1 = default(TArg1);
+            Arg2 = default(TArg2);
+            Arg3 = default(TArg3);
+            Arg4 = default(TArg4);
         }
 
         public void Exec()
@@ -344,7 +399,7 @@ namespace Nirge.Core
         }
     }
 
-    public class CCall<TArg1, TArg2, TArg3, TArg4, TArg5> : ITask, IEquatable<Action<TArg1, TArg2, TArg3, TArg4, TArg5>>, IEquatable<CCall<TArg1, TArg2, TArg3, TArg4, TArg5>>
+    public class CCall<TArg1, TArg2, TArg3, TArg4, TArg5> : ITask, IObjCtor<Action<TArg1, TArg2, TArg3, TArg4, TArg5>, TArg1, TArg2, TArg3, TArg4, TArg5>, IObjDtor, IEquatable<Action<TArg1, TArg2, TArg3, TArg4, TArg5>>, IEquatable<CCall<TArg1, TArg2, TArg3, TArg4, TArg5>>
     {
         Action<TArg1, TArg2, TArg3, TArg4, TArg5> _callback;
 
@@ -376,12 +431,26 @@ namespace Nirge.Core
 
         internal CCall(Action<TArg1, TArg2, TArg3, TArg4, TArg5> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
         {
+            Init(callback, arg1, arg2, arg3, arg4, arg5);
+        }
+
+        public void Init(Action<TArg1, TArg2, TArg3, TArg4, TArg5> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
+        {
             _callback = callback;
             Arg1 = arg1;
             Arg2 = arg2;
             Arg3 = arg3;
             Arg4 = arg4;
             Arg5 = arg5;
+        }
+        public void Destroy()
+        {
+            _callback = null;
+            Arg1 = default(TArg1);
+            Arg2 = default(TArg2);
+            Arg3 = default(TArg3);
+            Arg4 = default(TArg4);
+            Arg5 = default(TArg5);
         }
 
         public void Exec()
@@ -420,7 +489,7 @@ namespace Nirge.Core
         }
     }
 
-    public class CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> : ITask, IEquatable<Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>>, IEquatable<CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>>
+    public class CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> : ITask, IObjCtor<Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>, IObjDtor, IEquatable<Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>>, IEquatable<CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>>
     {
         Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> _callback;
 
@@ -457,6 +526,11 @@ namespace Nirge.Core
 
         internal CCall(Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
         {
+            Init(callback, arg1, arg2, arg3, arg4, arg5, arg6);
+        }
+
+        public void Init(Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
+        {
             _callback = callback;
             Arg1 = arg1;
             Arg2 = arg2;
@@ -464,6 +538,16 @@ namespace Nirge.Core
             Arg4 = arg4;
             Arg5 = arg5;
             Arg6 = arg6;
+        }
+        public void Destroy()
+        {
+            _callback = null;
+            Arg1 = default(TArg1);
+            Arg2 = default(TArg2);
+            Arg3 = default(TArg3);
+            Arg4 = default(TArg4);
+            Arg5 = default(TArg5);
+            Arg6 = default(TArg6);
         }
 
         public void Exec()
@@ -502,7 +586,7 @@ namespace Nirge.Core
         }
     }
 
-    public class CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> : ITask, IEquatable<Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>>, IEquatable<CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>>
+    public class CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> : ITask, IObjCtor<Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>, IObjDtor, IEquatable<Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>>, IEquatable<CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>>
     {
         Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> _callback;
 
@@ -544,6 +628,11 @@ namespace Nirge.Core
 
         internal CCall(Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
         {
+            Init(callback, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+        }
+
+        public void Init(Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
+        {
             _callback = callback;
             Arg1 = arg1;
             Arg2 = arg2;
@@ -552,6 +641,17 @@ namespace Nirge.Core
             Arg5 = arg5;
             Arg6 = arg6;
             Arg7 = arg7;
+        }
+        public void Destroy()
+        {
+            _callback = null;
+            Arg1 = default(TArg1);
+            Arg2 = default(TArg2);
+            Arg3 = default(TArg3);
+            Arg4 = default(TArg4);
+            Arg5 = default(TArg5);
+            Arg6 = default(TArg6);
+            Arg7 = default(TArg7);
         }
 
         public void Exec()
@@ -590,7 +690,7 @@ namespace Nirge.Core
         }
     }
 
-    public class CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> : ITask, IEquatable<Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>>, IEquatable<CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>>
+    public class CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> : ITask, IObjCtor<Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>, IObjDtor, IEquatable<Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>>, IEquatable<CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>>
     {
         Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> _callback;
 
@@ -637,6 +737,11 @@ namespace Nirge.Core
 
         internal CCall(Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
         {
+            Init(callback, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+        }
+
+        public void Init(Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
+        {
             _callback = callback;
             Arg1 = arg1;
             Arg2 = arg2;
@@ -646,6 +751,18 @@ namespace Nirge.Core
             Arg6 = arg6;
             Arg7 = arg7;
             Arg8 = arg8;
+        }
+        public void Destroy()
+        {
+            _callback = null;
+            Arg1 = default(TArg1);
+            Arg2 = default(TArg2);
+            Arg3 = default(TArg3);
+            Arg4 = default(TArg4);
+            Arg5 = default(TArg5);
+            Arg6 = default(TArg6);
+            Arg7 = default(TArg7);
+            Arg8 = default(TArg8);
         }
 
         public void Exec()
@@ -684,7 +801,7 @@ namespace Nirge.Core
         }
     }
 
-    public class CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> : ITask, IEquatable<Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>>, IEquatable<CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>>
+    public class CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> : ITask, IObjCtor<Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>, IObjDtor, IEquatable<Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>>, IEquatable<CCall<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>>
     {
         Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> _callback;
 
@@ -736,6 +853,11 @@ namespace Nirge.Core
 
         internal CCall(Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
         {
+            Init(callback, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+        }
+
+        public void Init(Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> callback, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
+        {
             _callback = callback;
             Arg1 = arg1;
             Arg2 = arg2;
@@ -746,6 +868,19 @@ namespace Nirge.Core
             Arg7 = arg7;
             Arg8 = arg8;
             Arg9 = arg9;
+        }
+        public void Destroy()
+        {
+            _callback = null;
+            Arg1 = default(TArg1);
+            Arg2 = default(TArg2);
+            Arg3 = default(TArg3);
+            Arg4 = default(TArg4);
+            Arg5 = default(TArg5);
+            Arg6 = default(TArg6);
+            Arg7 = default(TArg7);
+            Arg8 = default(TArg8);
+            Arg9 = default(TArg9);
         }
 
         public void Exec()

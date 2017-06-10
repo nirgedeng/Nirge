@@ -54,6 +54,10 @@ namespace Nirge.Core
     {
         void Init(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9);
     }
+    public interface IObjCtor<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>
+    {
+        void Init(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10);
+    }
     public interface IObjDtor
     {
         void Destroy();
@@ -162,6 +166,12 @@ namespace Nirge.Core
         {
             obj = AlwaysFetch<T>();
             obj.Init(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+            return obj;
+        }
+        public static T Fetch<T, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(out T obj, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10) where T : IObjCtor<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>
+        {
+            obj = AlwaysFetch<T>();
+            obj.Init(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
             return obj;
         }
         public static void Back<T>(T obj) where T : IObjDtor

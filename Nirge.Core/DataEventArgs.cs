@@ -1,5 +1,5 @@
 ﻿/*------------------------------------------------------------------
-    Copyright © : All rights reserved
+    Copyright ? : All rights reserved
     Author      : 邓晓峰
 ------------------------------------------------------------------*/
 
@@ -11,9 +11,9 @@ using System;
 
 namespace Nirge.Core
 {
-    #region 
+    #region
 
-    public class CDataEventArgs
+    public class CDataEventArgs : EventArgs, IObjCtor, IObjDtor
     {
         public static CDataEventArgs<TArg1> Create<TArg1>(TArg1 arg1)
         {
@@ -51,11 +51,23 @@ namespace Nirge.Core
         {
             return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         }
+
+        public CDataEventArgs()
+        {
+            Init();
+        }
+
+        public void Init()
+        {
+        }
+        public void Destroy()
+        {
+        }
     }
 
     #endregion
 
-    #region 
+    #region
 
     public class CDataEventArgs<TArg1> : EventArgs, IObjCtor<TArg1>, IObjDtor
     {
