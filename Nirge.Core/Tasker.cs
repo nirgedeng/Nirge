@@ -45,10 +45,10 @@ namespace Nirge.Core
             _log = log;
 
             _tasks = new Queue<ITask>(32);
+            _tasksCount = 0;
             _tasksAfter = new Queue<ITask>(32);
-
-            foreach (var proc in _procs)
-                proc.Start();
+            _tasksAfterCount = 0;
+            _quit = false;
         }
         public CTasker(ILog log)
         :
@@ -56,10 +56,47 @@ namespace Nirge.Core
         {
         }
 
+        public void Init()
+        {
+            foreach (var proc in _procs)
+                proc.Start();
+        }
+
+        public void Destroy()
+        {
+            Close();
+        }
+
+        void Close()
+        {
+            lock (_tasks)
+            {
+                _quit = true;
+                Monitor.Pulse(_tasks);
+            }
+
+            foreach (var proc in _procs)
+                proc.Join();
+
+            _quit = false;
+        }
+
+        public void Clear()
+        {
+            lock (_tasks)
+            {
+                _tasks.Clear();
+                _tasksCount = 0;
+            }
+        }
+
         public void Exec(IEnumerable<ITask> tasks)
         {
             lock (_tasks)
             {
+                if (_quit)
+                    return;
+
                 foreach (var task in tasks)
                 {
                     _tasks.Enqueue(task);
@@ -72,6 +109,9 @@ namespace Nirge.Core
         {
             lock (_tasks)
             {
+                if (_quit)
+                    return;
+
                 _tasks.Enqueue(task);
                 ++_tasksCount;
                 Monitor.Pulse(_tasks);
@@ -116,27 +156,6 @@ namespace Nirge.Core
                     }
                 }
             }
-        }
-
-        public void Clear()
-        {
-            lock (_tasks)
-            {
-                _tasks.Clear();
-                _tasksCount = 0;
-            }
-        }
-
-        public void Close()
-        {
-            lock (_tasks)
-            {
-                _quit = true;
-                Monitor.Pulse(_tasks);
-            }
-
-            foreach (var proc in _procs)
-                proc.Join();
         }
     }
 }
