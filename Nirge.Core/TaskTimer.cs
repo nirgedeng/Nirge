@@ -1,9 +1,4 @@
-﻿/*------------------------------------------------------------------
-    Copyright ? : All rights reserved
-    Author      : 邓晓峰
-------------------------------------------------------------------*/
-
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -11,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System;
+using log4net;
 
 namespace Nirge.Core
 {
@@ -28,13 +24,15 @@ namespace Nirge.Core
 
         Timer _tick;
         CTasker _proc;
+        ILog _log;
         int _timerid;
         Dictionary<int, CTimer> _timers;
         List<int> _timersAfter;
 
-        public CTaskTimer(CTasker proc)
+        public CTaskTimer(CTasker proc, ILog log)
         {
             _proc = proc;
+            _log = log;
             _timers = new Dictionary<int, CTimer>(32);
             _timersAfter = new List<int>(32);
             Clear();
@@ -105,11 +103,19 @@ namespace Nirge.Core
             timer._pass += gIntervalMin;
             if (timer._pass < timer._interval)
                 return;
+            timer._pass = 0;
 
             if (timer._count > 0)
                 --timer._count;
 
-            timer._task.Exec();
+            try
+            {
+                timer._task.Exec();
+            }
+            catch (Exception exception)
+            {
+                _log.Error(string.Format("[Timer]Exec exception, timer:\"{0}\", task:\"{0}\"", timerid, timer._task.GetType()), exception);
+            }
 
             if (timer._count == 0)
                 _timers.Remove(timerid);
