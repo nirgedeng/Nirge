@@ -78,13 +78,16 @@ namespace Nirge.Core
             foreach (var proc in _procs)
                 proc.Join();
 
-            _quit = false;
+            _procs.Clear();
         }
 
         public void Clear()
         {
             lock (_tasks)
             {
+                if (_quit)
+                    return;
+
                 _tasks.Clear();
                 _tasksCount = 0;
             }

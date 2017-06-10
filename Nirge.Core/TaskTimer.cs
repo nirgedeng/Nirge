@@ -91,6 +91,9 @@ namespace Nirge.Core
 
         void Exec()
         {
+            if (_timers.Count == 0)
+                return;
+
             _timersAfter.AddRange(_timers.Keys);
 
             foreach (var i in _timersAfter)
@@ -119,7 +122,7 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                _log.Error(string.Format("[Timer]Exec exception, timer:\"{0}\", task:\"{0}\"", timerid, timer._task.GetType()), exception);
+                _log.Error(string.Format("[Timer]Exec exception, timer:\"{0}\", task:\"{1}\"", timerid, timer._task.GetType()), exception);
             }
 
             if (timer._count == 0)
