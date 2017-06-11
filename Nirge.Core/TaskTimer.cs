@@ -17,6 +17,8 @@ namespace Nirge.Core
 {
     public class CTaskTimer
     {
+        const int gIntervalMin = 10;
+
         struct CTimer
         {
             public ITask _task;
@@ -25,36 +27,47 @@ namespace Nirge.Core
             public int _count;
         }
 
-        const int gIntervalMin = 10;
-
-        Timer _tick;
         CTasker _proc;
         ILog _log;
+        Thread _tick;
         int _timerid;
         Dictionary<int, CTimer> _timers;
         List<int> _timersAfter;
+        bool _quit;
 
         public CTaskTimer(CTasker proc, ILog log)
         {
             _proc = proc;
             _log = log;
+
+            _tick = new Thread(() =>
+            {
+                while (!_quit)
+                {
+                    Thread.Sleep(gIntervalMin);
+                    _proc.Exec(CCall.Create(Exec));
+                }
+            });
+            _tick.IsBackground = true;
+
+            _timerid = 0;
             _timers = new Dictionary<int, CTimer>(32);
             _timersAfter = new List<int>(32);
-            Clear();
+
+            _quit = false;
         }
 
         public void Init()
         {
-            _tick = new Timer((e) =>
-            {
-                _proc.Exec(CCall.Create(Exec));
-            }, this, 0, gIntervalMin);
+            _tick.Start();
         }
 
         public void Destroy()
         {
+            _quit = true;
+            _tick.Join();
+
             Clear();
-            _tick.Dispose();
         }
 
         public int Reg(ITask task, int interval, int count = -1)
@@ -77,9 +90,9 @@ namespace Nirge.Core
             return timerid;
         }
 
-        public bool Unreg(int tiemr)
+        public bool Unreg(int timer)
         {
-            return _timers.Remove(_timerid);
+            return _timers.Remove(timer);
         }
 
         public void Clear()

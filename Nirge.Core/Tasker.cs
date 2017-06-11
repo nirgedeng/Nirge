@@ -37,9 +37,10 @@ namespace Nirge.Core
             _procs = new List<Thread>(procs);
             for (var i = 0; i < procs; ++i)
             {
-                var e = new Thread(Callback, 8388608);
-                e.IsBackground = true;
-                _procs.Add(e);
+                var proc = new Thread(Callback, 8388608);
+                proc.IsBackground = true;
+
+                _procs.Add(proc);
             }
 
             _log = log;
@@ -48,6 +49,7 @@ namespace Nirge.Core
             _tasksCount = 0;
             _tasksAfter = new Queue<ITask>(32);
             _tasksAfterCount = 0;
+
             _quit = false;
         }
         public CTasker(ILog log)
