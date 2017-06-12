@@ -16,6 +16,14 @@ using System;
 
 namespace Nirge.Core
 {
+    public enum eTcpClientError
+    {
+        None,
+        SocketError,
+        Exception,
+        PkgSizeOutOfRange,
+    }
+
     public struct CTcpClientArgs
     {
         public int SendBufferSize
@@ -35,14 +43,6 @@ namespace Nirge.Core
             get;
             set;
         }
-    }
-
-    public enum eTcpClientError
-    {
-        None,
-        SocketError,
-        Exception,
-        PkgSizeOutOfRange,
     }
 
     public enum eTcpClientState
@@ -182,8 +182,6 @@ namespace Nirge.Core
             using (_cli)
             {
             }
-
-            _state = eTcpClientState.Closed;
 
             _connectTag.Result = eConnectResult.None;
             _connectTag.Error = eTcpClientError.None;
@@ -524,17 +522,17 @@ namespace Nirge.Core
                 switch (_connectTag.Result)
                 {
                 case eConnectResult.Fail:
-                    _connectTag.Result = eConnectResult.None;
                     _connectTag.Error = eTcpClientError.None;
                     _connectTag.SocketError = SocketError.Success;
+                    _connectTag.Result = eConnectResult.None;
 
                     _state = eTcpClientState.Closed;
                     OnConnected(_connectTag);
                     break;
                 case eConnectResult.Success:
-                    _connectTag.Result = eConnectResult.None;
                     _connectTag.Error = eTcpClientError.None;
                     _connectTag.SocketError = SocketError.Success;
+                    _connectTag.Result = eConnectResult.None;
 
                     Connect();
                     _state = eTcpClientState.Connected;
