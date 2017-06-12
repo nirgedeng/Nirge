@@ -103,7 +103,8 @@ namespace Nirge.Core
         static T AlwaysFetch<T>()
         {
             var obj = CAlloc<T>.Fetch();
-            if (obj == null) {
+            if (obj == null)
+            {
                 return (T)FormatterServices.GetUninitializedObject(typeof(T));
             }
             return obj;
@@ -187,14 +188,16 @@ namespace Nirge.Core
         public static Stack<T> Fetch<T>(out Stack<T> obj)
         {
             obj = CAlloc<Stack<T>>.Fetch();
-            if (obj == null) {
+            if (obj == null)
+            {
                 obj = new Stack<T>();
             }
             return obj;
         }
         public static void Back<T>(Stack<T> obj)
         {
-            if (obj != null) {
+            if (obj != null)
+            {
                 obj.Clear();
                 CAlloc<Stack<T>>.Back(obj);
             }
@@ -203,14 +206,16 @@ namespace Nirge.Core
         public static Queue<T> Fetch<T>(out Queue<T> obj)
         {
             obj = CAlloc<Queue<T>>.Fetch();
-            if (obj == null) {
+            if (obj == null)
+            {
                 obj = new Queue<T>();
             }
             return obj;
         }
         public static void Back<T>(Queue<T> obj)
         {
-            if (obj != null) {
+            if (obj != null)
+            {
                 obj.Clear();
                 CAlloc<Queue<T>>.Back(obj);
             }
@@ -219,14 +224,16 @@ namespace Nirge.Core
         public static List<T> Fetch<T>(out List<T> obj)
         {
             obj = CAlloc<List<T>>.Fetch();
-            if (obj == null) {
+            if (obj == null)
+            {
                 obj = new List<T>();
             }
             return obj;
         }
         public static void Back<T>(List<T> obj)
         {
-            if (obj != null) {
+            if (obj != null)
+            {
                 obj.Clear();
                 CAlloc<List<T>>.Back(obj);
             }
@@ -235,14 +242,16 @@ namespace Nirge.Core
         public static Dictionary<TKey, TValue> Fetch<TKey, TValue>(out Dictionary<TKey, TValue> obj)
         {
             obj = CAlloc<Dictionary<TKey, TValue>>.Fetch();
-            if (obj == null) {
+            if (obj == null)
+            {
                 obj = new Dictionary<TKey, TValue>();
             }
             return obj;
         }
         public static void Back<TKey, TValue>(Dictionary<TKey, TValue> obj)
         {
-            if (obj != null) {
+            if (obj != null)
+            {
                 obj.Clear();
                 CAlloc<Dictionary<TKey, TValue>>.Back(obj);
             }

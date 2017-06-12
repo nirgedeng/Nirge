@@ -23,6 +23,7 @@ namespace Nirge.Core
             get;
             set;
         }
+
         public int ReceiveBufferSize
         {
             get;
@@ -42,19 +43,63 @@ namespace Nirge.Core
         Connecting,
         Connected,
         Closing,
+        ClosingWait,
+    }
+
+    public enum eConnectResult
+    {
+        None,
+        Fail,
+        Success,
+    }
+
+    public struct CTcpClientConnectArgs
+    {
+        public eConnectResult Result
+        {
+            get;
+            set;
+        }
+
+        public eTcpClientError Error
+        {
+            get;
+            set;
+        }
+
+        public SocketError SocketError
+        {
+            get;
+            set;
+        }
     }
 
     public enum eTcpClientCloseReason
     {
         None,
-        Exception,
         Active,
         Unactive,
+        User,
+        Exception,
+    }
+
+    public enum eTcpClientError
+    {
+        None,
+        SocketError,
+        Exception,
+        PkgSizeOutOfRange,
     }
 
     public struct CTcpClientCloseArgs
     {
         public eTcpClientCloseReason Reason
+        {
+            get;
+            set;
+        }
+
+        public eTcpClientError Error
         {
             get;
             set;
@@ -69,19 +114,12 @@ namespace Nirge.Core
 
     public class CTcpClient
     {
-        enum eConnectResult
-        {
-            None,
-            Fail,
-            Success,
-        }
-
         CTcpClientArgs _args;
 
         TcpClient _cli;
 
         eTcpClientState _state;
-        eConnectResult _connectTag;
+        CTcpClientConnectArgs _connectTag;
         CTcpClientCloseArgs _closeTag;
 
         byte[] _pkgLen;
@@ -101,10 +139,16 @@ namespace Nirge.Core
             _args = args;
 
             _state = eTcpClientState.Closed;
-            _connectTag = eConnectResult.None;
+            _connectTag = new CTcpClientConnectArgs()
+            {
+                Result = eConnectResult.None,
+                Error = eTcpClientError.None,
+                SocketError = SocketError.Success,
+            };
             _closeTag = new CTcpClientCloseArgs()
             {
                 Reason = eTcpClientCloseReason.None,
+                Error = eTcpClientError.None,
                 SocketError = SocketError.Success,
             };
 
@@ -132,18 +176,18 @@ namespace Nirge.Core
 
         #region
 
-        public event EventHandler Connected;
-        void RaiseConnected()
+        public event EventHandler<CDataEventArgs<CTcpClientConnectArgs>> Connected;
+        void RaiseConnected(CDataEventArgs<CTcpClientConnectArgs> e)
         {
             var h = Connected;
             if (h != null)
             {
-                h(this, EventArgs.Empty);
+                h(this, e);
             }
         }
-        void OnConnected()
+        void OnConnected(CTcpClientConnectArgs args)
         {
-            RaiseConnected();
+            RaiseConnected(CDataEventArgs.Create(args));
         }
 
         public event EventHandler<CDataEventArgs<CTcpClientCloseArgs>> Closed;
@@ -165,8 +209,8 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpClientState.Closed:
-                if (BeginConnect(addr))
-                    return true;
+                _state = eTcpClientState.Connecting;
+                BeginConnect(addr);
                 break;
             case eTcpClientState.Connecting:
             case eTcpClientState.Connected:
@@ -175,51 +219,87 @@ namespace Nirge.Core
                 break;
             }
 
-            return false;
+            return true;
         }
 
-        void Connect(TcpClient cli)
+        public bool Connect(TcpClient cli)
         {
+            if (cli == null)
+                return false;
+
             _cli = cli;
+            Connect();
+
+            return true;
+        }
+
+        void Connect()
+        {
             _cli.SendBufferSize = _args.SendBufferSize;
             _cli.ReceiveBufferSize = _args.ReceiveBufferSize;
+            _cli.NoDelay = true;
         }
 
-        bool BeginConnect(IPEndPoint addr)
+        void BeginConnect(IPEndPoint addr)
         {
             try
             {
-                var cli = new TcpClient();
+                _cli = new TcpClient();
 
-                cli.BeginConnect(addr.Address, addr.Port, (e) =>
+                _cli.BeginConnect(addr.Address, addr.Port, (e) =>
                 {
-                    EndConnect(cli, e);
+                    EndConnect(e);
                 }, this);
-
-                return true;
             }
             catch (Exception exception)
             {
-                _args.Log.Error("", exception);
-            }
+                using (_cli)
+                {
+                }
 
-            return false;
+                _args.Log.Error("", exception);
+
+                _connectTag.Result = eConnectResult.Fail;
+                _connectTag.Error = eTcpClientError.Exception;
+                _connectTag.SocketError = SocketError.Success;
+            }
         }
-        void EndConnect(TcpClient cli, IAsyncResult e)
-        {
-            try
-            {
-                cli.EndConnect(e);
-            }
-            catch (Exception exception)
-            {
-                _args.Log.Error("", exception);
-                _connectTag = eConnectResult.Fail;
-                return;
-            }
 
-            Connect(cli);
-            _connectTag = eConnectResult.Success;
+        void EndConnect(IAsyncResult e)
+        {
+            switch (_state)
+            {
+            case eTcpClientState.Closed:
+                break;
+            case eTcpClientState.Connecting:
+                try
+                {
+                    _cli.EndConnect(e);
+                }
+                catch (Exception exception)
+                {
+                    using (_cli)
+                    {
+                    }
+
+                    _args.Log.Error("", exception);
+
+                    _connectTag.Result = eConnectResult.Fail;
+                    _connectTag.Error = eTcpClientError.Exception;
+                    _connectTag.SocketError = SocketError.Success;
+                    return;
+                }
+
+                Connect();
+                _connectTag.Result = eConnectResult.Success;
+                _connectTag.Error = eTcpClientError.None;
+                _connectTag.SocketError = SocketError.Success;
+                break;
+            case eTcpClientState.Connected:
+            case eTcpClientState.Closing:
+            default:
+                break;
+            }
         }
 
         public void Close()
@@ -264,6 +344,17 @@ namespace Nirge.Core
 
         void EndSend(SocketAsyncEventArgs e)
         {
+            switch (_state)
+            {
+            case eTcpClientState.Closed:
+                break;
+            case eTcpClientState.Connecting:
+                break;
+            case eTcpClientState.Connected:
+                break;
+            case eTcpClientState.Closing:
+                break;
+            }
         }
 
         #endregion
@@ -282,6 +373,7 @@ namespace Nirge.Core
                 _args.Log.Error("", exception);
 
                 _closeTag.Reason = eTcpClientCloseReason.Exception;
+                _closeTag.Error = eTcpClientError.Exception;
                 _closeTag.SocketError = SocketError.Success;
                 return;
             }
@@ -333,14 +425,16 @@ namespace Nirge.Core
                     else
                     {
                         _closeTag.Reason = eTcpClientCloseReason.Unactive;
-                        _closeTag.SocketError = e.SocketError;
+                        _closeTag.Error = eTcpClientError.None;
+                        _closeTag.SocketError = SocketError.Success;
                     }
                     break;
                 default:
                     _args.Log.Error("");
 
                     _closeTag.Reason = eTcpClientCloseReason.Exception;
-                    _closeTag.SocketError = SocketError.Success;
+                    _closeTag.Error = eTcpClientError.SocketError;
+                    _closeTag.SocketError = e.SocketError;
                     break;
                 }
                 break;
@@ -364,12 +458,12 @@ namespace Nirge.Core
             case eTcpClientState.Closed:
                 break;
             case eTcpClientState.Connecting:
-                switch (_connectTag)
+                switch (_connectTag.Result)
                 {
-                case eConnectResult.Fail:
+                case eConnectResult.Success:
                     _state = eTcpClientState.Closed;
                     break;
-                case eConnectResult.Success:
+                case eConnectResult.Fail:
                     _state = eTcpClientState.Connected;
                     BeginRecv();
                     break;

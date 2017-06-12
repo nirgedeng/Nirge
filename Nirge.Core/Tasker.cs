@@ -53,8 +53,8 @@ namespace Nirge.Core
             _quit = false;
         }
         public CTasker(ILog log)
-        :
-        this(1, log)
+            :
+            this(1, log)
         {
         }
 
