@@ -16,6 +16,8 @@ using System;
 
 namespace Nirge.Core
 {
+    #region
+
     public enum eTcpClientError
     {
         None,
@@ -110,6 +112,8 @@ namespace Nirge.Core
             set;
         }
     }
+
+    #endregion
 
     public class CTcpClient
     {
@@ -315,9 +319,9 @@ namespace Nirge.Core
 
                     _args.Log.Error("", exception);
 
-                    _connectTag.Result = eConnectResult.Fail;
                     _connectTag.Error = eTcpClientError.Exception;
                     _connectTag.SocketError = SocketError.Success;
+                    _connectTag.Result = eConnectResult.Fail;
                     return;
                 }
 
@@ -416,6 +420,8 @@ namespace Nirge.Core
                     }
                 }
 
+                _recving = false;
+
                 return;
             }
 
@@ -427,8 +433,10 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpClientState.Closed:
-                break;
             case eTcpClientState.Connecting:
+            case eTcpClientState.Closing:
+            default:
+                _recving = false;
                 break;
             case eTcpClientState.Connected:
                 switch (e.SocketError)
@@ -436,35 +444,42 @@ namespace Nirge.Core
                 case SocketError.Success:
                     if (e.BytesTransferred > 0)
                     {
-                        _recvBuf.Write(_recv, 0, e.BytesTransferred);
-
-                        for (; _recvBuf.UsedCapacity > _pkgLen.Length;)
+                        if (Unpack(e))
                         {
-                            _recvBuf.Peek(_pkgLen, 0, _pkgLen.Length);
-                            var pkgLen = BitConverter.ToUInt16(_pkgLen, 0);
-                            if (_recvBuf.UsedCapacity < (_pkgLen.Length + pkgLen))
-                                break;
-
-                            _recvBuf.Read(_pkgLen, 0, _pkgLen.Length);
-                            var pkg = new byte[pkgLen];
-                            _recvBuf.Read(pkg, 0, pkgLen);
-
-                            _recvsBefore.Enqueue(pkg);
-                        }
-
-                        if (_recvsBefore.Count > 0)
-                        {
-                            lock (_recvs)
+                            if (_recvsBefore.Count > 0)
                             {
-                                while (_recvsBefore.Count > 0)
-                                    _recvs.Enqueue(_recvsBefore.Dequeue());
+                                lock (_recvs)
+                                {
+                                    while (_recvsBefore.Count > 0)
+                                        _recvs.Enqueue(_recvsBefore.Dequeue());
+                                }
                             }
-                        }
 
-                        BeginRecv();
+                            BeginRecv();
+                        }
+                        else
+                        {
+                            lock (_closeTag)
+                            {
+                                switch (_closeTag.Reason)
+                                {
+                                case eTcpClientCloseReason.None:
+                                    _closeTag.Reason = eTcpClientCloseReason.User;
+                                    _closeTag.Error = eTcpClientError.PkgSizeOutOfRange;
+                                    _closeTag.SocketError = SocketError.Success;
+                                    break;
+                                default:
+                                    break;
+                                }
+                            }
+
+                            _recving = false;
+                        }
                     }
                     else
                     {
+                        _args.Log.Error("");
+
                         lock (_closeTag)
                         {
                             switch (_closeTag.Reason)
@@ -478,6 +493,8 @@ namespace Nirge.Core
                                 break;
                             }
                         }
+
+                        _recving = false;
                     }
                     break;
                 default:
@@ -496,12 +513,37 @@ namespace Nirge.Core
                             break;
                         }
                     }
+
+                    _recving = false;
                     break;
                 }
                 break;
-            case eTcpClientState.Closing:
-                break;
             }
+        }
+
+        bool Unpack(SocketAsyncEventArgs e)
+        {
+            if (!_recvBuf.Write(_recv, 0, e.BytesTransferred))
+                return false;
+
+            for (; _recvBuf.UsedCapacity > _pkgLen.Length;)
+            {
+                _recvBuf.Peek(_pkgLen, 0, _pkgLen.Length);
+                var pkgLen = BitConverter.ToUInt16(_pkgLen, 0);
+
+                if (pkgLen > _args.SendBufferSize)
+                    return false;
+                if (_recvBuf.UsedCapacity < (_pkgLen.Length + pkgLen))
+                    break;
+
+                _recvBuf.Read(_pkgLen, 0, _pkgLen.Length);
+                var pkg = new byte[pkgLen];
+                _recvBuf.Read(pkg, 0, pkgLen);
+
+                _recvsBefore.Enqueue(pkg);
+            }
+
+            return true;
         }
 
         protected virtual void OnRecv(byte[] buf, int offset, int count)
@@ -538,6 +580,7 @@ namespace Nirge.Core
                     _state = eTcpClientState.Connected;
                     OnConnected(_connectTag);
 
+                    _recving = true;
                     BeginRecv();
                     break;
                 }
@@ -578,8 +621,13 @@ namespace Nirge.Core
                 }
                 break;
             case eTcpClientState.Closing:
-                _state = eTcpClientState.Closed;
-                OnClosed(_closeTag);
+                if (!_sending)
+                    if (!_recving)
+                    {
+                        Clear();
+                        _state = eTcpClientState.Closed;
+                        OnClosed(_closeTag);
+                    }
                 break;
             }
         }
