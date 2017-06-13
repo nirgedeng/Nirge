@@ -63,7 +63,7 @@ namespace Nirge.Core
         Success,
     }
 
-    public struct CTcpClientConnectArgs
+    public class CTcpClientConnectArgs
     {
         public eConnectResult Result
         {
@@ -306,11 +306,19 @@ namespace Nirge.Core
                 {
                 }
 
-                _args.Log.Error("", exception);
+                lock (_connectTag)
+                {
+                    switch (_connectTag.Result)
+                    {
+                    case eConnectResult.None:
+                        _connectTag.Result = eConnectResult.Fail;
+                        _connectTag.Error = eTcpClientError.Exception;
+                        _connectTag.SocketError = SocketError.Success;
 
-                _connectTag.Error = eTcpClientError.Exception;
-                _connectTag.SocketError = SocketError.Success;
-                _connectTag.Result = eConnectResult.Fail;
+                        _args.Log.Error("", exception);
+                        break;
+                    }
+                }
             }
         }
 
@@ -335,17 +343,34 @@ namespace Nirge.Core
                     {
                     }
 
-                    _args.Log.Error("", exception);
+                    lock (_connectTag)
+                    {
+                        switch (_connectTag.Result)
+                        {
+                        case eConnectResult.None:
+                            _connectTag.Result = eConnectResult.Fail;
+                            _connectTag.Error = eTcpClientError.Exception;
+                            _connectTag.SocketError = SocketError.Success;
 
-                    _connectTag.Error = eTcpClientError.Exception;
-                    _connectTag.SocketError = SocketError.Success;
-                    _connectTag.Result = eConnectResult.Fail;
+                            _args.Log.Error("", exception);
+                            break;
+                        }
+                    }
+
                     return;
                 }
 
-                _connectTag.Error = eTcpClientError.None;
-                _connectTag.SocketError = SocketError.Success;
-                _connectTag.Result = eConnectResult.Success;
+                lock (_connectTag)
+                {
+                    switch (_connectTag.Result)
+                    {
+                    case eConnectResult.None:
+                        _connectTag.Result = eConnectResult.Success;
+                        _connectTag.Error = eTcpClientError.None;
+                        _connectTag.SocketError = SocketError.Success;
+                        break;
+                    }
+                }
                 break;
             case eTcpClientState.Closed:
             case eTcpClientState.Connected:
@@ -439,9 +464,7 @@ namespace Nirge.Core
                         _closeTag.Error = eTcpClientError.Exception;
                         _closeTag.SocketError = SocketError.Success;
 
-                        _args.Log.Error("");
-                        break;
-                    default:
+                        _args.Log.Error("", exception);
                         break;
                     }
                 }
@@ -490,8 +513,6 @@ namespace Nirge.Core
 
                                     _args.Log.Error("");
                                     break;
-                                default:
-                                    break;
                                 }
                             }
 
@@ -511,8 +532,6 @@ namespace Nirge.Core
 
                                 _args.Log.Info("");
                                 break;
-                            default:
-                                break;
                             }
                         }
 
@@ -530,8 +549,6 @@ namespace Nirge.Core
                             _closeTag.SocketError = e.SocketError;
 
                             _args.Log.Error("");
-                            break;
-                        default:
                             break;
                         }
                     }
@@ -593,11 +610,16 @@ namespace Nirge.Core
                 switch (_connectTag.Result)
                 {
                 case eConnectResult.Fail:
-                    var e = _connectTag;
+                    var e = new CTcpClientConnectArgs()
+                    {
+                        Result = _connectTag.Result,
+                        Error = _connectTag.Error,
+                        SocketError = _connectTag.SocketError,
+                    };
 
+                    _connectTag.Result = eConnectResult.None;
                     _connectTag.Error = eTcpClientError.None;
                     _connectTag.SocketError = SocketError.Success;
-                    _connectTag.Result = eConnectResult.None;
 
                     _state = eTcpClientState.Closed;
 
@@ -623,9 +645,9 @@ namespace Nirge.Core
                         _args.Log.Error("", exception);
                     }
 
+                    _connectTag.Result = eConnectResult.None;
                     _connectTag.Error = eTcpClientError.None;
                     _connectTag.SocketError = SocketError.Success;
-                    _connectTag.Result = eConnectResult.None;
 
                     _recving = true;
                     BeginRecv();
