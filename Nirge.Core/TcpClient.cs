@@ -249,16 +249,14 @@ namespace Nirge.Core
             case eTcpClientState.Closed:
                 _state = eTcpClientState.Connecting;
                 BeginConnect(addr);
-                break;
+                return true;
             case eTcpClientState.Connecting:
             case eTcpClientState.Connected:
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
             default:
-                break;
+                return false;
             }
-
-            return true;
         }
 
         public bool Connect(TcpClient cli)
@@ -266,14 +264,21 @@ namespace Nirge.Core
             if (cli == null)
                 return false;
 
-            _state = eTcpClientState.Connecting;
-
-            _cli = cli;
-            Connect();
-
-            _state = eTcpClientState.Connected;
-
-            return true;
+            switch (_state)
+            {
+            case eTcpClientState.Closed:
+                _state = eTcpClientState.Connecting;
+                _cli = cli;
+                Connect();
+                _state = eTcpClientState.Connected;
+                return true;
+            case eTcpClientState.Connecting:
+            case eTcpClientState.Connected:
+            case eTcpClientState.Closing:
+            case eTcpClientState.ClosingWait:
+            default:
+                return false;
+            }
         }
 
         void Connect()
