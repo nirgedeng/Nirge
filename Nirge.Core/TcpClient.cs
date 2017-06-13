@@ -256,7 +256,6 @@ namespace Nirge.Core
             case eTcpClientState.Connected:
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
-            default:
                 return false;
             }
         }
@@ -278,7 +277,6 @@ namespace Nirge.Core
             case eTcpClientState.Connected:
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
-            default:
                 return false;
             }
         }
@@ -383,7 +381,6 @@ namespace Nirge.Core
             case eTcpClientState.Connected:
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
-            default:
                 break;
             }
         }
@@ -400,7 +397,6 @@ namespace Nirge.Core
             case eTcpClientState.Closed:
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
-            default:
                 break;
             }
         }
@@ -448,7 +444,6 @@ namespace Nirge.Core
             case eTcpClientState.Connecting:
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
-            default:
                 return false;
             }
         }
@@ -538,7 +533,6 @@ namespace Nirge.Core
             case eTcpClientState.Closed:
             case eTcpClientState.Connecting:
             case eTcpClientState.ClosingWait:
-            default:
                 _sending = false;
                 break;
             }
@@ -663,7 +657,6 @@ namespace Nirge.Core
             case eTcpClientState.Connecting:
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
-            default:
                 _recving = false;
                 break;
             }
