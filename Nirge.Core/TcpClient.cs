@@ -128,6 +128,7 @@ namespace Nirge.Core
 
         byte[] _pkgLen;
 
+        byte[] _send;
         SocketAsyncEventArgs _sendArgs;
         List<ArraySegment<byte>> _sends;
         bool _sending;
@@ -160,6 +161,7 @@ namespace Nirge.Core
 
             _pkgLen = new byte[2];
 
+            _send = new byte[_args.SendBufferSize];
             _sendArgs = new SocketAsyncEventArgs();
             _sendArgs.Completed += (sender, e) =>
             {
@@ -409,40 +411,135 @@ namespace Nirge.Core
 
         public bool Send(byte[] buf, int offset, int count)
         {
+            if (buf == null)
+                return false;
+            if (count == 0)
+                return false;
+            if (count > ushort.MaxValue)
+                return false;
+            var pkgLen = _pkgLen.Length + count;
+            if (pkgLen > _send.Length)
+                return false;
+
             switch (_state)
             {
-            case eTcpClientState.Closed:
-                break;
-            case eTcpClientState.Connecting:
-                break;
             case eTcpClientState.Connected:
-                break;
-            case eTcpClientState.Closing:
-                break;
-            case eTcpClientState.ClosingWait:
-                break;
-            }
+                var pkg = new byte[pkgLen];
+                var len = BitConverter.GetBytes((ushort)count);
+                Buffer.BlockCopy(len, 0, pkg, 0, _pkgLen.Length);
+                Buffer.BlockCopy(buf, offset, pkg, _pkgLen.Length, count);
 
-            return true;
+                lock (_sends)
+                {
+                    if (_sending)
+                    {
+                        _sends.Add(new ArraySegment<byte>(pkg));
+                    }
+                    else
+                    {
+                        _sendArgs.BufferList = null;
+                        _sendArgs.SetBuffer(pkg, 0, pkgLen);
+                        _sending = true;
+                    }
+                }
+                BeginSend();
+                return true;
+            case eTcpClientState.Closed:
+            case eTcpClientState.Connecting:
+            case eTcpClientState.Closing:
+            case eTcpClientState.ClosingWait:
+            default:
+                return false;
+            }
         }
 
         void BeginSend()
         {
+            try
+            {
+                if (_cli.Client.SendAsync(_sendArgs))
+                    return;
+            }
+            catch (Exception exception)
+            {
+                lock (_closeTag)
+                {
+                    switch (_closeTag.Reason)
+                    {
+                    case eTcpClientCloseReason.None:
+                        _closeTag.Reason = eTcpClientCloseReason.Exception;
+                        _closeTag.Error = eTcpClientError.Exception;
+                        _closeTag.SocketError = SocketError.Success;
+
+                        _args.Log.Error("", exception);
+                        break;
+                    }
+                }
+
+                _sending = false;
+
+                return;
+            }
+
+            EndSend(_sendArgs);
         }
 
         void EndSend(SocketAsyncEventArgs e)
         {
             switch (_state)
             {
-            case eTcpClientState.Closed:
-                break;
-            case eTcpClientState.Connecting:
-                break;
             case eTcpClientState.Connected:
+                switch (e.SocketError)
+                {
+                case SocketError.Success:
+                    if (_sends.Count > 0)
+                    {
+                        lock (_sends)
+                        {
+                            if (_sends.Count > 0)
+                            {
+                                _sendArgs.SetBuffer(null, 0, 0);
+                                _sendArgs.BufferList = _sends;
+
+                                _sends.Clear();
+                            }
+                            else
+                            {
+                                _sending = false;
+                            }
+                        }
+                        BeginSend();
+                    }
+                    else
+                    {
+                        _sending = false;
+                    }
+                    break;
+                default:
+                    lock (_closeTag)
+                    {
+                        switch (_closeTag.Reason)
+                        {
+                        case eTcpClientCloseReason.None:
+                            _closeTag.Reason = eTcpClientCloseReason.Exception;
+                            _closeTag.Error = eTcpClientError.SocketError;
+                            _closeTag.SocketError = e.SocketError;
+
+                            _args.Log.Error("");
+                            break;
+                        }
+                    }
+
+                    _sending = false;
+                    break;
+                }
                 break;
             case eTcpClientState.Closing:
-                break;
+            case eTcpClientState.Closed:
+            case eTcpClientState.Connecting:
             case eTcpClientState.ClosingWait:
+            default:
+                _sending = false;
                 break;
             }
         }
