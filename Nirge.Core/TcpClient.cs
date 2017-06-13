@@ -385,15 +385,15 @@ namespace Nirge.Core
         {
             switch (_state)
             {
-            case eTcpClientState.Closed:
-                break;
             case eTcpClientState.Connecting:
                 break;
             case eTcpClientState.Connected:
+                _state = eTcpClientState.Closing;
                 break;
+            case eTcpClientState.Closed:
             case eTcpClientState.Closing:
-                break;
             case eTcpClientState.ClosingWait:
+            default:
                 break;
             }
         }
