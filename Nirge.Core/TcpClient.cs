@@ -600,6 +600,7 @@ namespace Nirge.Core
                     _connectTag.Result = eConnectResult.None;
 
                     _state = eTcpClientState.Closed;
+
                     try
                     {
                         OnConnected(e);
@@ -612,6 +613,7 @@ namespace Nirge.Core
                 case eConnectResult.Success:
                     Connect();
                     _state = eTcpClientState.Connected;
+
                     try
                     {
                         OnConnected(_connectTag);
@@ -661,11 +663,24 @@ namespace Nirge.Core
                 case eTcpClientCloseReason.Unactive:
                 case eTcpClientCloseReason.Exception:
                 case eTcpClientCloseReason.User:
-                    _state = eTcpClientState.Closing;
+                    _state = eTcpClientState.ClosingWait;
                     break;
                 }
                 break;
             case eTcpClientState.Closing:
+                switch (_closeTag.Reason)
+                {
+                case eTcpClientCloseReason.None:
+                    break;
+                case eTcpClientCloseReason.Active:
+                case eTcpClientCloseReason.Unactive:
+                case eTcpClientCloseReason.Exception:
+                case eTcpClientCloseReason.User:
+                    _state = eTcpClientState.ClosingWait;
+                    break;
+                }
+                break;
+            case eTcpClientState.ClosingWait:
                 if (!_sending)
                     if (!_recving)
                     {
@@ -678,6 +693,7 @@ namespace Nirge.Core
 
                         Clear();
                         _state = eTcpClientState.Closed;
+
                         try
                         {
                             OnClosed(e);
@@ -687,8 +703,6 @@ namespace Nirge.Core
                             _args.Log.Error("", exception);
                         }
                     }
-                break;
-            case eTcpClientState.ClosingWait:
                 break;
             }
         }
