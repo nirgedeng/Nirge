@@ -411,7 +411,7 @@ namespace Nirge.Core
             }
         }
 
-        public void Close()
+        public void Close(bool grace = false)
         {
             switch (_state)
             {
