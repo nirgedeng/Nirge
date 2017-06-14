@@ -616,6 +616,8 @@ namespace Nirge.Core
 
         #region
 
+        public event Action<byte[], int, int> Recved;
+
         void BeginRecv()
         {
             try
@@ -761,10 +763,6 @@ namespace Nirge.Core
             return true;
         }
 
-        protected virtual void OnRecv(byte[] buf, int offset, int count)
-        {
-        }
-
         #endregion
 
         #region
@@ -848,7 +846,7 @@ namespace Nirge.Core
 
                         try
                         {
-                            OnRecv(pkg, 0, pkg.Length);
+                            Recved(pkg, 0, pkg.Length);
                         }
                         catch (Exception exception)
                         {
