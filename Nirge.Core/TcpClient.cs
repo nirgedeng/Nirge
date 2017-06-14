@@ -307,6 +307,25 @@ namespace Nirge.Core
                 _cli = cli;
                 Connect();
                 _state = eTcpClientState.Connected;
+
+                var e = new CTcpClientConnectArgs()
+                {
+                    Error = eTcpClientError.None,
+                    SocketError = SocketError.Success,
+                    Result = eConnectResult.Success,
+                };
+
+                try
+                {
+                    OnConnected(e);
+                }
+                catch (Exception exception)
+                {
+                    _args.Log.Error(string.Format("[TcpClient]OnConnected exception"), exception);
+                }
+
+                _recving = true;
+                BeginRecv();
                 return eTcpClientError.None;
             case eTcpClientState.Connecting:
             case eTcpClientState.Connected:
@@ -778,7 +797,7 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _args.Log.Error(string.Format("[TcpClient]OnConnected exception, connectArgs:\"{0},{1},{2}\"", e.Result, e.Error, e.SocketError), exception);
+                        _args.Log.Error(string.Format("[TcpClient]OnConnected exception"), exception);
                     }
                     break;
                 case eConnectResult.Success:
@@ -791,7 +810,7 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _args.Log.Error(string.Format("[TcpClient]OnConnected exception, connectArgs:\"{0},{1},{2}\"", _connectTag.Result, _connectTag.Error, _connectTag.SocketError), exception);
+                        _args.Log.Error(string.Format("[TcpClient]OnConnected exception"), exception);
                     }
 
                     _connectTag.Error = eTcpClientError.None;
@@ -832,7 +851,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _args.Log.Error(string.Format("[TcpClient]Recved exception, pkg:\"{0}\"", pkg.Length), exception);
+                            _args.Log.Error(string.Format("[TcpClient]Recved exception"), exception);
                         }
                     }
                     break;
@@ -881,7 +900,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _args.Log.Error(string.Format("[TcpClient]OnClosed exception, closeArgs:\"{0},{1},{2}\"", e.Reason, e.Error, e.SocketError), exception);
+                            _args.Log.Error(string.Format("[TcpClient]OnClosed exception"), exception);
                         }
                     }
                 break;
