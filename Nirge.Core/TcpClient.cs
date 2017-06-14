@@ -21,8 +21,8 @@ namespace Nirge.Core
     public enum eTcpClientError
     {
         None,
-        SocketError,
         Exception,
+        SocketError,
         WrongState,
         ArgumentOutOfRange,
         PkgSizeOutOfRange,
@@ -471,7 +471,7 @@ namespace Nirge.Core
                 else
                 {
                     _sendArgs.BufferList = null;
-                    _sendArgs.SetBuffer(pkg, 0, pkgLen);
+                    _sendArgs.SetBuffer(pkg, 0, pkg.Length);
 
                     _sending = true;
                     BeginSend();
