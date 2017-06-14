@@ -153,15 +153,15 @@ namespace Nirge.Core
             _state = eTcpClientState.Closed;
             _connectTag = new CTcpClientConnectArgs()
             {
-                Result = eConnectResult.None,
                 Error = eTcpClientError.None,
                 SocketError = SocketError.Success,
+                Result = eConnectResult.None,
             };
             _closeTag = new CTcpClientCloseArgs()
             {
-                Reason = eTcpClientCloseReason.None,
                 Error = eTcpClientError.None,
                 SocketError = SocketError.Success,
+                Reason = eTcpClientCloseReason.None,
             };
 
             _pkgLen = new byte[2];
@@ -218,13 +218,13 @@ namespace Nirge.Core
 
             _state = eTcpClientState.Closed;
 
-            _connectTag.Result = eConnectResult.None;
             _connectTag.Error = eTcpClientError.None;
             _connectTag.SocketError = SocketError.Success;
+            _connectTag.Result = eConnectResult.None;
 
-            _closeTag.Reason = eTcpClientCloseReason.None;
             _closeTag.Error = eTcpClientError.None;
             _closeTag.SocketError = SocketError.Success;
+            _closeTag.Reason = eTcpClientCloseReason.None;
 
             _sends.Clear();
             _sending = false;
@@ -340,9 +340,9 @@ namespace Nirge.Core
                     switch (_connectTag.Result)
                     {
                     case eConnectResult.None:
-                        _connectTag.Result = eConnectResult.Fail;
                         _connectTag.Error = eTcpClientError.Exception;
                         _connectTag.SocketError = SocketError.Success;
+                        _connectTag.Result = eConnectResult.Fail;
 
                         _args.Log.Error("", exception);
                         break;
@@ -377,9 +377,9 @@ namespace Nirge.Core
                         switch (_connectTag.Result)
                         {
                         case eConnectResult.None:
-                            _connectTag.Result = eConnectResult.Fail;
                             _connectTag.Error = eTcpClientError.Exception;
                             _connectTag.SocketError = SocketError.Success;
+                            _connectTag.Result = eConnectResult.Fail;
 
                             _args.Log.Error("", exception);
                             break;
@@ -394,9 +394,9 @@ namespace Nirge.Core
                     switch (_connectTag.Result)
                     {
                     case eConnectResult.None:
-                        _connectTag.Result = eConnectResult.Success;
                         _connectTag.Error = eTcpClientError.None;
                         _connectTag.SocketError = SocketError.Success;
+                        _connectTag.Result = eConnectResult.Success;
                         break;
                     }
                 }
@@ -501,9 +501,9 @@ namespace Nirge.Core
                     switch (_closeTag.Reason)
                     {
                     case eTcpClientCloseReason.None:
-                        _closeTag.Reason = eTcpClientCloseReason.Exception;
                         _closeTag.Error = eTcpClientError.Exception;
                         _closeTag.SocketError = SocketError.Success;
+                        _closeTag.Reason = eTcpClientCloseReason.Exception;
 
                         _args.Log.Error("", exception);
                         break;
@@ -537,9 +537,9 @@ namespace Nirge.Core
                         switch (_closeTag.Reason)
                         {
                         case eTcpClientCloseReason.None:
-                            _closeTag.Reason = eTcpClientCloseReason.Exception;
                             _closeTag.Error = eTcpClientError.SocketError;
                             _closeTag.SocketError = e.SocketError;
+                            _closeTag.Reason = eTcpClientCloseReason.Exception;
 
                             _args.Log.Error("");
                             break;
@@ -563,9 +563,9 @@ namespace Nirge.Core
                             switch (_closeTag.Reason)
                             {
                             case eTcpClientCloseReason.None:
-                                _closeTag.Reason = eTcpClientCloseReason.Active;
                                 _closeTag.Error = eTcpClientError.None;
                                 _closeTag.SocketError = SocketError.Success;
+                                _closeTag.Reason = eTcpClientCloseReason.Active;
                                 break;
                             }
                         }
@@ -579,9 +579,9 @@ namespace Nirge.Core
                         switch (_closeTag.Reason)
                         {
                         case eTcpClientCloseReason.None:
-                            _closeTag.Reason = eTcpClientCloseReason.Exception;
                             _closeTag.Error = eTcpClientError.SocketError;
                             _closeTag.SocketError = e.SocketError;
+                            _closeTag.Reason = eTcpClientCloseReason.Exception;
 
                             _args.Log.Error("");
                             break;
@@ -618,9 +618,9 @@ namespace Nirge.Core
                     switch (_closeTag.Reason)
                     {
                     case eTcpClientCloseReason.None:
-                        _closeTag.Reason = eTcpClientCloseReason.Exception;
                         _closeTag.Error = eTcpClientError.Exception;
                         _closeTag.SocketError = SocketError.Success;
+                        _closeTag.Reason = eTcpClientCloseReason.Exception;
 
                         _args.Log.Error("", exception);
                         break;
@@ -665,9 +665,9 @@ namespace Nirge.Core
                                 switch (_closeTag.Reason)
                                 {
                                 case eTcpClientCloseReason.None:
-                                    _closeTag.Reason = eTcpClientCloseReason.User;
                                     _closeTag.Error = eTcpClientError.PkgSizeOutOfRange;
                                     _closeTag.SocketError = SocketError.Success;
+                                    _closeTag.Reason = eTcpClientCloseReason.User;
 
                                     _args.Log.Error("");
                                     break;
@@ -684,9 +684,9 @@ namespace Nirge.Core
                             switch (_closeTag.Reason)
                             {
                             case eTcpClientCloseReason.None:
-                                _closeTag.Reason = eTcpClientCloseReason.Unactive;
                                 _closeTag.Error = eTcpClientError.None;
                                 _closeTag.SocketError = SocketError.Success;
+                                _closeTag.Reason = eTcpClientCloseReason.Unactive;
 
                                 _args.Log.Info("");
                                 break;
@@ -702,9 +702,9 @@ namespace Nirge.Core
                         switch (_closeTag.Reason)
                         {
                         case eTcpClientCloseReason.None:
-                            _closeTag.Reason = eTcpClientCloseReason.Exception;
                             _closeTag.Error = eTcpClientError.SocketError;
                             _closeTag.SocketError = e.SocketError;
+                            _closeTag.Reason = eTcpClientCloseReason.Exception;
 
                             _args.Log.Error("");
                             break;
@@ -769,14 +769,14 @@ namespace Nirge.Core
                 case eConnectResult.Fail:
                     var e = new CTcpClientConnectArgs()
                     {
-                        Result = _connectTag.Result,
                         Error = _connectTag.Error,
                         SocketError = _connectTag.SocketError,
+                        Result = _connectTag.Result,
                     };
 
-                    _connectTag.Result = eConnectResult.None;
                     _connectTag.Error = eTcpClientError.None;
                     _connectTag.SocketError = SocketError.Success;
+                    _connectTag.Result = eConnectResult.None;
 
                     _state = eTcpClientState.Closed;
 
@@ -802,9 +802,9 @@ namespace Nirge.Core
                         _args.Log.Error("", exception);
                     }
 
-                    _connectTag.Result = eConnectResult.None;
                     _connectTag.Error = eTcpClientError.None;
                     _connectTag.SocketError = SocketError.Success;
+                    _connectTag.Result = eConnectResult.None;
 
                     _recving = true;
                     BeginRecv();
@@ -875,9 +875,9 @@ namespace Nirge.Core
                     {
                         var e = new CTcpClientCloseArgs()
                         {
-                            Reason = _closeTag.Reason,
                             Error = _closeTag.Error,
                             SocketError = _closeTag.SocketError,
+                            Reason = _closeTag.Reason,
                         };
 
                         Clear();
