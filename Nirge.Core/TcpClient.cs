@@ -309,7 +309,7 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _args.Log.Error(string.Format("[TcpClient]OnConnected exception"), exception);
+                    _args.Log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint), exception);
                 }
 
                 _recving = true;
@@ -798,7 +798,7 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _args.Log.Error(string.Format("[TcpClient]OnConnected exception"), exception);
+                        _args.Log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint), exception);
                     }
 
                     _connectTag.Error = eTcpClientError.None;
@@ -839,7 +839,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _args.Log.Error(string.Format("[TcpClient]Recved exception"), exception);
+                            _args.Log.Error(string.Format("[TcpClient]Recved exception, addr:\"{0},{1}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint), exception);
                         }
                     }
                     break;
@@ -879,6 +879,9 @@ namespace Nirge.Core
                             Reason = _closeTag.Reason,
                         };
 
+                        var lep = _cli.Client.LocalEndPoint;
+                        var rep = _cli.Client.RemoteEndPoint;
+
                         Clear();
                         _state = eTcpClientState.Closed;
 
@@ -888,7 +891,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _args.Log.Error(string.Format("[TcpClient]OnClosed exception"), exception);
+                            _args.Log.Error(string.Format("[TcpClient]OnClosed exception, addr:\"{0},{1}\"", lep, rep), exception);
                         }
                     }
                 break;
