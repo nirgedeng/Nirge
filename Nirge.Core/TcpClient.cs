@@ -18,18 +18,6 @@ namespace Nirge.Core
 {
     #region
 
-    public enum eTcpClientError
-    {
-        None,
-        Exception,
-        SocketError,
-        WrongState,
-        ArgumentOutOfRange,
-        PkgSizeOutOfRange,
-        SendQueueFull,
-        RecvQueueFull,
-    }
-
     public struct CTcpClientArgs
     {
         public int SendBufferSize
