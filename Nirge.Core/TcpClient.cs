@@ -342,7 +342,7 @@ namespace Nirge.Core
                         _connectTag.SocketError = SocketError.Success;
                         _connectTag.Result = eConnectResult.Fail;
 
-                        _args.Log.Error("", exception);
+                        _args.Log.Error("[TcpClient]", exception);
                         break;
                     }
                 }
@@ -379,7 +379,7 @@ namespace Nirge.Core
                             _connectTag.SocketError = SocketError.Success;
                             _connectTag.Result = eConnectResult.Fail;
 
-                            _args.Log.Error("", exception);
+                            _args.Log.Error("[TcpClient]", exception);
                             break;
                         }
                     }
@@ -503,7 +503,7 @@ namespace Nirge.Core
                         _closeTag.SocketError = SocketError.Success;
                         _closeTag.Reason = eTcpClientCloseReason.Exception;
 
-                        _args.Log.Error("", exception);
+                        _args.Log.Error("[TcpClient]", exception);
                         break;
                     }
                 }
@@ -539,7 +539,7 @@ namespace Nirge.Core
                             _closeTag.SocketError = e.SocketError;
                             _closeTag.Reason = eTcpClientCloseReason.Exception;
 
-                            _args.Log.Error("");
+                            _args.Log.Error("[TcpClient]");
                             break;
                         }
                     }
@@ -581,7 +581,7 @@ namespace Nirge.Core
                             _closeTag.SocketError = e.SocketError;
                             _closeTag.Reason = eTcpClientCloseReason.Exception;
 
-                            _args.Log.Error("");
+                            _args.Log.Error("[TcpClient]");
                             break;
                         }
                     }
@@ -620,7 +620,7 @@ namespace Nirge.Core
                         _closeTag.SocketError = SocketError.Success;
                         _closeTag.Reason = eTcpClientCloseReason.Exception;
 
-                        _args.Log.Error("", exception);
+                        _args.Log.Error("[TcpClient]", exception);
                         break;
                     }
                 }
@@ -667,7 +667,7 @@ namespace Nirge.Core
                                     _closeTag.SocketError = SocketError.Success;
                                     _closeTag.Reason = eTcpClientCloseReason.User;
 
-                                    _args.Log.Error("");
+                                    _args.Log.Error("[TcpClient]");
                                     break;
                                 }
                             }
@@ -686,7 +686,7 @@ namespace Nirge.Core
                                 _closeTag.SocketError = SocketError.Success;
                                 _closeTag.Reason = eTcpClientCloseReason.Unactive;
 
-                                _args.Log.Info("");
+                                _args.Log.Info("[TcpClient]");
                                 break;
                             }
                         }
@@ -704,7 +704,7 @@ namespace Nirge.Core
                             _closeTag.SocketError = e.SocketError;
                             _closeTag.Reason = eTcpClientCloseReason.Exception;
 
-                            _args.Log.Error("");
+                            _args.Log.Error("[TcpClient]");
                             break;
                         }
                     }
@@ -784,7 +784,7 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _args.Log.Error("", exception);
+                        _args.Log.Error("[TcpClient]", exception);
                     }
                     break;
                 case eConnectResult.Success:
@@ -797,7 +797,7 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _args.Log.Error("", exception);
+                        _args.Log.Error("[TcpClient]", exception);
                     }
 
                     _connectTag.Error = eTcpClientError.None;
@@ -838,7 +838,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _args.Log.Error("", exception);
+                            _args.Log.Error("[TcpClient]", exception);
                         }
                     }
                     break;
@@ -887,7 +887,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _args.Log.Error("", exception);
+                            _args.Log.Error("[TcpClient]", exception);
                         }
                     }
                 break;
