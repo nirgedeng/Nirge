@@ -208,9 +208,7 @@ namespace Nirge.Core
         {
             try
             {
-                using (_cli)
-                {
-                }
+                _cli.Close();
             }
             catch
             {
@@ -346,9 +344,7 @@ namespace Nirge.Core
             {
                 try
                 {
-                    using (_cli)
-                    {
-                    }
+                    _cli.Close();
                 }
                 catch
                 {
@@ -381,9 +377,7 @@ namespace Nirge.Core
                 {
                     try
                     {
-                        using (_cli)
-                        {
-                        }
+                        _cli.Close();
                     }
                     catch
                     {
@@ -424,7 +418,7 @@ namespace Nirge.Core
             }
         }
 
-        public void Close(bool grace = false)
+        public void Close(bool graceful = false)
         {
             switch (_state)
             {
@@ -846,6 +840,13 @@ namespace Nirge.Core
                 case eTcpClientCloseReason.Unactive:
                 case eTcpClientCloseReason.Exception:
                 case eTcpClientCloseReason.User:
+                    try
+                    {
+                        _cli.Close();
+                    }
+                    catch
+                    {
+                    }
                     _state = eTcpClientState.ClosingWait;
                     break;
                 }
@@ -864,6 +865,13 @@ namespace Nirge.Core
                 case eTcpClientCloseReason.Unactive:
                 case eTcpClientCloseReason.Exception:
                 case eTcpClientCloseReason.User:
+                    try
+                    {
+                        _cli.Close();
+                    }
+                    catch
+                    {
+                    }
                     _state = eTcpClientState.ClosingWait;
                     break;
                 }
