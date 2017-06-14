@@ -128,7 +128,6 @@ namespace Nirge.Core
 
         byte[] _pkgLen;
 
-        byte[] _send;
         SocketAsyncEventArgs _sendArgs;
         List<ArraySegment<byte>> _sends;
         bool _sending;
@@ -166,7 +165,6 @@ namespace Nirge.Core
 
             _pkgLen = new byte[2];
 
-            _send = new byte[_args.SendBufferSize];
             _sendArgs = new SocketAsyncEventArgs();
             _sendArgs.Completed += (sender, e) =>
             {
@@ -438,7 +436,7 @@ namespace Nirge.Core
             if (count > ushort.MaxValue)
                 return false;
             var pkgLen = _pkgLen.Length + count;
-            if (pkgLen > _send.Length)
+            if (pkgLen > _args.SendBufferSize)
                 return false;
 
             switch (_state)
