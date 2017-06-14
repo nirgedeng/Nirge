@@ -48,7 +48,7 @@ namespace Nirge.Core
         ClosingWait,
     }
 
-    public enum eConnectResult
+    public enum eTcpClientConnectResult
     {
         None,
         Fail,
@@ -57,7 +57,7 @@ namespace Nirge.Core
 
     public class CTcpClientConnectArgs
     {
-        public eConnectResult Result
+        public eTcpClientConnectResult Result
         {
             get;
             set;
@@ -146,7 +146,7 @@ namespace Nirge.Core
             {
                 Error = eTcpConnError.None,
                 SocketError = SocketError.Success,
-                Result = eConnectResult.None,
+                Result = eTcpClientConnectResult.None,
             };
             _closeTag = new CTcpClientCloseArgs()
             {
@@ -220,7 +220,7 @@ namespace Nirge.Core
 
             _connectTag.Error = eTcpConnError.None;
             _connectTag.SocketError = SocketError.Success;
-            _connectTag.Result = eConnectResult.None;
+            _connectTag.Result = eTcpClientConnectResult.None;
 
             _closeTag.Error = eTcpConnError.None;
             _closeTag.SocketError = SocketError.Success;
@@ -300,7 +300,7 @@ namespace Nirge.Core
                 {
                     Error = eTcpConnError.None,
                     SocketError = SocketError.Success,
-                    Result = eConnectResult.Success,
+                    Result = eTcpClientConnectResult.Success,
                 };
 
                 try
@@ -309,7 +309,7 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _args.Log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint), exception);
+                    _args.Log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\", connectArgs:\"{2},{3},{4}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, e.Result, e.Error, e.SocketError), exception);
                 }
 
                 _recving = true;
@@ -358,10 +358,10 @@ namespace Nirge.Core
                 {
                     switch (_connectTag.Result)
                     {
-                    case eConnectResult.None:
+                    case eTcpClientConnectResult.None:
                         _connectTag.Error = eTcpConnError.Exception;
                         _connectTag.SocketError = SocketError.Success;
-                        _connectTag.Result = eConnectResult.Fail;
+                        _connectTag.Result = eTcpClientConnectResult.Fail;
                         break;
                     }
                 }
@@ -393,10 +393,10 @@ namespace Nirge.Core
                     {
                         switch (_connectTag.Result)
                         {
-                        case eConnectResult.None:
+                        case eTcpClientConnectResult.None:
                             _connectTag.Error = eTcpConnError.Exception;
                             _connectTag.SocketError = SocketError.Success;
-                            _connectTag.Result = eConnectResult.Fail;
+                            _connectTag.Result = eTcpClientConnectResult.Fail;
                             break;
                         }
                     }
@@ -408,10 +408,10 @@ namespace Nirge.Core
                 {
                     switch (_connectTag.Result)
                     {
-                    case eConnectResult.None:
+                    case eTcpClientConnectResult.None:
                         _connectTag.Error = eTcpConnError.None;
                         _connectTag.SocketError = SocketError.Success;
-                        _connectTag.Result = eConnectResult.Success;
+                        _connectTag.Result = eTcpClientConnectResult.Success;
                         break;
                     }
                 }
@@ -765,7 +765,7 @@ namespace Nirge.Core
             case eTcpClientState.Connecting:
                 switch (_connectTag.Result)
                 {
-                case eConnectResult.Fail:
+                case eTcpClientConnectResult.Fail:
                     var e = new CTcpClientConnectArgs()
                     {
                         Error = _connectTag.Error,
@@ -775,7 +775,7 @@ namespace Nirge.Core
 
                     _connectTag.Error = eTcpConnError.None;
                     _connectTag.SocketError = SocketError.Success;
-                    _connectTag.Result = eConnectResult.None;
+                    _connectTag.Result = eTcpClientConnectResult.None;
 
                     _state = eTcpClientState.Closed;
 
@@ -785,10 +785,10 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _args.Log.Error(string.Format("[TcpClient]OnConnected exception"), exception);
+                        _args.Log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0}\", connectArgs:\"{1},{2},{3}\"", "", e.Result, e.Error, e.SocketError), exception);
                     }
                     break;
-                case eConnectResult.Success:
+                case eTcpClientConnectResult.Success:
                     Connect();
                     _state = eTcpClientState.Connected;
 
@@ -798,12 +798,12 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _args.Log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint), exception);
+                        _args.Log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\", connectArgs:\"{2},{3},{4}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, _connectTag.Result, _connectTag.Error, _connectTag.SocketError), exception);
                     }
 
                     _connectTag.Error = eTcpConnError.None;
                     _connectTag.SocketError = SocketError.Success;
-                    _connectTag.Result = eConnectResult.None;
+                    _connectTag.Result = eTcpClientConnectResult.None;
 
                     _recving = true;
                     BeginRecv();
@@ -839,7 +839,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _args.Log.Error(string.Format("[TcpClient]Recved exception, addr:\"{0},{1}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint), exception);
+                            _args.Log.Error(string.Format("[TcpClient]Recved exception, addr:\"{0},{1}\", pkg:\"{2}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, pkg.Length), exception);
                         }
                     }
                     break;
@@ -891,7 +891,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _args.Log.Error(string.Format("[TcpClient]OnClosed exception, addr:\"{0},{1}\"", lep, rep), exception);
+                            _args.Log.Error(string.Format("[TcpClient]OnClosed exception, addr:\"{0},{1}\", closeArgs:\"{2},{3},{4}\"", lep, rep, e.Reason, e.Error, e.SocketError), exception);
                         }
                     }
                 break;
