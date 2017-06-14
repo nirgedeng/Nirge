@@ -23,7 +23,11 @@ namespace Nirge.Core
         None,
         SocketError,
         Exception,
+        WrongState,
+        ArgumentOutOfRange,
         PkgSizeOutOfRange,
+        SendQueueFull,
+        RecvQueueFull,
     }
 
     public struct CTcpClientArgs
@@ -264,27 +268,27 @@ namespace Nirge.Core
             RaiseClosed(CDataEventArgs.Create(args));
         }
 
-        public bool Connect(IPEndPoint addr)
+        public eTcpClientError Connect(IPEndPoint addr)
         {
             switch (_state)
             {
             case eTcpClientState.Closed:
                 _state = eTcpClientState.Connecting;
                 BeginConnect(addr);
-                return true;
+                return eTcpClientError.None;
             case eTcpClientState.Connecting:
             case eTcpClientState.Connected:
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
             default:
-                return false;
+                return eTcpClientError.WrongState;
             }
         }
 
-        public bool Connect(TcpClient cli)
+        public eTcpClientError Connect(TcpClient cli)
         {
             if (cli == null)
-                return false;
+                return eTcpClientError.ArgumentOutOfRange;
 
             switch (_state)
             {
@@ -293,13 +297,13 @@ namespace Nirge.Core
                 _cli = cli;
                 Connect();
                 _state = eTcpClientState.Connected;
-                return true;
+                return eTcpClientError.None;
             case eTcpClientState.Connecting:
             case eTcpClientState.Connected:
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
             default:
-                return false;
+                return eTcpClientError.WrongState;
             }
         }
 
@@ -427,17 +431,17 @@ namespace Nirge.Core
 
         #region
 
-        public bool Send(byte[] buf, int offset, int count)
+        public eTcpClientError Send(byte[] buf, int offset, int count)
         {
             if (buf == null)
-                return false;
+                return eTcpClientError.ArgumentOutOfRange;
             if (count == 0)
-                return false;
+                return eTcpClientError.ArgumentOutOfRange;
             if (count > ushort.MaxValue)
-                return false;
+                return eTcpClientError.PkgSizeOutOfRange;
             var pkgLen = _pkgLen.Length + count;
             if (pkgLen > _args.SendBufferSize)
-                return false;
+                return eTcpClientError.PkgSizeOutOfRange;
 
             switch (_state)
             {
@@ -462,13 +466,13 @@ namespace Nirge.Core
                     _sending = true;
                     BeginSend();
                 }
-                return true;
+                return eTcpClientError.None;
             case eTcpClientState.Closed:
             case eTcpClientState.Connecting:
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
             default:
-                return false;
+                return eTcpClientError.WrongState;
             }
         }
 
