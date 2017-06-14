@@ -196,7 +196,17 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpClientState.Closed:
-                Clear();
+                _pkgLen = null;
+
+                _sendArgs.Dispose();
+                _sends = null;
+
+                _recv = null;
+                _recvArgs.Dispose();
+                _recvBuf = null;
+                _recvsBefore = null;
+                _recvs = null;
+                _recvsAfter = null;
                 break;
             case eTcpClientState.Connecting:
             case eTcpClientState.Connected:
