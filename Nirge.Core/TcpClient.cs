@@ -235,13 +235,11 @@ namespace Nirge.Core
             _closeTag.Reason = eTcpClientCloseReason.None;
 
             _sends.Clear();
-            _sending = false;
 
             _recvBuf.Clear();
             _recvsBefore.Clear();
             _recvs.Clear();
             _recvsAfter.Clear();
-            _recving = false;
         }
 
         #region
