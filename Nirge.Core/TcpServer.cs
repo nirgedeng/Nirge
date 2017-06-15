@@ -5,6 +5,7 @@
 
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,8 @@ using System;
 
 namespace Nirge.Core
 {
+    #region
+
     public struct CTcpServerArgs
     {
         public int SendBufferSize
@@ -40,7 +43,10 @@ namespace Nirge.Core
             get;
             set;
         }
+
     }
+
+    #endregion
 
     public class CTcpServer
     {
@@ -58,6 +64,10 @@ namespace Nirge.Core
             _clisPool = new Queue<CTcpClient>(_args.Capacity);
             _cliid = 0;
             _clis = new Dictionary<int, CTcpClient>(_args.Capacity);
+        }
+
+        void Clear()
+        {
         }
 
         #region
@@ -100,6 +110,18 @@ namespace Nirge.Core
         }
 
         public void Close(int cli)
+        {
+        }
+
+        #endregion
+
+        #region
+
+        void BeginAccept()
+        {
+        }
+
+        void EndAccept(SocketAsyncEventArgs e)
         {
         }
 
