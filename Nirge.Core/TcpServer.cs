@@ -32,6 +32,18 @@ namespace Nirge.Core
             set;
         }
 
+        public int SendQueueSize
+        {
+            get;
+            set;
+        }
+
+        public int RecvQueueSize
+        {
+            get;
+            set;
+        }
+
         public int Capacity
         {
             get;
@@ -87,12 +99,10 @@ namespace Nirge.Core
     {
         None,
         Active,
-        Unactive,
-        User,
         Exception,
     }
 
-    public struct CTcpServerCloseArgs
+    public class CTcpServerCloseArgs
     {
         public eTcpServerCloseReason Reason
         {
@@ -127,7 +137,8 @@ namespace Nirge.Core
 
         Queue<CTcpClient> _clisPool;
         int _cliid;
-        List<TcpClient> _clisBefore;
+        Queue<TcpClient> _clisPre;
+        Queue<TcpClient> _clisPost;
         Dictionary<int, CTcpClient> _clis;
         List<int> _clisAfter;
 
@@ -155,16 +166,24 @@ namespace Nirge.Core
 
             _clisPool = new Queue<CTcpClient>(_args.Capacity);
             _cliid = 0;
-            _clisBefore = new List<TcpClient>(32);
+            _clisPre = new Queue<TcpClient>(32);
+            _clisPost = new Queue<TcpClient>(32);
             _clis = new Dictionary<int, CTcpClient>(_args.Capacity);
             _clisAfter = new List<int>(_args.Capacity);
         }
 
         void Clear()
         {
+            _state = eTcpServerState.Closed;
+
+            _closeTag.Error = eTcpConnError.None;
+            _closeTag.SocketError = SocketError.Success;
+            _closeTag.Reason = eTcpServerCloseReason.None;
+
             _clisPool.Clear();
             _cliid = 0;
-            _clisBefore.Clear();
+            _clisPre.Clear();
+            _clisPost.Clear();
             _clis.Clear();
             _clisAfter.Clear();
         }
@@ -186,7 +205,7 @@ namespace Nirge.Core
         }
 
         public event EventHandler<CDataEventArgs<int>> CliConnected;
-        void RaiseConnected(CDataEventArgs<int> e)
+        void RaiseCliConnected(CDataEventArgs<int> e)
         {
             var h = CliConnected;
             if (h != null)
@@ -194,13 +213,13 @@ namespace Nirge.Core
                 h(this, e);
             }
         }
-        void OnConnected(int cli)
+        void OnCliConnected(int cli)
         {
-            RaiseConnected(CDataEventArgs.Create(cli));
+            RaiseCliConnected(CDataEventArgs.Create(cli));
         }
 
         public event EventHandler<CDataEventArgs<int, CTcpClientCloseArgs>> CliClosed;
-        void RaiseClosed(CDataEventArgs<int, CTcpClientCloseArgs> e)
+        void RaiseCliClosed(CDataEventArgs<int, CTcpClientCloseArgs> e)
         {
             var h = CliClosed;
             if (h != null)
@@ -208,9 +227,9 @@ namespace Nirge.Core
                 h(this, e);
             }
         }
-        void OnClosed(int cli, CTcpClientCloseArgs args)
+        void OnCliClosed(int cli, CTcpClientCloseArgs args)
         {
-            RaiseClosed(CDataEventArgs.Create(cli, args));
+            RaiseCliClosed(CDataEventArgs.Create(cli, args));
         }
 
         public CTcpServerOpenArgs Open(IPEndPoint addr)
@@ -277,9 +296,11 @@ namespace Nirge.Core
         {
             switch (_state)
             {
+            case eTcpServerState.Opened:
+                _state = eTcpServerState.Closing;
+                break;
             case eTcpServerState.Closed:
             case eTcpServerState.Opening:
-            case eTcpServerState.Opened:
             case eTcpServerState.Closing:
             case eTcpServerState.ClosingWait:
                 break;
@@ -316,85 +337,102 @@ namespace Nirge.Core
 
         void BeginLis()
         {
+            var safe = false;
+
             try
             {
                 _lis.BeginAcceptTcpClient((e) =>
                 {
                     EndLis(e);
                 }, this);
+
+                safe = true;
             }
             catch (SocketException exception)
             {
-                _closeTag.Error = eTcpConnError.SocketError;
-                _closeTag.SocketError = exception.SocketErrorCode;
-                _closeTag.Reason = eTcpServerCloseReason.Exception;
+                lock (_closeTag)
+                {
+                    switch (_closeTag.Reason)
+                    {
+                    case eTcpServerCloseReason.None:
+                        _closeTag.Error = eTcpConnError.SocketError;
+                        _closeTag.SocketError = exception.SocketErrorCode;
+                        _closeTag.Reason = eTcpServerCloseReason.Exception;
+                        break;
+                    }
+                }
             }
             catch
             {
-                _closeTag.Error = eTcpConnError.Exception;
-                _closeTag.SocketError = SocketError.Success;
-                _closeTag.Reason = eTcpServerCloseReason.Exception;
+                lock (_closeTag)
+                {
+                    switch (_closeTag.Reason)
+                    {
+                    case eTcpServerCloseReason.None:
+                        _closeTag.Error = eTcpConnError.Exception;
+                        _closeTag.SocketError = SocketError.Success;
+                        _closeTag.Reason = eTcpServerCloseReason.Exception;
+                        break;
+                    }
+                }
             }
 
-            switch (_closeTag.Reason)
-            {
-            case eTcpServerCloseReason.None:
-                break;
-            default:
+            if (!safe)
                 _lising = false;
-                break;
-            }
         }
 
         void EndLis(IAsyncResult e)
         {
+            var safe = false;
             TcpClient cli = null;
 
             try
             {
                 cli = _lis.EndAcceptTcpClient(e);
+                safe = true;
             }
             catch (SocketException exception)
             {
-                _closeTag.Error = eTcpConnError.SocketError;
-                _closeTag.SocketError = exception.SocketErrorCode;
-                _closeTag.Reason = eTcpServerCloseReason.Exception;
+                lock (_closeTag)
+                {
+                    switch (_closeTag.Reason)
+                    {
+                    case eTcpServerCloseReason.None:
+                        _closeTag.Error = eTcpConnError.SocketError;
+                        _closeTag.SocketError = exception.SocketErrorCode;
+                        _closeTag.Reason = eTcpServerCloseReason.Exception;
+                        break;
+                    }
+                }
             }
             catch
             {
-                _closeTag.Error = eTcpConnError.Exception;
-                _closeTag.SocketError = SocketError.Success;
-                _closeTag.Reason = eTcpServerCloseReason.Exception;
+                lock (_closeTag)
+                {
+                    switch (_closeTag.Reason)
+                    {
+                    case eTcpServerCloseReason.None:
+                        _closeTag.Error = eTcpConnError.Exception;
+                        _closeTag.SocketError = SocketError.Success;
+                        _closeTag.Reason = eTcpServerCloseReason.Exception;
+                        break;
+                    }
+                }
             }
 
-            switch (_closeTag.Reason)
+            if (safe)
             {
-            case eTcpServerCloseReason.None:
                 switch (_state)
                 {
                 case eTcpServerState.Opened:
-                    lock (_clisBefore)
+                    lock (_clis)
                     {
-                        _clisBefore.Add(cli);
+                        _clisPre.Enqueue(cli);
                     }
 
                     BeginLis();
                     break;
                 case eTcpServerState.Closing:
-                    try
-                    {
-                        cli.Close();
-                    }
-                    catch
-                    {
-                    }
-
-                    _closeTag.Error = eTcpConnError.None;
-                    _closeTag.SocketError = SocketError.Success;
-                    _closeTag.Reason = eTcpServerCloseReason.Active;
-
-                    _lising = false;
-                    break;
                 case eTcpServerState.Closed:
                 case eTcpServerState.Opening:
                 case eTcpServerState.ClosingWait:
@@ -409,11 +447,46 @@ namespace Nirge.Core
                     _lising = false;
                     break;
                 }
-                break;
-            default:
-                _lising = false;
-                break;
             }
+            else
+            {
+                try
+                {
+                    cli.Close();
+                }
+                catch
+                {
+                }
+
+                _lising = false;
+            }
+        }
+
+        void Accept(int cliid, CTcpClient cli)
+        {
+            cli.Closed += (sender, e) =>
+            {
+                _clis.Remove(cliid);
+
+                try
+                {
+                    OnCliClosed(cliid, e.Arg1);
+                }
+                catch (Exception exception)
+                {
+                }
+            };
+
+            cli.Recved += (buf, offset, count) =>
+            {
+                try
+                {
+                    CliRecved(cliid, buf, offset, count);
+                }
+                catch (Exception exception)
+                {
+                }
+            };
         }
 
         #endregion
@@ -429,7 +502,7 @@ namespace Nirge.Core
 
         #region
 
-        public event Action<int, byte[], int, int> Recved;
+        public event Action<int, byte[], int, int> CliRecved;
 
         #endregion
 
@@ -443,16 +516,85 @@ namespace Nirge.Core
             case eTcpServerState.Opening:
                 break;
             case eTcpServerState.Opened:
+                if (_clisPre.Count > 0)
+                {
+                    lock (_clisPre)
+                    {
+                        while (_clisPre.Count > 0)
+                            _clisPost.Enqueue(_clisPre.Dequeue());
+                    }
+                }
+
+                while (_clisPost.Count > 0)
+                {
+                    CTcpClient cli;
+                    if (_clisPool.Count > 0)
+                        cli = _clisPool.Dequeue();
+                    else
+                        cli = new CTcpClient(new CTcpClientArgs() { SendBufferSize = _args.SendBufferSize, ReceiveBufferSize = _args.ReceiveBufferSize, SendQueueSize = _args.SendQueueSize, RecvQueueSize = _args.RecvQueueSize, Log = _args.Log, });
+
+                    var cliid = ++_cliid;
+                    _clis.Add(cliid, cli);
+                    cli.Connect(_clisPost.Dequeue());
+                    Accept(cliid, cli);
+
+                    try
+                    {
+                        OnCliConnected(cliid);
+                    }
+                    catch (Exception exception)
+                    {
+                    }
+                }
+
+                _clisAfter.AddRange(_clis.Keys);
+                foreach (var i in _clisAfter)
+                {
+                    CTcpClient cli;
+                    if (_clis.TryGetValue(i, out cli))
+                        cli.Exec();
+                }
+                _clisAfter.Clear();
                 break;
             case eTcpServerState.Closing:
+                lock (_closeTag)
+                {
+                    switch (_closeTag.Reason)
+                    {
+                    case eTcpServerCloseReason.None:
+                        _closeTag.Error = eTcpConnError.None;
+                        _closeTag.SocketError = SocketError.Success;
+                        _closeTag.Reason = eTcpServerCloseReason.Active;
+                        break;
+                    }
+                }
+
                 eClose();
                 _state = eTcpServerState.ClosingWait;
                 break;
             case eTcpServerState.ClosingWait:
                 if (!_lising)
                 {
+                    var e = new CTcpServerCloseArgs()
+                    {
+                        Error = _closeTag.Error,
+                        SocketError = _closeTag.SocketError,
+                        Reason = _closeTag.Reason,
+                    };
+
+                    var ep = _lis.LocalEndpoint;
+
                     Clear();
                     _state = eTcpServerState.Closed;
+
+                    try
+                    {
+                        OnClosed(e);
+                    }
+                    catch (Exception exception)
+                    {
+                        _args.Log.Error(string.Format("[TcpServer]OnClosed exception, addr:\"{0}\", closeArgs:\"{1},{2},{3}\"", ep, e.Reason, e.Error, e.SocketError), exception);
+                    }
                 }
                 break;
             }
