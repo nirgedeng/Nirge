@@ -90,15 +90,15 @@ namespace Nirge.Core
         CTcpServerArgs _args;
 
         TcpListener _lis;
+        bool _lising;
 
         eTcpServerState _state;
-        SocketAsyncEventArgs _lisArgs;
-        bool _lising;
 
         Queue<CTcpClient> _clisPool;
         int _cliid;
+        List<TcpClient> _clisBefore;
         Dictionary<int, CTcpClient> _clis;
-
+        List<int> _clisAfter;
 
         public CTcpServer(CTcpServerArgs args)
         {
@@ -106,23 +106,22 @@ namespace Nirge.Core
 
             _state = eTcpServerState.Closed;
 
-            _lisArgs = new SocketAsyncEventArgs();
-            _lisArgs.Completed += (sender, e) =>
-            {
-                EndLis(_lisArgs);
-            };
             _lising = false;
 
             _clisPool = new Queue<CTcpClient>(_args.Capacity);
             _cliid = 0;
+            _clisBefore = new List<TcpClient>(32);
             _clis = new Dictionary<int, CTcpClient>(_args.Capacity);
+            _clisAfter = new List<int>(_args.Capacity);
         }
 
         void Clear()
         {
             _clisPool.Clear();
             _cliid = 0;
+            _clisBefore.Clear();
             _clis.Clear();
+            _clisAfter.Clear();
         }
 
         #region
@@ -162,11 +161,11 @@ namespace Nirge.Core
             case eTcpServerState.Closed:
                 _state = eTcpServerState.Opening;
 
-                var openArgs = new CTcpServerOpenArgs()
+                var e = new CTcpServerOpenArgs()
                 {
-                    Result = eTcpServerOpenResult.Success,
                     Error = eTcpConnError.None,
                     SocketError = SocketError.Success,
+                    Result = eTcpServerOpenResult.Success,
                 };
 
                 _lis = new TcpListener(addr);
@@ -176,18 +175,18 @@ namespace Nirge.Core
                 }
                 catch (SocketException exception)
                 {
-                    openArgs.Result = eTcpServerOpenResult.Fail;
-                    openArgs.Error = eTcpConnError.SocketError;
-                    openArgs.SocketError = exception.SocketErrorCode;
+                    e.Error = eTcpConnError.SocketError;
+                    e.SocketError = exception.SocketErrorCode;
+                    e.Result = eTcpServerOpenResult.Fail;
                 }
                 catch
                 {
-                    openArgs.Result = eTcpServerOpenResult.Fail;
-                    openArgs.Error = eTcpConnError.Exception;
-                    openArgs.SocketError = SocketError.Success;
+                    e.Error = eTcpConnError.Exception;
+                    e.SocketError = SocketError.Success;
+                    e.Result = eTcpServerOpenResult.Fail;
                 }
 
-                switch (openArgs.Result)
+                switch (e.Result)
                 {
                 case eTcpServerOpenResult.Fail:
                     eClose();
@@ -199,7 +198,7 @@ namespace Nirge.Core
                     BeginLis();
                     break;
                 }
-                return openArgs;
+                return e;
             case eTcpServerState.Opening:
             case eTcpServerState.Opened:
             case eTcpServerState.Closing:
@@ -207,9 +206,9 @@ namespace Nirge.Core
             default:
                 return new CTcpServerOpenArgs()
                 {
-                    Result = eTcpServerOpenResult.Fail,
                     Error = eTcpConnError.WrongState,
                     SocketError = SocketError.Success,
+                    Result = eTcpServerOpenResult.Fail,
                 };
             }
         }
@@ -246,16 +245,45 @@ namespace Nirge.Core
 
         #region
 
-        void Lis()
-        {
-        }
-
         void BeginLis()
         {
+            try
+            {
+                _lis.BeginAcceptTcpClient((e) =>
+                {
+                    EndLis(e);
+                }, this);
+            }
+            catch (SocketException exception)
+            {
+            }
+            catch
+            {
+            }
         }
 
-        void EndLis(SocketAsyncEventArgs e)
+        void EndLis(IAsyncResult e)
         {
+            TcpClient cli;
+            try
+            {
+                cli = _lis.EndAcceptTcpClient(e);
+            }
+            catch
+            {
+            }
+
+            switch (_state)
+            {
+            case eTcpServerState.Opened:
+                break;
+            case eTcpServerState.Closed:
+            case eTcpServerState.Opening:
+            case eTcpServerState.Closing:
+            case eTcpServerState.ClosingWait:
+                _lising = false;
+                break;
+            }
         }
 
         #endregion
