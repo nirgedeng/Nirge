@@ -132,6 +132,14 @@ namespace Nirge.Core
         Queue<byte[]> _recvsAfter;
         bool _recving;
 
+        public eTcpClientState State
+        {
+            get
+            {
+                return _state;
+            }
+        }
+
         public CTcpClient(CTcpClientArgs args)
         {
             Init(args);

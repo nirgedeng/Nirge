@@ -25,6 +25,7 @@ namespace Nirge.Core
         PkgSizeOutOfRange,
         SendQueueFull,
         RecvQueueFull,
+        CliOutOfRange,
 
         SocketError,
     }
