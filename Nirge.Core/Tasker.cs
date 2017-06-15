@@ -14,10 +14,31 @@ using System;
 
 namespace Nirge.Core
 {
+    public struct CTaskerArgs
+    {
+        public int Procs
+        {
+            get;
+            set;
+        }
+
+        public int TaskQueueSize
+        {
+            get;
+            set;
+        }
+
+        public ILog Log
+        {
+            get;
+            set;
+        }
+    }
+
     public class CTasker
     {
+        CTaskerArgs _args;
         List<Thread> _procs;
-        ILog _log;
         Queue<ITask> _tasks;
         int _tasksCount;
         Queue<ITask> _tasksAfter;
@@ -32,29 +53,30 @@ namespace Nirge.Core
             }
         }
 
-        CTasker(int procs, ILog log)
+        CTasker(CTaskerArgs args)
         {
-            _procs = new List<Thread>(procs);
-            for (var i = 0; i < procs; ++i)
+            _args = args;
+
+            _procs = new List<Thread>(_args.Procs);
+
+            for (int i = 0, len = _procs.Count; i < len; ++i)
             {
-                var proc = new Thread(Callback, 8388608);
+                var proc = new Thread(Exec, 67108864);
                 proc.IsBackground = true;
 
                 _procs.Add(proc);
             }
 
-            _log = log;
-
-            _tasks = new Queue<ITask>(32);
+            _tasks = new Queue<ITask>(_args.TaskQueueSize);
             _tasksCount = 0;
-            _tasksAfter = new Queue<ITask>(32);
+            _tasksAfter = new Queue<ITask>(_args.TaskQueueSize);
             _tasksAfterCount = 0;
 
             _quit = false;
         }
         public CTasker(ILog log)
             :
-            this(1, log)
+            this(new CTaskerArgs() { Procs = 1, TaskQueueSize = 1024, Log = log, })
         {
         }
 
@@ -122,7 +144,7 @@ namespace Nirge.Core
                 Monitor.Pulse(_tasks);
             }
         }
-        void Callback()
+        void Exec()
         {
             lock (_tasks)
             {
@@ -152,7 +174,7 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[Task]Exec exception, type:\"{0}\"", task.GetType()), exception);
+                                _args.Log.Error(string.Format("[Task]Exec exception, type:\"{0}\"", task.GetType()), exception);
                             }
                         }
                         while (--_tasksAfterCount > 0);

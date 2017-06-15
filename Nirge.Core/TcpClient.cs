@@ -32,6 +32,18 @@ namespace Nirge.Core
             set;
         }
 
+        public int SendQueueSize
+        {
+            get;
+            set;
+        }
+
+        public int RecvQueueSize
+        {
+            get;
+            set;
+        }
+
         public ILog Log
         {
             get;
@@ -170,7 +182,7 @@ namespace Nirge.Core
             {
                 EndSend(_sendArgs);
             };
-            _sends = new List<ArraySegment<byte>>(32);
+            _sends = new List<ArraySegment<byte>>(_args.SendQueueSize);
             _sending = false;
 
             _recv = new byte[_args.ReceiveBufferSize];
@@ -182,8 +194,8 @@ namespace Nirge.Core
             };
             _recvBuf = new CRingBuf(_args.SendBufferSize + _args.ReceiveBufferSize);
             _recvsBefore = new Queue<byte[]>(32);
-            _recvs = new Queue<byte[]>(32);
-            _recvsAfter = new Queue<byte[]>(32);
+            _recvs = new Queue<byte[]>(_args.RecvQueueSize);
+            _recvsAfter = new Queue<byte[]>(_args.RecvQueueSize);
             _recving = false;
         }
 
