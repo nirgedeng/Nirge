@@ -348,10 +348,22 @@ namespace Nirge.Core
                     EndConnect(e);
                 }, this);
             }
+            catch (SocketException exception)
+            {
+                lock (_connectTag)
+                {
+                    switch (_connectTag.Result)
+                    {
+                    case eTcpClientConnectResult.None:
+                        _connectTag.Error = eTcpConnError.SocketError;
+                        _connectTag.SocketError = exception.SocketErrorCode;
+                        _connectTag.Result = eTcpClientConnectResult.Fail;
+                        break;
+                    }
+                }
+            }
             catch
             {
-                eClose();
-
                 lock (_connectTag)
                 {
                     switch (_connectTag.Result)
@@ -374,11 +386,35 @@ namespace Nirge.Core
                 try
                 {
                     _cli.EndConnect(e);
+
+                    lock (_connectTag)
+                    {
+                        switch (_connectTag.Result)
+                        {
+                        case eTcpClientConnectResult.None:
+                            _connectTag.Error = eTcpConnError.None;
+                            _connectTag.SocketError = SocketError.Success;
+                            _connectTag.Result = eTcpClientConnectResult.Success;
+                            break;
+                        }
+                    }
+                }
+                catch (SocketException exception)
+                {
+                    lock (_connectTag)
+                    {
+                        switch (_connectTag.Result)
+                        {
+                        case eTcpClientConnectResult.None:
+                            _connectTag.Error = eTcpConnError.SocketError;
+                            _connectTag.SocketError = exception.SocketErrorCode;
+                            _connectTag.Result = eTcpClientConnectResult.Fail;
+                            break;
+                        }
+                    }
                 }
                 catch
                 {
-                    eClose();
-
                     lock (_connectTag)
                     {
                         switch (_connectTag.Result)
@@ -389,20 +425,6 @@ namespace Nirge.Core
                             _connectTag.Result = eTcpClientConnectResult.Fail;
                             break;
                         }
-                    }
-
-                    return;
-                }
-
-                lock (_connectTag)
-                {
-                    switch (_connectTag.Result)
-                    {
-                    case eTcpClientConnectResult.None:
-                        _connectTag.Error = eTcpConnError.None;
-                        _connectTag.SocketError = SocketError.Success;
-                        _connectTag.Result = eTcpClientConnectResult.Success;
-                        break;
                     }
                 }
                 break;
@@ -493,23 +515,40 @@ namespace Nirge.Core
 
         void Send()
         {
+            _sendArgs.SetBuffer(null, 0, 0);
+
             lock (_sends)
             {
                 _sendArgs.BufferList = _sends;
                 _sends.Clear();
             }
 
-            _sendArgs.SetBuffer(null, 0, 0);
-
             BeginSend();
         }
 
         void BeginSend()
         {
+            var safe = false;
+
             try
             {
                 if (_cli.Client.SendAsync(_sendArgs))
                     return;
+                safe = true;
+            }
+            catch (SocketException exception)
+            {
+                lock (_closeTag)
+                {
+                    switch (_closeTag.Reason)
+                    {
+                    case eTcpClientCloseReason.None:
+                        _closeTag.Error = eTcpConnError.SocketError;
+                        _closeTag.SocketError = exception.SocketErrorCode;
+                        _closeTag.Reason = eTcpClientCloseReason.Exception;
+                        break;
+                    }
+                }
             }
             catch
             {
@@ -524,13 +563,12 @@ namespace Nirge.Core
                         break;
                     }
                 }
-
-                _sending = false;
-
-                return;
             }
 
-            EndSend(_sendArgs);
+            if (safe)
+                EndSend(_sendArgs);
+            else
+                _sending = false;
         }
 
         void EndSend(SocketAsyncEventArgs e)
@@ -619,10 +657,27 @@ namespace Nirge.Core
 
         void BeginRecv()
         {
+            var safe = false;
+
             try
             {
                 if (_cli.Client.ReceiveAsync(_recvArgs))
                     return;
+                safe = true;
+            }
+            catch (SocketException exception)
+            {
+                lock (_closeTag)
+                {
+                    switch (_closeTag.Reason)
+                    {
+                    case eTcpClientCloseReason.None:
+                        _closeTag.Error = eTcpConnError.SocketError;
+                        _closeTag.SocketError = exception.SocketErrorCode;
+                        _closeTag.Reason = eTcpClientCloseReason.Exception;
+                        break;
+                    }
+                }
             }
             catch
             {
@@ -637,13 +692,12 @@ namespace Nirge.Core
                         break;
                     }
                 }
-
-                _recving = false;
-
-                return;
             }
 
-            EndRecv(_recvArgs);
+            if (safe)
+                EndRecv(_recvArgs);
+            else
+                _recving = false;
         }
 
         void EndRecv(SocketAsyncEventArgs e)
@@ -768,6 +822,8 @@ namespace Nirge.Core
                 switch (_connectTag.Result)
                 {
                 case eTcpClientConnectResult.Fail:
+                    eClose();
+
                     var e = new CTcpClientConnectArgs()
                     {
                         Error = _connectTag.Error,
