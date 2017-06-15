@@ -83,16 +83,47 @@ namespace Nirge.Core
         }
     }
 
+    public enum eTcpServerCloseReason
+    {
+        None,
+        Active,
+        Unactive,
+        User,
+        Exception,
+    }
+
+    public struct CTcpServerCloseArgs
+    {
+        public eTcpServerCloseReason Reason
+        {
+            get;
+            set;
+        }
+
+        public eTcpConnError Error
+        {
+            get;
+            set;
+        }
+
+        public SocketError SocketError
+        {
+            get;
+            set;
+        }
+    }
+
     #endregion
 
     public class CTcpServer
     {
         CTcpServerArgs _args;
 
+        eTcpServerState _state;
+        CTcpServerCloseArgs _closeTag;
+
         TcpListener _lis;
         bool _lising;
-
-        eTcpServerState _state;
 
         Queue<CTcpClient> _clisPool;
         int _cliid;
@@ -100,11 +131,25 @@ namespace Nirge.Core
         Dictionary<int, CTcpClient> _clis;
         List<int> _clisAfter;
 
+        public eTcpServerState State
+        {
+            get
+            {
+                return _state;
+            }
+        }
+
         public CTcpServer(CTcpServerArgs args)
         {
             _args = args;
 
             _state = eTcpServerState.Closed;
+            _closeTag = new CTcpServerCloseArgs()
+            {
+                Error = eTcpConnError.None,
+                SocketError = SocketError.Success,
+                Reason = eTcpServerCloseReason.None,
+            };
 
             _lising = false;
 
@@ -126,10 +171,24 @@ namespace Nirge.Core
 
         #region
 
-        public event EventHandler<CDataEventArgs<int>> Connected;
+        public event EventHandler<CDataEventArgs<CTcpServerCloseArgs>> Closed;
+        void RaiseClosed(CDataEventArgs<CTcpServerCloseArgs> e)
+        {
+            var h = Closed;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+        void OnClosed(CTcpServerCloseArgs args)
+        {
+            RaiseClosed(CDataEventArgs.Create(args));
+        }
+
+        public event EventHandler<CDataEventArgs<int>> CliConnected;
         void RaiseConnected(CDataEventArgs<int> e)
         {
-            var h = Connected;
+            var h = CliConnected;
             if (h != null)
             {
                 h(this, e);
@@ -140,10 +199,10 @@ namespace Nirge.Core
             RaiseConnected(CDataEventArgs.Create(cli));
         }
 
-        public event EventHandler<CDataEventArgs<int, CTcpClientCloseArgs>> Closed;
+        public event EventHandler<CDataEventArgs<int, CTcpClientCloseArgs>> CliClosed;
         void RaiseClosed(CDataEventArgs<int, CTcpClientCloseArgs> e)
         {
-            var h = Closed;
+            var h = CliClosed;
             if (h != null)
             {
                 h(this, e);
@@ -198,6 +257,7 @@ namespace Nirge.Core
                     BeginLis();
                     break;
                 }
+
                 return e;
             case eTcpServerState.Opening:
             case eTcpServerState.Opened:
@@ -239,6 +299,15 @@ namespace Nirge.Core
 
         public void Close(int cli)
         {
+            switch (_state)
+            {
+            case eTcpServerState.Closed:
+            case eTcpServerState.Opening:
+            case eTcpServerState.Opened:
+            case eTcpServerState.Closing:
+            case eTcpServerState.ClosingWait:
+                break;
+            }
         }
 
         #endregion
@@ -256,31 +325,92 @@ namespace Nirge.Core
             }
             catch (SocketException exception)
             {
+                _closeTag.Error = eTcpConnError.SocketError;
+                _closeTag.SocketError = exception.SocketErrorCode;
+                _closeTag.Reason = eTcpServerCloseReason.Exception;
             }
             catch
             {
+                _closeTag.Error = eTcpConnError.Exception;
+                _closeTag.SocketError = SocketError.Success;
+                _closeTag.Reason = eTcpServerCloseReason.Exception;
+            }
+
+            switch (_closeTag.Reason)
+            {
+            case eTcpServerCloseReason.None:
+                break;
+            default:
+                _lising = false;
+                break;
             }
         }
 
         void EndLis(IAsyncResult e)
         {
-            TcpClient cli;
+            TcpClient cli = null;
+
             try
             {
                 cli = _lis.EndAcceptTcpClient(e);
             }
+            catch (SocketException exception)
+            {
+                _closeTag.Error = eTcpConnError.SocketError;
+                _closeTag.SocketError = exception.SocketErrorCode;
+                _closeTag.Reason = eTcpServerCloseReason.Exception;
+            }
             catch
             {
+                _closeTag.Error = eTcpConnError.Exception;
+                _closeTag.SocketError = SocketError.Success;
+                _closeTag.Reason = eTcpServerCloseReason.Exception;
             }
 
-            switch (_state)
+            switch (_closeTag.Reason)
             {
-            case eTcpServerState.Opened:
+            case eTcpServerCloseReason.None:
+                switch (_state)
+                {
+                case eTcpServerState.Opened:
+                    lock (_clisBefore)
+                    {
+                        _clisBefore.Add(cli);
+                    }
+
+                    BeginLis();
+                    break;
+                case eTcpServerState.Closing:
+                    try
+                    {
+                        cli.Close();
+                    }
+                    catch
+                    {
+                    }
+
+                    _closeTag.Error = eTcpConnError.None;
+                    _closeTag.SocketError = SocketError.Success;
+                    _closeTag.Reason = eTcpServerCloseReason.Active;
+
+                    _lising = false;
+                    break;
+                case eTcpServerState.Closed:
+                case eTcpServerState.Opening:
+                case eTcpServerState.ClosingWait:
+                    try
+                    {
+                        cli.Close();
+                    }
+                    catch
+                    {
+                    }
+
+                    _lising = false;
+                    break;
+                }
                 break;
-            case eTcpServerState.Closed:
-            case eTcpServerState.Opening:
-            case eTcpServerState.Closing:
-            case eTcpServerState.ClosingWait:
+            default:
                 _lising = false;
                 break;
             }
@@ -307,6 +437,25 @@ namespace Nirge.Core
 
         public void Exec()
         {
+            switch (_state)
+            {
+            case eTcpServerState.Closed:
+            case eTcpServerState.Opening:
+                break;
+            case eTcpServerState.Opened:
+                break;
+            case eTcpServerState.Closing:
+                eClose();
+                _state = eTcpServerState.ClosingWait;
+                break;
+            case eTcpServerState.ClosingWait:
+                if (!_lising)
+                {
+                    Clear();
+                    _state = eTcpServerState.Closed;
+                }
+                break;
+            }
         }
 
         #endregion
