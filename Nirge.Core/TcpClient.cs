@@ -206,16 +206,6 @@ namespace Nirge.Core
 
         void Clear()
         {
-            try
-            {
-                _cli.Close();
-            }
-            catch
-            {
-            }
-
-            _state = eTcpClientState.Closed;
-
             _connectTag.Error = eTcpConnError.None;
             _connectTag.SocketError = SocketError.Success;
             _connectTag.Result = eTcpClientConnectResult.None;
@@ -342,13 +332,7 @@ namespace Nirge.Core
             }
             catch
             {
-                try
-                {
-                    _cli.Close();
-                }
-                catch
-                {
-                }
+                eClose();
 
                 lock (_connectTag)
                 {
@@ -375,13 +359,7 @@ namespace Nirge.Core
                 }
                 catch
                 {
-                    try
-                    {
-                        _cli.Close();
-                    }
-                    catch
-                    {
-                    }
+                    eClose();
 
                     lock (_connectTag)
                     {
@@ -423,6 +401,7 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpClientState.Connecting:
+                eClose();
                 break;
             case eTcpClientState.Connected:
                 _state = eTcpClientState.Closing;
@@ -431,6 +410,17 @@ namespace Nirge.Core
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
                 break;
+            }
+        }
+
+        void eClose()
+        {
+            try
+            {
+                _cli.Close();
+            }
+            catch
+            {
             }
         }
 
@@ -840,13 +830,7 @@ namespace Nirge.Core
                 case eTcpClientCloseReason.Unactive:
                 case eTcpClientCloseReason.Exception:
                 case eTcpClientCloseReason.User:
-                    try
-                    {
-                        _cli.Close();
-                    }
-                    catch
-                    {
-                    }
+                    eClose();
                     _state = eTcpClientState.ClosingWait;
                     break;
                 }
@@ -865,13 +849,7 @@ namespace Nirge.Core
                 case eTcpClientCloseReason.Unactive:
                 case eTcpClientCloseReason.Exception:
                 case eTcpClientCloseReason.User:
-                    try
-                    {
-                        _cli.Close();
-                    }
-                    catch
-                    {
-                    }
+                    eClose();
                     _state = eTcpClientState.ClosingWait;
                     break;
                 }
