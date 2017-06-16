@@ -348,7 +348,7 @@ namespace Nirge.Core
             case eTcpServerState.Opened:
                 CTcpClient e;
                 if (_clis.TryGetValue(cli, out e))
-                    e.Close();
+                    e.Close(graceful: true);
                 break;
             case eTcpServerState.Closed:
             case eTcpServerState.Opening:
