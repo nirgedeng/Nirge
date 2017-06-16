@@ -20,13 +20,16 @@ namespace ser
             InitializeComponent();
         }
 
-        CTcpServer ser;
+        CTcpServer _ser;
+        Cli1 _cli1;
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            ser = new CTcpServer(new CTcpServerArgs()
+            _cli1 = new Cli1(1);
+
+            _ser = new CTcpServer(new CTcpServerArgs()
             {
                 SendBufferSize = 8192,
                 ReceiveBufferSize = 8192,
@@ -36,39 +39,47 @@ namespace ser
                 Log = null,
             });
 
-            ser.Closed += Ser_Closed;
-            ser.CliConnected += Ser_CliConnected;
-            ser.CliClosed += Ser_CliClosed;
-            ser.CliRecved += Ser_CliRecved;
+            _ser.Closed += Ser_Closed;
+            _ser.CliConnected += Ser_CliConnected;
+            _ser.CliClosed += Ser_CliClosed;
+            _ser.CliRecved += Ser_CliRecved;
 
-
-            ser.Open(new IPEndPoint(IPAddress.Any, 9527));
+            _ser.Open(new IPEndPoint(IPAddress.Any, 9527));
 
             timerExec.Tick += TimerExec_Tick;
         }
 
         private void TimerExec_Tick(object sender, EventArgs e)
         {
-            ser.Exec();
+            for (int i = 0; i < 8; ++i)
+                _ser.Exec();
         }
 
         private void Ser_Closed(object sender, CDataEventArgs<CTcpServerCloseArgs> e)
         {
         }
 
-        private void Ser_CliRecved(int arg1, byte[] arg2, int arg3, int arg4)
+        private void Ser_CliRecved(int cli, byte[] arg2, int arg3, int arg4)
         {
-            Console.WriteLine("cli:{0}, pkg:{1},{2}", arg1, arg4, arg2[0]);
+            if (cli == _cli1._cli)
+                _cli1.OnRecved(arg2, arg3, arg4);
         }
 
         private void Ser_CliClosed(object sender, CDataEventArgs<int, CTcpClientCloseArgs> e)
         {
+            var cli = e.Arg1;
+
+            if (cli == _cli1._cli)
+                _cli1.OnClosed(e.Arg2);
+
         }
 
         private void Ser_CliConnected(object sender, CDataEventArgs<int> e)
         {
+            var cli = e.Arg1;
+
+            if (cli == _cli1._cli)
+                _cli1.OnConnected();
         }
-
-
     }
 }
