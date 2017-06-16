@@ -605,14 +605,18 @@ namespace Nirge.Core
                         cli.Connect(_clisPost.Dequeue());
                     }
 
-                    _clisAfter.AddRange(_clis.Keys);
-                    foreach (var i in _clisAfter)
+                    if (_clis.Count > 0)
                     {
-                        CTcpClient cli;
-                        if (_clis.TryGetValue(i, out cli))
-                            cli.Exec();
+                        _clisAfter.AddRange(_clis.Keys);
+                        foreach (var i in _clisAfter)
+                        {
+                            CTcpClient cli;
+                            if (_clis.TryGetValue(i, out cli))
+                                cli.Exec();
+                        }
+                        _clisAfter.Clear();
                     }
-                    _clisAfter.Clear();
+
                     break;
                 case eTcpServerCloseReason.Active:
                 case eTcpServerCloseReason.Exception:

@@ -133,7 +133,8 @@ namespace Nirge.Core
         byte[] _pkgLen;
 
         SocketAsyncEventArgs _sendArgs;
-        List<ArraySegment<byte>> _sends;
+        Queue<ArraySegment<byte>> _sends;
+        List<ArraySegment<byte>> _sendsAfter;
         bool _sending;
 
         byte[] _recv;
@@ -182,7 +183,8 @@ namespace Nirge.Core
             {
                 EndSend(_sendArgs);
             };
-            _sends = new List<ArraySegment<byte>>(_args.SendQueueSize);
+            _sends = new Queue<ArraySegment<byte>>(_args.SendQueueSize);
+            _sendsAfter = new List<ArraySegment<byte>>(_args.SendQueueSize);
             _sending = false;
 
             _recv = new byte[_args.ReceiveBufferSize];
@@ -208,6 +210,7 @@ namespace Nirge.Core
 
                 _sendArgs.Dispose();
                 _sends = null;
+                _sendsAfter = null;
 
                 _recv = null;
                 _recvArgs.Dispose();
@@ -237,6 +240,7 @@ namespace Nirge.Core
             _closeTag.Reason = eTcpClientCloseReason.None;
 
             _sends.Clear();
+            _sendsAfter.Clear();
 
             _recvBuf.Clear();
             _recvsBefore.Clear();
@@ -504,7 +508,7 @@ namespace Nirge.Core
                 {
                     lock (_sends)
                     {
-                        _sends.Add(new ArraySegment<byte>(pkg, 0, pkg.Length));
+                        _sends.Enqueue(new ArraySegment<byte>(pkg, 0, pkg.Length));
                     }
                 }
                 else
@@ -527,16 +531,22 @@ namespace Nirge.Core
 
         void Send()
         {
-            _sendArgs.SetBuffer(null, 0, 0);
-
             lock (_sends)
             {
-                _sendArgs.BufferList = _sends;
-                _sends.Clear();
+                while (_sends.Count > 0)
+                {
+                    _sendsAfter.Add(_sends.Dequeue());
+                }
             }
 
-            if (_sendArgs.BufferList.Count > 0)
+            if (_sendsAfter.Count > 0)
+            {
+                _sendArgs.SetBuffer(null, 0, 0);
+                _sendArgs.BufferList = _sendsAfter;
+                _sendsAfter.Clear();
+
                 BeginSend();
+            }
             else
                 _sending = false;
         }
