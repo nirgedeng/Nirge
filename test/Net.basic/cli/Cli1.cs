@@ -21,7 +21,7 @@ namespace cli
 
             for (int i = 1; i <= 200; ++i)
             {
-                var pkg = new byte[i];
+                var pkg = new byte[i + 1000];
                 pkg[0] = (byte)i;
                 _pkgs.Add(pkg);
             }

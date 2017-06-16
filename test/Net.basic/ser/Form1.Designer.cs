@@ -35,7 +35,7 @@
             // timerExec
             // 
             this.timerExec.Enabled = true;
-            this.timerExec.Interval = 10;
+            this.timerExec.Interval = 8;
             // 
             // Form1
             // 
