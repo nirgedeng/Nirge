@@ -310,6 +310,17 @@ namespace Nirge.Core
             {
             case eTcpServerState.Opened:
                 _state = eTcpServerState.Closing;
+                lock (_closeTag)
+                {
+                    switch (_closeTag.Reason)
+                    {
+                    case eTcpServerCloseReason.None:
+                        _closeTag.Error = eTcpConnError.None;
+                        _closeTag.SocketError = SocketError.Success;
+                        _closeTag.Reason = eTcpServerCloseReason.Active;
+                        break;
+                    }
+                }
                 break;
             case eTcpServerState.Closed:
             case eTcpServerState.Opening:
@@ -606,6 +617,8 @@ namespace Nirge.Core
                 case eTcpServerCloseReason.Active:
                 case eTcpServerCloseReason.Exception:
                     eClose();
+                    foreach (var i in _clis.Values)
+                        i.Close();
                     _state = eTcpServerState.ClosingWait;
                     break;
                 }
@@ -614,24 +627,11 @@ namespace Nirge.Core
                 switch (_closeTag.Reason)
                 {
                 case eTcpServerCloseReason.None:
-                    lock (_closeTag)
-                    {
-                        switch (_closeTag.Reason)
-                        {
-                        case eTcpServerCloseReason.None:
-                            _closeTag.Error = eTcpConnError.None;
-                            _closeTag.SocketError = SocketError.Success;
-                            _closeTag.Reason = eTcpServerCloseReason.Active;
-                            break;
-                        }
-                    }
-
-                    eClose();
-                    _state = eTcpServerState.ClosingWait;
-                    break;
                 case eTcpServerCloseReason.Active:
                 case eTcpServerCloseReason.Exception:
                     eClose();
+                    foreach (var i in _clis.Values)
+                        i.Close();
                     _state = eTcpServerState.ClosingWait;
                     break;
                 }
