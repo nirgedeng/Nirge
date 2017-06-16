@@ -19,6 +19,7 @@ namespace Nirge.Core
         None,
 
         Exception,
+        SocketError,
 
         WrongState,
         ArgumentNullRange,
@@ -27,7 +28,5 @@ namespace Nirge.Core
         SendQueueFull,
         RecvQueueFull,
         CliOutOfRange,
-
-        SocketError,
     }
 }
