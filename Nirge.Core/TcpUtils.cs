@@ -14,13 +14,14 @@ using System;
 
 namespace Nirge.Core
 {
-    public enum eTcpConnError
+    public enum eTcpError
     {
         None,
 
         Exception,
 
         WrongState,
+        ArgumentNullRange,
         ArgumentOutOfRange,
         PkgSizeOutOfRange,
         SendQueueFull,
