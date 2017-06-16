@@ -446,6 +446,16 @@ namespace Nirge.Core
                 eClose();
                 break;
             case eTcpClientState.Connected:
+                if (!graceful)
+                {
+                    if (_sends.Count > 0)
+                    {
+                        lock (_sends)
+                        {
+                            _sends.Clear();
+                        }
+                    }
+                }
                 _state = eTcpClientState.Closing;
                 break;
             case eTcpClientState.Closed:
@@ -525,7 +535,10 @@ namespace Nirge.Core
                 _sends.Clear();
             }
 
-            BeginSend();
+            if (_sendArgs.BufferList.Count > 0)
+                BeginSend();
+            else
+                _sending = false;
         }
 
         void BeginSend()
@@ -920,9 +933,6 @@ namespace Nirge.Core
                             Reason = _closeTag.Reason,
                         };
 
-                        var lep = _cli.Client.LocalEndPoint;
-                        var rep = _cli.Client.RemoteEndPoint;
-
                         Clear();
                         _state = eTcpClientState.Closed;
 
@@ -932,7 +942,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _args.Log.Error(string.Format("[TcpClient]OnClosed exception, addr:\"{0},{1}\", closeArgs:\"{2},{3},{4}\"", lep, rep, e.Reason, e.Error, e.SocketError), exception);
+                            _args.Log.Error(string.Format("[TcpClient]OnClosed exception, addr:\"{0},{1}\", closeArgs:\"{2},{3},{4}\"", "", "", e.Reason, e.Error, e.SocketError), exception);
                         }
                     }
                 break;
