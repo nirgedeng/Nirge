@@ -534,7 +534,7 @@ namespace Nirge.Core
                 case eTcpServerCloseReason.None:
                     if (_clisPre.Count > 0)
                     {
-                        lock (_clisPre)
+                        lock (_clis)
                         {
                             while (_clisPre.Count > 0)
                                 _clisPost.Enqueue(_clisPre.Dequeue());
