@@ -82,8 +82,8 @@ namespace Nirge.Core
 
         public void Init()
         {
-            foreach (var proc in _procs)
-                proc.Start();
+            foreach (var i in _procs)
+                i.Start();
         }
 
         public void Destroy()
@@ -99,8 +99,8 @@ namespace Nirge.Core
                 Monitor.Pulse(_tasks);
             }
 
-            foreach (var proc in _procs)
-                proc.Join();
+            foreach (var i in _procs)
+                i.Join();
 
             _procs.Clear();
         }
@@ -124,9 +124,9 @@ namespace Nirge.Core
                 if (_quit)
                     return;
 
-                foreach (var task in tasks)
+                foreach (var i in tasks)
                 {
-                    _tasks.Enqueue(task);
+                    _tasks.Enqueue(i);
                     ++_tasksCount;
                 }
                 Monitor.Pulse(_tasks);
