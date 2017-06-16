@@ -125,7 +125,7 @@ namespace Nirge.Core
 
     #endregion
 
-    public class CTcpServer
+    public class CTcpServer : IObjCtor<CTcpServerArgs>, IObjDtor
     {
         CTcpServerArgs _args;
 
@@ -152,6 +152,11 @@ namespace Nirge.Core
 
         public CTcpServer(CTcpServerArgs args)
         {
+            Init(args);
+        }
+
+        public void Init(CTcpServerArgs args)
+        {
             _args = args;
 
             _state = eTcpServerState.Closed;
@@ -170,6 +175,25 @@ namespace Nirge.Core
             _clisPost = new Queue<TcpClient>(32);
             _clis = new Dictionary<int, CTcpClient>(_args.Capacity);
             _clisAfter = new List<int>(_args.Capacity);
+        }
+
+        public void Destroy()
+        {
+            switch (_state)
+            {
+            case eTcpServerState.Closed:
+                _clisPool = null;
+                _clisPre = null;
+                _clisPost = null;
+                _clis = null;
+                _clisAfter = null;
+                break;
+            case eTcpServerState.Opening:
+            case eTcpServerState.Opened:
+            case eTcpServerState.Closing:
+            case eTcpServerState.ClosingWait:
+                break;
+            }
         }
 
         void Clear()
