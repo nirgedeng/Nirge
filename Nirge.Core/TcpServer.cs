@@ -334,9 +334,13 @@ namespace Nirge.Core
         {
             switch (_state)
             {
+            case eTcpServerState.Opened:
+                CTcpClient e;
+                if (_clis.TryGetValue(cli, out e))
+                    e.Close();
+                break;
             case eTcpServerState.Closed:
             case eTcpServerState.Opening:
-            case eTcpServerState.Opened:
             case eTcpServerState.Closing:
             case eTcpServerState.ClosingWait:
                 break;
@@ -480,7 +484,20 @@ namespace Nirge.Core
 
         public eTcpConnError Send(int cli, byte[] buf, int offset, int count)
         {
-            return eTcpConnError.None;
+            switch (_state)
+            {
+            case eTcpServerState.Opened:
+                CTcpClient e;
+                if (!_clis.TryGetValue(cli, out e))
+                    return eTcpConnError.CliOutOfRange;
+                return e.Send(buf, offset, count);
+            case eTcpServerState.Closed:
+            case eTcpServerState.Opening:
+            case eTcpServerState.Closing:
+            case eTcpServerState.ClosingWait:
+            default:
+                return eTcpConnError.WrongState;
+            }
         }
 
         #endregion
@@ -524,9 +541,30 @@ namespace Nirge.Core
                         var cliid = ++_cliid;
                         _clis.Add(cliid, cli);
 
-                        cli.Closed += (sender, e) =>
+                        EventHandler<CDataEventArgs<CTcpClientConnectArgs>> eCliConnected = null;
+                        EventHandler<CDataEventArgs<CTcpClientCloseArgs>> eCliClosed = null;
+                        Action<byte[], int, int> eCliRecved = null;
+
+                        eCliConnected = (sender, e) =>
+                        {
+                            try
+                            {
+                                OnCliConnected(cliid);
+                            }
+                            catch (Exception exception)
+                            {
+                                _args.Log.Error(string.Format("[TcpServer]OnCliConnected exception, cli:\"{0}\", connectArgs:\"{1},{2},{3}\"", cliid, e.Arg1.Error, e.Arg1.Error, e.Arg1.SocketError), exception);
+                            }
+                        };
+                        eCliClosed = (sender, e) =>
                         {
                             _clis.Remove(cliid);
+
+                            cli.Connected -= eCliConnected;
+                            cli.Closed -= eCliClosed;
+                            cli.Recved -= eCliRecved;
+
+                            _clisPool.Enqueue(cli);
 
                             try
                             {
@@ -534,9 +572,10 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
+                                _args.Log.Error(string.Format("[TcpServer]OnCliClosed exception, cli:\"{0}\", closeArgs:\"{1},{2},{3}\"", cliid, e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError), exception);
                             }
                         };
-                        cli.Recved += (buf, offset, count) =>
+                        eCliRecved = (buf, offset, count) =>
                         {
                             try
                             {
@@ -544,17 +583,15 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
+                                _args.Log.Error(string.Format("[TcpServer]CliRecved exception, cli:\"{0}\", pkg:\"{1}\"", cliid, count), exception);
                             }
                         };
 
+                        cli.Connected += eCliConnected;
+                        cli.Closed += eCliClosed;
+                        cli.Recved += eCliRecved;
+
                         cli.Connect(_clisPost.Dequeue());
-                        try
-                        {
-                            OnCliConnected(cliid);
-                        }
-                        catch (Exception exception)
-                        {
-                        }
                     }
 
                     _clisAfter.AddRange(_clis.Keys);
@@ -602,25 +639,26 @@ namespace Nirge.Core
             case eTcpServerState.ClosingWait:
                 if (!_lising)
                 {
-                    var e = new CTcpServerCloseArgs()
+                    if (_clis.Count == 0)
                     {
-                        Error = _closeTag.Error,
-                        SocketError = _closeTag.SocketError,
-                        Reason = _closeTag.Reason,
-                    };
+                        var e = new CTcpServerCloseArgs()
+                        {
+                            Error = _closeTag.Error,
+                            SocketError = _closeTag.SocketError,
+                            Reason = _closeTag.Reason,
+                        };
 
-                    var ep = _lis.LocalEndpoint;
+                        Clear();
+                        _state = eTcpServerState.Closed;
 
-                    Clear();
-                    _state = eTcpServerState.Closed;
-
-                    try
-                    {
-                        OnClosed(e);
-                    }
-                    catch (Exception exception)
-                    {
-                        _args.Log.Error(string.Format("[TcpServer]OnClosed exception, addr:\"{0}\", closeArgs:\"{1},{2},{3}\"", ep, e.Reason, e.Error, e.SocketError), exception);
+                        try
+                        {
+                            OnClosed(e);
+                        }
+                        catch (Exception exception)
+                        {
+                            _args.Log.Error(string.Format("[TcpServer]OnClosed exception, addr:\"{0}\", closeArgs:\"{1},{2},{3}\"", "", e.Reason, e.Error, e.SocketError), exception);
+                        }
                     }
                 }
                 break;
