@@ -91,7 +91,7 @@
       <Name>Nirge.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\proto\proto.csproj">
-      <Project>{1d1856bd-358b-4acf-8aed-75cf250d57ca}</Project>
+      <Project>{83e7e446-1e7f-42a0-8e34-5a17308880f9}</Project>
       <Name>proto</Name>
     </ProjectReference>
   </ItemGroup>
