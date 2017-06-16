@@ -450,6 +450,7 @@ namespace Nirge.Core
                 eClose();
                 break;
             case eTcpClientState.Connected:
+                _state = eTcpClientState.Closing;
                 if (!graceful)
                 {
                     if (_sends.Count > 0)
@@ -460,7 +461,6 @@ namespace Nirge.Core
                         }
                     }
                 }
-                _state = eTcpClientState.Closing;
                 break;
             case eTcpClientState.Closed:
             case eTcpClientState.Closing:
