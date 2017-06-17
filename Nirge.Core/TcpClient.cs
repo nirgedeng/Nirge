@@ -159,6 +159,12 @@ namespace Nirge.Core
             Init(args, log);
         }
 
+        public CTcpClient(ILog log)
+            :
+            this(new CTcpClientArgs(), log)
+        {
+        }
+
         public void Init(CTcpClientArgs args, ILog log)
         {
             _args = args;
@@ -173,8 +179,8 @@ namespace Nirge.Core
                 _args.ReceiveBufferSize = 16384;
             if (_args.PkgSize < 8192)
                 _args.PkgSize = 8192;
-            if (_args.PkgSize > 16384)
-                _args.PkgSize = 16384;
+            if (_args.PkgSize > 1048576)
+                _args.PkgSize = 1048576;
             _args.SendQueueSize = 1024;
             _args.RecvQueueSize = 1024;
 

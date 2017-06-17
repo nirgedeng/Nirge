@@ -29,14 +29,7 @@ namespace ser
 
             _cli1 = new Cli1(1);
 
-            _ser = new CTcpServer(new CTcpServerArgs()
-            {
-                SendBufferSize = 8192,
-                ReceiveBufferSize = 8192,
-                SendQueueSize = 1024,
-                RecvQueueSize = 1024,
-                Capacity = 1024,
-            }, null);
+            _ser = new CTcpServer(null);
 
             _ser.Closed += Ser_Closed;
             _ser.CliConnected += Ser_CliConnected;

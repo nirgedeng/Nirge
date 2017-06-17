@@ -29,13 +29,7 @@ namespace cli
 
         public void Connect(IPEndPoint addr)
         {
-            _cli = new CTcpClient(new CTcpClientArgs()
-            {
-                SendBufferSize = 8192,
-                ReceiveBufferSize = 8192,
-                SendQueueSize = 1024,
-                RecvQueueSize = 1024,
-            }, null);
+            _cli = new CTcpClient(null);
 
             _cli.Connected += OnConnected;
             _cli.Closed += OnClosed;
