@@ -639,7 +639,7 @@ namespace Nirge.Core
 
         #region
 
-        public event Action<byte[], int, int> Recved;
+        public event Action<object, byte[], int, int> Recved;
 
         void BeginRecv()
         {
@@ -879,7 +879,7 @@ namespace Nirge.Core
 
                         try
                         {
-                            Recved(pkg, 0, pkg.Length);
+                            Recved(this, pkg, 0, pkg.Length);
                         }
                         catch (Exception exception)
                         {

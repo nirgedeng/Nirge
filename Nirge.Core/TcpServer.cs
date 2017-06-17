@@ -542,7 +542,7 @@ namespace Nirge.Core
 
         #region
 
-        public event Action<int, byte[], int, int> CliRecved;
+        public event Action<object, int, byte[], int, int> CliRecved;
 
         #endregion
 
@@ -579,11 +579,11 @@ namespace Nirge.Core
                         var cliid = ++_cliid;
                         _clis.Add(cliid, cli);
 
-                        EventHandler<CDataEventArgs<CTcpClientConnectArgs>> eCliConnected = null;
-                        EventHandler<CDataEventArgs<CTcpClientCloseArgs>> eCliClosed = null;
-                        Action<byte[], int, int> eCliRecved = null;
+                        EventHandler<CDataEventArgs<CTcpClientConnectArgs>> cbCliConnected = null;
+                        EventHandler<CDataEventArgs<CTcpClientCloseArgs>> cbCliClosed = null;
+                        Action<object, byte[], int, int> cbCliRecved = null;
 
-                        eCliConnected = (sender, e) =>
+                        cbCliConnected = (sender, e) =>
                         {
                             try
                             {
@@ -594,13 +594,13 @@ namespace Nirge.Core
                                 _args.Log.Error(string.Format("[TcpServer]OnCliConnected exception, cli:\"{0}\", connectArgs:\"{1},{2},{3}\"", cliid, e.Arg1.Error, e.Arg1.Error, e.Arg1.SocketError), exception);
                             }
                         };
-                        eCliClosed = (sender, e) =>
+                        cbCliClosed = (sender, e) =>
                         {
                             _clis.Remove(cliid);
 
-                            cli.Connected -= eCliConnected;
-                            cli.Closed -= eCliClosed;
-                            cli.Recved -= eCliRecved;
+                            cli.Connected -= cbCliConnected;
+                            cli.Closed -= cbCliClosed;
+                            cli.Recved -= cbCliRecved;
 
                             _clisPool.Enqueue(cli);
 
@@ -613,11 +613,11 @@ namespace Nirge.Core
                                 _args.Log.Error(string.Format("[TcpServer]OnCliClosed exception, cli:\"{0}\", closeArgs:\"{1},{2},{3}\"", cliid, e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError), exception);
                             }
                         };
-                        eCliRecved = (buf, offset, count) =>
+                        cbCliRecved = (sender, buf, offset, count) =>
                         {
                             try
                             {
-                                CliRecved(cliid, buf, offset, count);
+                                CliRecved(this, cliid, buf, offset, count);
                             }
                             catch (Exception exception)
                             {
@@ -625,9 +625,9 @@ namespace Nirge.Core
                             }
                         };
 
-                        cli.Connected += eCliConnected;
-                        cli.Closed += eCliClosed;
-                        cli.Recved += eCliRecved;
+                        cli.Connected += cbCliConnected;
+                        cli.Closed += cbCliClosed;
+                        cli.Recved += cbCliRecved;
 
                         cli.Connect(_clisPost.Dequeue());
                     }

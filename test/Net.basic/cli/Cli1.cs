@@ -55,7 +55,7 @@ namespace cli
             Console.WriteLine("OnClosed {0}:{1}:{2}", e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError);
         }
 
-        void OnRecvd(byte[] arg1, int arg2, int arg3)
+        void OnRecvd(object sender, byte[] arg1, int arg2, int arg3)
         {
         }
 
