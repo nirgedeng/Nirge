@@ -613,7 +613,8 @@ namespace Nirge.Core
                         {
                             try
                             {
-                                CliRecved(this, cliid, buf, offset, count);
+                                if (CliRecved != null)
+                                    CliRecved(this, cliid, buf, offset, count);
                             }
                             catch (Exception exception)
                             {

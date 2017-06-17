@@ -876,7 +876,8 @@ namespace Nirge.Core
 
                         try
                         {
-                            Recved(this, pkg, 0, pkg.Length);
+                            if (Recved != null)
+                                Recved(this, pkg, 0, pkg.Length);
                         }
                         catch (Exception exception)
                         {
