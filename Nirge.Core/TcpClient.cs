@@ -32,6 +32,12 @@ namespace Nirge.Core
             set;
         }
 
+        public int PkgSize
+        {
+            get;
+            set;
+        }
+
         public int SendQueueSize
         {
             get;
@@ -156,6 +162,21 @@ namespace Nirge.Core
         public void Init(CTcpClientArgs args, ILog log)
         {
             _args = args;
+
+            if (_args.SendBufferSize < 8192)
+                _args.SendBufferSize = 8192;
+            if (_args.SendBufferSize > 16384)
+                _args.SendBufferSize = 16384;
+            if (_args.ReceiveBufferSize < 8192)
+                _args.ReceiveBufferSize = 8192;
+            if (_args.ReceiveBufferSize > 16384)
+                _args.ReceiveBufferSize = 16384;
+            if (_args.PkgSize < 8192)
+                _args.PkgSize = 8192;
+            if (_args.PkgSize > 16384)
+                _args.PkgSize = 16384;
+            _args.SendQueueSize = 1024;
+            _args.RecvQueueSize = 1024;
 
             _log = log;
 
