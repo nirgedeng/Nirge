@@ -53,7 +53,7 @@ namespace ser
 
         private void Ser_CliRecved(object sender, int cli, byte[] arg2, int arg3, int arg4)
         {
-            if (cli == _cli1._cli)
+            //if (cli == _cli1._cli)
                 _cli1.OnRecved(arg2, arg3, arg4);
         }
 
@@ -61,7 +61,7 @@ namespace ser
         {
             var cli = e.Arg1;
 
-            if (cli == _cli1._cli)
+            //if (cli == _cli1._cli)
                 _cli1.OnClosed(e.Arg2);
 
         }
@@ -70,7 +70,7 @@ namespace ser
         {
             var cli = e.Arg1;
 
-            if (cli == _cli1._cli)
+            //if (cli == _cli1._cli)
                 _cli1.OnConnected();
         }
     }
