@@ -30,7 +30,7 @@ namespace ser
 
         public void OnRecved(byte[] buf, int offset, int count)
         {
-            Console.WriteLine("OnRecved, {0},{1},{2}", _cli, count, buf[0]);
+            //Console.WriteLine("OnRecved, {0},{1},{2}", _cli, count, buf[0]);
         }
     }
 }
