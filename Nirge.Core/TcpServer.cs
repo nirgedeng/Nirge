@@ -217,10 +217,10 @@ namespace Nirge.Core
                 }
             }
 
-            foreach (var i in _clis.Values)
+            foreach (var i in _clisPool)
                 i.Destroy();
-
             _clisPool.Clear();
+
             _cliid = 0;
             _clisPost.Clear();
             _clis.Clear();
