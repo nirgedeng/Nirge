@@ -36,8 +36,7 @@ namespace ser
                 SendQueueSize = 1024,
                 RecvQueueSize = 1024,
                 Capacity = 1024,
-                Log = null,
-            });
+            }, null);
 
             _ser.Closed += Ser_Closed;
             _ser.CliConnected += Ser_CliConnected;

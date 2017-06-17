@@ -35,8 +35,7 @@ namespace cli
                 ReceiveBufferSize = 8192,
                 SendQueueSize = 1024,
                 RecvQueueSize = 1024,
-                Log = null,
-            });
+            }, null);
 
             _cli.Connected += OnConnected;
             _cli.Closed += OnClosed;

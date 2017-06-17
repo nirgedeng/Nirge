@@ -49,13 +49,6 @@ namespace Nirge.Core
             get;
             set;
         }
-
-        public ILog Log
-        {
-            get;
-            set;
-        }
-
     }
 
     public enum eTcpServerState
@@ -125,9 +118,10 @@ namespace Nirge.Core
 
     #endregion
 
-    public class CTcpServer : IObjCtor<CTcpServerArgs>, IObjDtor
+    public class CTcpServer : IObjCtor<CTcpServerArgs, ILog>, IObjDtor
     {
         CTcpServerArgs _args;
+        ILog _log;
 
         eTcpServerState _state;
         CTcpServerCloseArgs _closeTag;
@@ -150,14 +144,16 @@ namespace Nirge.Core
             }
         }
 
-        public CTcpServer(CTcpServerArgs args)
+        public CTcpServer(CTcpServerArgs args, ILog log)
         {
-            Init(args);
+            Init(args, log);
         }
 
-        public void Init(CTcpServerArgs args)
+        public void Init(CTcpServerArgs args, ILog log)
         {
             _args = args;
+
+            _log = log;
 
             _state = eTcpServerState.Closed;
             _closeTag = new CTcpServerCloseArgs()
@@ -574,7 +570,7 @@ namespace Nirge.Core
                         if (_clisPool.Count > 0)
                             cli = _clisPool.Dequeue();
                         else
-                            cli = new CTcpClient(new CTcpClientArgs() { SendBufferSize = _args.SendBufferSize, ReceiveBufferSize = _args.ReceiveBufferSize, SendQueueSize = _args.SendQueueSize, RecvQueueSize = _args.RecvQueueSize, Log = _args.Log, });
+                            cli = new CTcpClient(new CTcpClientArgs() { SendBufferSize = _args.SendBufferSize, ReceiveBufferSize = _args.ReceiveBufferSize, SendQueueSize = _args.SendQueueSize, RecvQueueSize = _args.RecvQueueSize, }, _log);
 
                         var cliid = ++_cliid;
                         _clis.Add(cliid, cli);
@@ -591,7 +587,7 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _args.Log.Error(string.Format("[TcpServer]OnCliConnected exception, cli:\"{0}\", connectArgs:\"{1},{2},{3}\"", cliid, e.Arg1.Error, e.Arg1.Error, e.Arg1.SocketError), exception);
+                                _log.Error(string.Format("[TcpServer]OnCliConnected exception, cli:\"{0}\", connectArgs:\"{1},{2},{3}\"", cliid, e.Arg1.Error, e.Arg1.Error, e.Arg1.SocketError), exception);
                             }
                         };
                         cbCliClosed = (sender, e) =>
@@ -610,7 +606,7 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _args.Log.Error(string.Format("[TcpServer]OnCliClosed exception, cli:\"{0}\", closeArgs:\"{1},{2},{3}\"", cliid, e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError), exception);
+                                _log.Error(string.Format("[TcpServer]OnCliClosed exception, cli:\"{0}\", closeArgs:\"{1},{2},{3}\"", cliid, e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError), exception);
                             }
                         };
                         cbCliRecved = (sender, buf, offset, count) =>
@@ -621,7 +617,7 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _args.Log.Error(string.Format("[TcpServer]CliRecved exception, cli:\"{0}\", pkg:\"{1}\"", cliid, count), exception);
+                                _log.Error(string.Format("[TcpServer]CliRecved exception, cli:\"{0}\", pkg:\"{1}\"", cliid, count), exception);
                             }
                         };
 
@@ -688,7 +684,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _args.Log.Error(string.Format("[TcpServer]OnClosed exception, addr:\"{0}\", closeArgs:\"{1},{2},{3}\"", "", e.Reason, e.Error, e.SocketError), exception);
+                            _log.Error(string.Format("[TcpServer]OnClosed exception, addr:\"{0}\", closeArgs:\"{1},{2},{3}\"", "", e.Reason, e.Error, e.SocketError), exception);
                         }
                     }
                 }

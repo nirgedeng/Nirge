@@ -43,12 +43,6 @@ namespace Nirge.Core
             get;
             set;
         }
-
-        public ILog Log
-        {
-            get;
-            set;
-        }
     }
 
     public enum eTcpClientState
@@ -120,9 +114,10 @@ namespace Nirge.Core
 
     #endregion
 
-    public class CTcpClient : IObjCtor<CTcpClientArgs>, IObjDtor
+    public class CTcpClient : IObjCtor<CTcpClientArgs, ILog>, IObjDtor
     {
         CTcpClientArgs _args;
+        ILog _log;
 
         TcpClient _cli;
 
@@ -153,14 +148,16 @@ namespace Nirge.Core
             }
         }
 
-        public CTcpClient(CTcpClientArgs args)
+        public CTcpClient(CTcpClientArgs args, ILog log)
         {
-            Init(args);
+            Init(args, log);
         }
 
-        public void Init(CTcpClientArgs args)
+        public void Init(CTcpClientArgs args, ILog log)
         {
             _args = args;
+
+            _log = log;
 
             _state = eTcpClientState.Closed;
             _connectTag = new CTcpClientConnectArgs()
@@ -321,7 +318,7 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _args.Log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\", connectArgs:\"{2},{3},{4}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, e.Result, e.Error, e.SocketError), exception);
+                    _log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\", connectArgs:\"{2},{3},{4}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, e.Result, e.Error, e.SocketError), exception);
                 }
 
                 _recving = true;
@@ -829,7 +826,7 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _args.Log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0}\", connectArgs:\"{1},{2},{3}\"", "", e.Result, e.Error, e.SocketError), exception);
+                        _log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0}\", connectArgs:\"{1},{2},{3}\"", "", e.Result, e.Error, e.SocketError), exception);
                     }
                     break;
                 case eTcpClientConnectResult.Success:
@@ -842,7 +839,7 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _args.Log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\", connectArgs:\"{2},{3},{4}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, _connectTag.Result, _connectTag.Error, _connectTag.SocketError), exception);
+                        _log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\", connectArgs:\"{2},{3},{4}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, _connectTag.Result, _connectTag.Error, _connectTag.SocketError), exception);
                     }
 
                     _connectTag.Error = eTcpError.None;
@@ -883,7 +880,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _args.Log.Error(string.Format("[TcpClient]Recved exception, addr:\"{0},{1}\", pkg:\"{2}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, pkg.Length), exception);
+                            _log.Error(string.Format("[TcpClient]Recved exception, addr:\"{0},{1}\", pkg:\"{2}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, pkg.Length), exception);
                         }
                     }
                     break;
@@ -952,7 +949,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _args.Log.Error(string.Format("[TcpClient]OnClosed exception, addr:\"{0},{1}\", closeArgs:\"{2},{3},{4}\"", "", "", e.Reason, e.Error, e.SocketError), exception);
+                            _log.Error(string.Format("[TcpClient]OnClosed exception, addr:\"{0},{1}\", closeArgs:\"{2},{3},{4}\"", "", "", e.Reason, e.Error, e.SocketError), exception);
                         }
                     }
                 break;
