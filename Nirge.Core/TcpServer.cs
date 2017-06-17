@@ -646,7 +646,7 @@ namespace Nirge.Core
                 case eTcpServerCloseReason.Exception:
                     eClose();
                     foreach (var i in _clis.Values)
-                        i.Close();
+                        i.Close(graceful: false);
                     _state = eTcpServerState.ClosingWait;
                     break;
                 }
@@ -656,10 +656,15 @@ namespace Nirge.Core
                 {
                 case eTcpServerCloseReason.None:
                 case eTcpServerCloseReason.Active:
+                    eClose();
+                    foreach (var i in _clis.Values)
+                        i.Close(graceful: true);
+                    _state = eTcpServerState.ClosingWait;
+                    break;
                 case eTcpServerCloseReason.Exception:
                     eClose();
                     foreach (var i in _clis.Values)
-                        i.Close();
+                        i.Close(graceful: false);
                     _state = eTcpServerState.ClosingWait;
                     break;
                 }

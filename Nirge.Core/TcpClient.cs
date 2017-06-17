@@ -439,7 +439,7 @@ namespace Nirge.Core
             }
         }
 
-        public void Close(bool graceful = false)
+        public void Close(bool graceful = true)
         {
             switch (_state)
             {
