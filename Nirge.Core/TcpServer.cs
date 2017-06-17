@@ -598,7 +598,7 @@ namespace Nirge.Core
                         if (_clisPool.Count > 0)
                             cli = _clisPool.Dequeue();
                         else
-                            cli = new CTcpClient(new CTcpClientArgs() { SendBufferSize = _args.SendBufferSize, ReceiveBufferSize = _args.ReceiveBufferSize, SendQueueSize = _args.SendQueueSize, RecvQueueSize = _args.RecvQueueSize, }, _log);
+                            cli = new CTcpClient(new CTcpClientArgs() { SendBufferSize = _args.SendBufferSize, ReceiveBufferSize = _args.ReceiveBufferSize, PkgSize = _args.PkgSize, SendQueueSize = _args.SendQueueSize, RecvQueueSize = _args.RecvQueueSize, }, _log);
 
                         var cliid = ++_cliid;
                         _clis.Add(cliid, cli);

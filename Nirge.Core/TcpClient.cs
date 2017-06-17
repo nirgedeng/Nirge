@@ -200,7 +200,7 @@ namespace Nirge.Core
                 Reason = eTcpClientCloseReason.None,
             };
 
-            _pkgLen = new byte[2];
+            _pkgLen = new byte[4];
 
             _sendArgs = new SocketAsyncEventArgs();
             _sendArgs.Completed += (sender, e) =>
@@ -218,7 +218,7 @@ namespace Nirge.Core
             {
                 EndRecv(_recvArgs);
             };
-            _recvBuf = new CRingBuf(_args.SendBufferSize + _args.ReceiveBufferSize);
+            _recvBuf = new CRingBuf(_args.PkgSize + _args.ReceiveBufferSize);
             _recvsBefore = new Queue<byte[]>(32);
             _recvs = new Queue<byte[]>(_args.RecvQueueSize);
             _recvsAfter = new Queue<byte[]>(_args.RecvQueueSize);
@@ -514,10 +514,8 @@ namespace Nirge.Core
                 return eTcpError.ArgumentNullRange;
             if (count == 0)
                 return eTcpError.ArgumentOutOfRange;
-            if (count > ushort.MaxValue)
-                return eTcpError.PkgSizeOutOfRange;
             var pkgLen = _pkgLen.Length + count;
-            if (pkgLen > _args.SendBufferSize)
+            if (pkgLen > _args.PkgSize)
                 return eTcpError.PkgSizeOutOfRange;
 
             switch (_state)
@@ -801,9 +799,9 @@ namespace Nirge.Core
             for (; _recvBuf.UsedCapacity > _pkgLen.Length;)
             {
                 _recvBuf.Peek(_pkgLen, 0, _pkgLen.Length);
-                var pkgLen = BitConverter.ToUInt16(_pkgLen, 0);
+                var pkgLen = BitConverter.ToInt32(_pkgLen, 0);
 
-                if (pkgLen > _args.SendBufferSize)
+                if (pkgLen > _args.PkgSize)
                     return false;
                 if (_recvBuf.UsedCapacity < (_pkgLen.Length + pkgLen))
                     break;
