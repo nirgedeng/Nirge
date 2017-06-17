@@ -27,17 +27,12 @@ namespace Nirge.Core
             get;
             set;
         }
-
-        public ILog Log
-        {
-            get;
-            set;
-        }
     }
 
     public class CTasker
     {
         CTaskerArgs _args;
+        ILog _log;
         List<Thread> _procs;
         Queue<ITask> _tasks;
         int _tasksCount;
@@ -53,12 +48,19 @@ namespace Nirge.Core
             }
         }
 
-        CTasker(CTaskerArgs args)
+        CTasker(CTaskerArgs args, ILog log)
         {
             _args = args;
 
-            _procs = new List<Thread>(_args.Procs);
+            if (_args.Procs < 1)
+                _args.Procs = 1;
+            if (_args.Procs > Environment.ProcessorCount)
+                _args.Procs = Environment.ProcessorCount;
+            _args.TaskQueueSize = 1024;
 
+            _log = log;
+
+            _procs = new List<Thread>(_args.Procs);
             for (int i = 0, len = _procs.Count; i < len; ++i)
             {
                 var proc = new Thread(Exec, 67108864);
@@ -76,7 +78,7 @@ namespace Nirge.Core
         }
         public CTasker(ILog log)
             :
-            this(new CTaskerArgs() { Procs = 1, TaskQueueSize = 1024, Log = log, })
+            this(new CTaskerArgs() { Procs = 1, TaskQueueSize = 1024 }, log)
         {
         }
 
@@ -174,7 +176,7 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _args.Log.Error(string.Format("[Task]Exec exception, type:\"{0}\"", task.GetType()), exception);
+                                _log.Error(string.Format("[Task]Exec exception, type:\"{0}\"", task.GetType()), exception);
                             }
                         }
                         while (--_tasksAfterCount > 0);
