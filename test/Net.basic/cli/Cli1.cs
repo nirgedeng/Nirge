@@ -14,31 +14,32 @@ namespace cli
         CTcpClient _cli;
         List<byte[]> _pkgs;
 
+        int _tick;
+        int _bytesPerSecond;
         int _pkgSize;
         int _pkgsPerSecond;
-        int _bytesPerSecond;
-        int _tick;
         int _pkgsPerOnce;
-        int _batchs;
-        int _count;
 
         public Cli1()
         {
             _pkgs = new List<byte[]>();
 
-            for (int i = 1; i <= 1024; ++i)
+            for (int i = 0; i < 1024; ++i)
             {
-                var pkg = new byte[i];
-                pkg[0] = (byte)(i % 255);
+                var size = i % 255 + 1;
+
+                var pkg = new byte[size];
+                pkg[0] = (byte)size;
                 _pkgs.Add(pkg);
             }
 
-            _bytesPerSecond = 2 * 1024 * 1024;
+            _tick = 10;
+            _bytesPerSecond = 4 * 1024 * 1024;
             _pkgSize = 100;
             _pkgsPerSecond = _bytesPerSecond / _pkgSize;
-            _tick = 10;
             _pkgsPerOnce = _pkgsPerSecond / (1000 / _tick);
-            _batchs = _pkgs.Count / _pkgsPerOnce;
+            if (_pkgsPerOnce > _pkgs.Count)
+                _pkgsPerOnce = _pkgs.Count;
         }
 
         public void Connect(IPEndPoint addr)
@@ -65,7 +66,6 @@ namespace cli
         void OnRecvd(object sender, byte[] arg1, int arg2, int arg3)
         {
         }
-
         public void Exec()
         {
             _cli.Exec();
@@ -73,12 +73,11 @@ namespace cli
             switch (_cli.State)
             {
             case eTcpClientState.Connected:
-                for (var i = _count * _pkgsPerOnce; i < (_count + 1) * _pkgsPerOnce; ++i)
+                for (var i = 0; i < _pkgsPerOnce; ++i)
                 {
                     _cli.Send(_pkgs[i], 0, _pkgs[i].Length);
                 }
 
-                _count = ++_count % _batchs;
                 break;
             }
         }
