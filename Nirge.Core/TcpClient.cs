@@ -125,11 +125,11 @@ namespace Nirge.Core
         CTcpClientArgs _args;
         ILog _log;
 
-        TcpClient _cli;
-
         eTcpClientState _state;
         CTcpClientConnectArgs _connectTag;
         CTcpClientCloseArgs _closeTag;
+
+        TcpClient _cli;
 
         byte[] _pkgLen;
 
@@ -239,11 +239,13 @@ namespace Nirge.Core
                 _pkgLen = null;
 
                 _sendArgs.Dispose();
+                _sendArgs = null;
                 _sends = null;
                 _sendsAfter = null;
 
                 _recv = null;
                 _recvArgs.Dispose();
+                _recvArgs = null;
                 _recvBuf = null;
                 _recvsBefore = null;
                 _recvs = null;
@@ -268,6 +270,8 @@ namespace Nirge.Core
             _closeTag.Error = eTcpError.None;
             _closeTag.SocketError = SocketError.Success;
             _closeTag.Reason = eTcpClientCloseReason.None;
+
+            _cli = null;
 
             _sends.Clear();
             _sendsAfter.Clear();
