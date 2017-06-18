@@ -25,20 +25,52 @@ namespace cli
             InitializeComponent();
         }
 
-        Cli1 _cli1;
+        List<byte[]> _pkgs;
+
+        CTcpClient _cli;
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            _cli1 = new Cli1();
-            _cli1.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
+            _pkgs = new List<byte[]>();
+            for (int i = 0; i < 10240; ++i)
+            {
+                var size = i % 255 + 1;
+
+                var pkg = new byte[size];
+                pkg[0] = (byte)size;
+                _pkgs.Add(pkg);
+            }
+
+            _cli = new CTcpClient(null);
+            _cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
 
             timerExec.Tick += TimerExec_Tick;
         }
+
+        void OnConnected(object sender, CDataEventArgs<CTcpClientConnectArgs> e)
+        {
+            Console.WriteLine("OnConnect {0}:{1}:{2}", e.Arg1.Result, e.Arg1.Error, e.Arg1.SocketError);
+
+            foreach (var i in _pkgs)
+                _cli.Send(i, 0, i.Length);
+        }
+
+        void OnClosed(object sender, CDataEventArgs<CTcpClientCloseArgs> e)
+        {
+            Console.WriteLine("OnClosed {0}:{1}:{2}", e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError);
+        }
+
+        void OnRecvd(object sender, byte[] arg1, int arg2, int arg3)
+        {
+            _cli.Send(arg1, arg2, arg3);
+        }
+
         private void TimerExec_Tick(object sender, EventArgs e)
         {
-            _cli1.Exec();
+            for (int i = 0; i < 8; ++i)
+                _cli.Exec();
         }
     }
 }
