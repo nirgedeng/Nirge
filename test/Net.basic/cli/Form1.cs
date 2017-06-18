@@ -14,8 +14,8 @@ using System.Linq;
 using System.Text;
 using Nirge.Core;
 using System.Net;
-using System;
 using log4net;
+using System;
 
 namespace cli
 {
