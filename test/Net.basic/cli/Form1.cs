@@ -44,6 +44,9 @@ namespace cli
             }
 
             _cli = new CTcpClient(null);
+            _cli.Connected += OnConnected;
+            _cli.Closed += OnClosed;
+            _cli.Recved += OnRecvd;
             _cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
 
             timerExec.Tick += TimerExec_Tick;
