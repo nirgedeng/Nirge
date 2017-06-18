@@ -25,7 +25,6 @@ namespace cli
             InitializeComponent();
         }
 
-        int _clisCount;
         List<CTcpClient> _clis;
 
         List<byte[]> _pkgs;
@@ -34,10 +33,8 @@ namespace cli
         {
             base.OnLoad(e);
 
-            _clisCount = 1024;
-
             _clis = new List<CTcpClient>();
-            for (var i = 0; i < _clisCount; ++i)
+            for (var i = 0; i < 1024; ++i)
             {
                 var cli = new CTcpClient(null);
                 _clis.Add(cli);
@@ -50,8 +47,7 @@ namespace cli
             }
 
             _pkgs = new List<byte[]>();
-
-            for (int i = 0; i < 1024; ++i)
+            for (int i = 0; i < 16; ++i)
             {
                 var size = i % 255 + 1;
 
@@ -61,16 +57,22 @@ namespace cli
             }
 
             timerExec.Tick += TimerExec_Tick;
-
         }
 
         void OnConnected(object sender, CDataEventArgs<CTcpClientConnectArgs> e)
         {
+            CTcpClient cli = (CTcpClient)sender;
+
             Console.WriteLine("OnConnect {0}:{1}:{2}", e.Arg1.Result, e.Arg1.Error, e.Arg1.SocketError);
+
+            foreach (var i in _pkgs)
+                cli.Send(i, 0, i.Length);
         }
 
         void OnClosed(object sender, CDataEventArgs<CTcpClientCloseArgs> e)
         {
+            CTcpClient cli = (CTcpClient)sender;
+
             Console.WriteLine("OnClosed {0}:{1}:{2}", e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError);
         }
 
@@ -86,11 +88,8 @@ namespace cli
             for (int i = 0; i < _clis.Count; ++i)
             {
                 var cli = _clis[i];
-
-                cli.Exec();
-
-                var p = i % 1024;
-                cli.Send(_pkgs[p], 0, _pkgs[p].Length);
+                for (var v = 0; v < 8; ++i)
+                    cli.Exec();
             }
         }
     }
