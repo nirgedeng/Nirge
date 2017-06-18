@@ -48,7 +48,7 @@ namespace cli
                 _pkgs.Add(pkg);
             }
 
-            _cli = new CTcpClient(null);
+            _cli = new CTcpClient(_log);
             _cli.Connected += OnConnected;
             _cli.Closed += OnClosed;
             _cli.Recved += OnRecvd;

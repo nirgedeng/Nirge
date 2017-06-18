@@ -36,7 +36,7 @@ namespace ser
 
             _log = LogManager.Exists("all");
 
-            _ser = new CTcpServer(null);
+            _ser = new CTcpServer(_log);
 
             _ser.Closed += Ser_Closed;
             _ser.CliConnected += Ser_CliConnected;

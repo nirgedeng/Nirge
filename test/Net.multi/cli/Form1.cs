@@ -15,6 +15,7 @@ using System.Text;
 using System.Net;
 using Nirge.Core;
 using System;
+using log4net;
 
 namespace cli
 {
@@ -25,6 +26,8 @@ namespace cli
             InitializeComponent();
         }
 
+        ILog _log;
+
         List<CTcpClient> _clis;
 
         List<byte[]> _pkgs;
@@ -33,10 +36,12 @@ namespace cli
         {
             base.OnLoad(e);
 
+            _log = LogManager.Exists("all");
+
             _clis = new List<CTcpClient>();
             for (var i = 0; i < 1024; ++i)
             {
-                var cli = new CTcpClient(null);
+                var cli = new CTcpClient(_log);
                 _clis.Add(cli);
 
                 cli.Connected += OnConnected;
@@ -63,7 +68,7 @@ namespace cli
         {
             CTcpClient cli = (CTcpClient)sender;
 
-            Console.WriteLine("OnConnect {0}:{1}:{2}", e.Arg1.Result, e.Arg1.Error, e.Arg1.SocketError);
+            _log.InfoFormat("OnConnect {0}:{1}:{2}", e.Arg1.Result, e.Arg1.Error, e.Arg1.SocketError);
 
             foreach (var i in _pkgs)
                 cli.Send(i, 0, i.Length);
@@ -73,7 +78,7 @@ namespace cli
         {
             CTcpClient cli = (CTcpClient)sender;
 
-            Console.WriteLine("OnClosed {0}:{1}:{2}", e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError);
+            _log.InfoFormat("OnClosed {0}:{1}:{2}", e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError);
         }
 
         void OnRecvd(object sender, byte[] arg1, int arg2, int arg3)
