@@ -234,6 +234,12 @@ namespace Nirge.Core
             _closeTag.SocketError = SocketError.Success;
             _closeTag.Reason = eTcpServerCloseReason.None;
 
+            _lis = null;
+
+            foreach (var i in _clisPool)
+                i.Destroy();
+            _clisPool.Clear();
+
             while (_clisPre.Count > 0)
             {
                 var cli = _clisPre.Dequeue();
@@ -246,10 +252,6 @@ namespace Nirge.Core
                 {
                 }
             }
-
-            foreach (var i in _clisPool)
-                i.Destroy();
-            _clisPool.Clear();
 
             _cliid = 0;
             _clisPost.Clear();
