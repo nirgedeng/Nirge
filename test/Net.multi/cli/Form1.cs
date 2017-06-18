@@ -52,7 +52,7 @@ namespace cli
             }
 
             _pkgs = new List<byte[]>();
-            for (int i = 0; i < 8; ++i)
+            for (int i = 0; i < 2; ++i)
             {
                 var size = i % 255 + 1 + 32;
 
