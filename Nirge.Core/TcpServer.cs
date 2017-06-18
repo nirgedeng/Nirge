@@ -165,17 +165,23 @@ namespace Nirge.Core
         {
             _args = args;
 
-            if (_args.SendBufferSize < 8192)
-                _args.SendBufferSize = 8192;
-            if (_args.SendBufferSize > 16384)
+            if (_args.SendBufferSize == 0)
                 _args.SendBufferSize = 16384;
-            if (_args.ReceiveBufferSize < 8192)
-                _args.ReceiveBufferSize = 8192;
-            if (_args.ReceiveBufferSize > 16384)
+            else if (_args.SendBufferSize < 8192)
+                _args.SendBufferSize = 8192;
+            else if (_args.SendBufferSize > 16384)
+                _args.SendBufferSize = 16384;
+            if (_args.ReceiveBufferSize == 0)
                 _args.ReceiveBufferSize = 16384;
-            if (_args.PkgSize < 8192)
+            else if (_args.ReceiveBufferSize < 8192)
+                _args.ReceiveBufferSize = 8192;
+            else if (_args.ReceiveBufferSize > 16384)
+                _args.ReceiveBufferSize = 16384;
+            if (_args.PkgSize == 0)
+                _args.PkgSize = 16384;
+            else if (_args.PkgSize < 8192)
                 _args.PkgSize = 8192;
-            if (_args.PkgSize > 1048576)
+            else if (_args.PkgSize > 1048576)
                 _args.PkgSize = 1048576;
             _args.SendQueueSize = 1024;
             _args.RecvQueueSize = 1024;
