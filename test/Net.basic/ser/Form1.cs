@@ -15,6 +15,7 @@ using System.Text;
 using Nirge.Core;
 using System.Net;
 using System;
+using log4net;
 
 namespace ser
 {
@@ -25,11 +26,15 @@ namespace ser
             InitializeComponent();
         }
 
+        ILog _log;
+
         CTcpServer _ser;
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+
+            _log = LogManager.Exists("all");
 
             _ser = new CTcpServer(null);
 
@@ -62,14 +67,14 @@ namespace ser
         {
             var cli = e.Arg1;
 
-            Console.WriteLine("OnClosed, {0},{1},{2},{3}", cli, e.Arg2.Reason, e.Arg2.Error, e.Arg2.SocketError);
+            _log.InfoFormat("OnClosed, {0},{1},{2},{3}", cli, e.Arg2.Reason, e.Arg2.Error, e.Arg2.SocketError);
         }
 
         private void Ser_CliConnected(object sender, CDataEventArgs<int> e)
         {
             var cli = e.Arg1;
 
-            Console.WriteLine("OnConnected, {0}", cli);
+            _log.InfoFormat("OnConnected, {0}", cli);
         }
     }
 }
