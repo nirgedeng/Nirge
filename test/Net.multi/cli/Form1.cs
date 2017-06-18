@@ -39,7 +39,7 @@ namespace cli
             _log = LogManager.Exists("all");
 
             _clis = new List<CTcpClient>();
-            for (var i = 0; i < 1024; ++i)
+            for (var i = 0; i < 512; ++i)
             {
                 var cli = new CTcpClient(_log);
                 _clis.Add(cli);
@@ -52,7 +52,7 @@ namespace cli
             }
 
             _pkgs = new List<byte[]>();
-            for (int i = 0; i < 16; ++i)
+            for (int i = 0; i < 8; ++i)
             {
                 var size = i % 255 + 1 + 32;
 
@@ -90,12 +90,14 @@ namespace cli
 
         private void TimerExec_Tick(object sender, EventArgs e)
         {
-            for (int i = 0; i < _clis.Count; ++i)
-            {
-                var cli = _clis[i];
-                for (var v = 0; v < 8; ++i)
-                    cli.Exec();
-            }
+            for (var i = 0; i < 8; ++i)
+                Exec();
+        }
+
+        void Exec()
+        {
+            foreach (var i in _clis)
+                i.Exec();
         }
     }
 }
