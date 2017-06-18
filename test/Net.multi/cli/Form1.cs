@@ -76,6 +76,9 @@ namespace cli
 
         void OnRecvd(object sender, byte[] arg1, int arg2, int arg3)
         {
+            CTcpClient cli = (CTcpClient)sender;
+
+            cli.Send(arg1, arg2, arg3);
         }
 
         private void TimerExec_Tick(object sender, EventArgs e)

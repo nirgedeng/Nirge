@@ -26,13 +26,10 @@ namespace ser
         }
 
         CTcpServer _ser;
-        Cli1 _cli1;
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-            _cli1 = new Cli1(1);
 
             _ser = new CTcpServer(null);
 
@@ -58,25 +55,21 @@ namespace ser
 
         private void Ser_CliRecved(object sender, int cli, byte[] arg2, int arg3, int arg4)
         {
-            //if (cli == _cli1._cli)
-            _cli1.OnRecved(arg2, arg3, arg4);
+            _ser.Send(cli, arg2, arg3, arg4);
         }
 
         private void Ser_CliClosed(object sender, CDataEventArgs<int, CTcpClientCloseArgs> e)
         {
             var cli = e.Arg1;
 
-            //if (cli == _cli1._cli)
-            _cli1.OnClosed(e.Arg2);
-
+            Console.WriteLine("OnClosed, {0},{1},{2},{3}", cli, e.Arg2.Reason, e.Arg2.Error, e.Arg2.SocketError);
         }
 
         private void Ser_CliConnected(object sender, CDataEventArgs<int> e)
         {
             var cli = e.Arg1;
 
-            //if (cli == _cli1._cli)
-            _cli1.OnConnected();
+            Console.WriteLine("OnConnected, {0}", cli);
         }
     }
 }
