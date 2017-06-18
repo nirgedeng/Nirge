@@ -523,7 +523,7 @@ namespace Nirge.Core
             if (buf == null)
                 return eTcpError.ArgumentNullRange;
             if (count == 0)
-                return eTcpError.ArgumentOutOfRange;
+                return eTcpError.PkgSizeOutOfRange;
             var pkgLen = _pkgLen.Length + count;
             if (pkgLen > _args.PkgSize)
                 return eTcpError.PkgSizeOutOfRange;
