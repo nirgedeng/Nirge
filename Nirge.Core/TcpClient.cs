@@ -545,11 +545,47 @@ namespace Nirge.Core
                 }
                 else
                 {
-                    _sendArgs.BufferList = null;
-                    _sendArgs.SetBuffer(pkg, 0, pkg.Length);
+                    var safe = false;
+                    try
+                    {
+                        _sendArgs.BufferList = null;
+                        _sendArgs.SetBuffer(pkg, 0, pkg.Length);
+                        safe = true;
+                    }
+                    catch (SocketException exception)
+                    {
+                        lock (_closeTag)
+                        {
+                            switch (_closeTag.Reason)
+                            {
+                            case eTcpClientCloseReason.None:
+                                _closeTag.Error = eTcpError.SocketError;
+                                _closeTag.SocketError = exception.SocketErrorCode;
+                                _closeTag.Reason = eTcpClientCloseReason.Exception;
+                                break;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        lock (_closeTag)
+                        {
+                            switch (_closeTag.Reason)
+                            {
+                            case eTcpClientCloseReason.None:
+                                _closeTag.Error = eTcpError.Exception;
+                                _closeTag.SocketError = SocketError.Success;
+                                _closeTag.Reason = eTcpClientCloseReason.Exception;
+                                break;
+                            }
+                        }
+                    }
 
-                    _sending = true;
-                    BeginSend();
+                    if (safe)
+                    {
+                        _sending = true;
+                        BeginSend();
+                    }
                 }
                 return eTcpError.None;
             case eTcpClientState.Closed:
@@ -573,11 +609,47 @@ namespace Nirge.Core
 
             if (_sendsAfter.Count > 0)
             {
-                _sendArgs.SetBuffer(null, 0, 0);
-                _sendArgs.BufferList = _sendsAfter;
-                _sendsAfter.Clear();
+                var safe = false;
+                try
+                {
+                    _sendArgs.SetBuffer(null, 0, 0);
+                    _sendArgs.BufferList = _sendsAfter;
+                    _sendsAfter.Clear();
+                    safe = true;
+                }
+                catch (SocketException exception)
+                {
+                    lock (_closeTag)
+                    {
+                        switch (_closeTag.Reason)
+                        {
+                        case eTcpClientCloseReason.None:
+                            _closeTag.Error = eTcpError.SocketError;
+                            _closeTag.SocketError = exception.SocketErrorCode;
+                            _closeTag.Reason = eTcpClientCloseReason.Exception;
+                            break;
+                        }
+                    }
+                }
+                catch
+                {
+                    lock (_closeTag)
+                    {
+                        switch (_closeTag.Reason)
+                        {
+                        case eTcpClientCloseReason.None:
+                            _closeTag.Error = eTcpError.Exception;
+                            _closeTag.SocketError = SocketError.Success;
+                            _closeTag.Reason = eTcpClientCloseReason.Exception;
+                            break;
+                        }
+                    }
+                }
 
-                BeginSend();
+                if (safe)
+                    BeginSend();
+                else
+                    _sending = false;
             }
             else
                 _sending = false;
@@ -586,7 +658,6 @@ namespace Nirge.Core
         void BeginSend()
         {
             var safe = false;
-
             try
             {
                 if (_cli.Client.SendAsync(_sendArgs))
@@ -676,7 +747,6 @@ namespace Nirge.Core
         void BeginRecv()
         {
             var safe = false;
-
             try
             {
                 if (_cli.Client.ReceiveAsync(_recvArgs))
@@ -893,7 +963,10 @@ namespace Nirge.Core
                     if (!_sending)
                     {
                         if (_sends.Count > 0)
+                        {
+                            _sending = true;
                             Send();
+                        }
                     }
 
                     if (_recvs.Count > 0)
@@ -936,7 +1009,10 @@ namespace Nirge.Core
                     if (!_sending)
                     {
                         if (_sends.Count > 0)
+                        {
+                            _sending = true;
                             Send();
+                        }
                         else
                         {
                             lock (_closeTag)

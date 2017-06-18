@@ -54,7 +54,7 @@ namespace cli
             _pkgs = new List<byte[]>();
             for (int i = 0; i < 16; ++i)
             {
-                var size = i % 255 + 1;
+                var size = i % 255 + 1 + 32;
 
                 var pkg = new byte[size];
                 pkg[0] = (byte)size;

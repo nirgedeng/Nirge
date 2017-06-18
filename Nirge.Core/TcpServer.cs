@@ -424,7 +424,6 @@ namespace Nirge.Core
         void BeginLis()
         {
             var safe = false;
-
             try
             {
                 _lis.BeginAcceptTcpClient((e) =>
