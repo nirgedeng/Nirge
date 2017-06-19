@@ -38,8 +38,11 @@ namespace cli
 
             _log = LogManager.Exists("all");
 
+            var clients = 1024;
+            var pkgs = 4;
+
             _clis = new List<CTcpClient>();
-            for (var i = 0; i < 512; ++i)
+            for (var i = 0; i < clients; ++i)
             {
                 var cli = new CTcpClient(_log);
                 _clis.Add(cli);
@@ -52,7 +55,7 @@ namespace cli
             }
 
             _pkgs = new List<byte[]>();
-            for (int i = 0; i < 2; ++i)
+            for (int i = 0; i < pkgs; ++i)
             {
                 var size = i % 255 + 1 + 32;
 
