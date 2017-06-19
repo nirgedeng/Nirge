@@ -60,7 +60,17 @@ namespace ser
 
         private void Ser_CliRecved(object sender, int cli, byte[] arg2, int arg3, int arg4)
         {
-            _ser.Send(cli, arg2, arg3, arg4);
+            var cmd = arg2[0];
+
+            switch (cmd)
+            {
+            case 250:
+                _log.InfoFormat("OnClosed(cmd), {0},{1}", cli, cmd);
+                break;
+            default:
+                _ser.Send(cli, arg2, arg3, arg4);
+                break;
+            }
         }
 
         private void Ser_CliClosed(object sender, CDataEventArgs<int, CTcpClientCloseArgs> e)

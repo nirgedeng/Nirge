@@ -39,9 +39,9 @@ namespace cli
             _log = LogManager.Exists("all");
 
             _pkgs = new List<byte[]>();
-            for (int i = 0; i < 10240; ++i)
+            for (int i = 0; i < 1024; ++i)
             {
-                var size = i % 255 + 1;
+                var size = i % 200 + 1;
 
                 var pkg = new byte[size];
                 pkg[0] = (byte)size;
@@ -52,7 +52,6 @@ namespace cli
             _cli.Connected += OnConnected;
             _cli.Closed += OnClosed;
             _cli.Recved += OnRecvd;
-            _cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
 
             timerExec.Tick += TimerExec_Tick;
         }
@@ -79,6 +78,19 @@ namespace cli
         {
             for (int i = 0; i < 8; ++i)
                 _cli.Exec();
+        }
+
+        private void buttonStart_Click(object sender, EventArgs e)
+        {
+            _cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
+        }
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            var pkg = new byte[250];
+            pkg[0] = (byte)250;
+            _cli.Send(pkg, 0, pkg.Length);
+            _cli.Close();
         }
     }
 }
