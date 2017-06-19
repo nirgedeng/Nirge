@@ -39,7 +39,7 @@ namespace cli
             _log = LogManager.Exists("all");
 
             var clients = 1024;
-            var pkgs = 4;
+            var pkgs = 2;
 
             _clis = new List<CTcpClient>();
             for (var i = 0; i < clients; ++i)
