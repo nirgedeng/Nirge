@@ -63,7 +63,7 @@ namespace Nirge.Core
             _procs = new List<Thread>(_args.Procs);
             for (int i = 0, len = _procs.Count; i < len; ++i)
             {
-                var proc = new Thread(Exec, 67108864);
+                var proc = new Thread(Exec/*, 67108864*/);
                 proc.IsBackground = true;
 
                 _procs.Add(proc);
