@@ -38,7 +38,7 @@ namespace cli
 
             _log = LogManager.Exists("all");
 
-            var clients = 512;
+            var clients = 1024;
             var pkgs = 2;
 
             _clis = new List<CTcpClient>();
