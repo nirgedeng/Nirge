@@ -539,7 +539,7 @@ namespace Nirge.Core
                 {
                     lock (_sends)
                     {
-                        _sends.Enqueue(new ArraySegment<byte>(pkg, 0, pkg.Length));
+                        _sends.Enqueue(new ArraySegment<byte>(pkg, 0, pkgLen));
                     }
                 }
                 else
@@ -548,7 +548,7 @@ namespace Nirge.Core
                     try
                     {
                         _sendArgs.BufferList = null;
-                        _sendArgs.SetBuffer(pkg, 0, pkg.Length);
+                        _sendArgs.SetBuffer(pkg, 0, pkgLen);
                         _cache.BackSendBuf(pkg);
                         safe = true;
                     }
