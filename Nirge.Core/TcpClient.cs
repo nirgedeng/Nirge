@@ -343,7 +343,7 @@ namespace Nirge.Core
             {
             case eTcpClientState.Closed:
                 _state = eTcpClientState.Connecting;
-                BeginConnect(addr);
+                ConnectAsync(addr);
                 return eTcpError.None;
             case eTcpClientState.Connecting:
             case eTcpClientState.Connected:
@@ -400,6 +400,71 @@ namespace Nirge.Core
             _cli.SendBufferSize = _args.SendBufferSize;
             _cli.ReceiveBufferSize = _args.ReceiveBufferSize;
             _cli.NoDelay = true;
+        }
+
+        async void ConnectAsync(IPEndPoint addr)
+        {
+            _cli = new TcpClient();
+
+            var safe = false;
+            try
+            {
+                await _cli.ConnectAsync(addr.Address, addr.Port);
+                safe = true;
+            }
+            catch (SocketException exception)
+            {
+                lock (_connectTag)
+                {
+                    switch (_connectTag.Result)
+                    {
+                    case eTcpClientConnectResult.None:
+                        _connectTag.Error = eTcpError.SocketError;
+                        _connectTag.SocketError = exception.SocketErrorCode;
+                        _connectTag.Result = eTcpClientConnectResult.Fail;
+                        break;
+                    }
+                }
+            }
+            catch
+            {
+                lock (_connectTag)
+                {
+                    switch (_connectTag.Result)
+                    {
+                    case eTcpClientConnectResult.None:
+                        _connectTag.Error = eTcpError.Exception;
+                        _connectTag.SocketError = SocketError.Success;
+                        _connectTag.Result = eTcpClientConnectResult.Fail;
+                        break;
+                    }
+                }
+            }
+
+            if (safe)
+            {
+                switch (_state)
+                {
+                case eTcpClientState.Connecting:
+                    lock (_connectTag)
+                    {
+                        switch (_connectTag.Result)
+                        {
+                        case eTcpClientConnectResult.None:
+                            _connectTag.Error = eTcpError.None;
+                            _connectTag.SocketError = SocketError.Success;
+                            _connectTag.Result = eTcpClientConnectResult.Success;
+                            break;
+                        }
+                    }
+                    break;
+                case eTcpClientState.Closed:
+                case eTcpClientState.Connected:
+                case eTcpClientState.Closing:
+                case eTcpClientState.ClosingWait:
+                    break;
+                }
+            }
         }
 
         void BeginConnect(IPEndPoint addr)
