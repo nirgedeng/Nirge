@@ -373,7 +373,7 @@ namespace Nirge.Core
                 case eTcpServerOpenResult.Success:
                     _state = eTcpServerState.Opened;
                     _lising = true;
-                    BeginLis();
+                    LisAsync();
                     break;
                 }
 
@@ -449,6 +449,87 @@ namespace Nirge.Core
         #endregion
 
         #region
+
+        async void LisAsync()
+        {
+            var safe = false;
+            TcpClient cli = null;
+
+            try
+            {
+                cli = await _lis.AcceptTcpClientAsync();
+                safe = true;
+            }
+            catch (SocketException exception)
+            {
+                lock (_closeTag)
+                {
+                    switch (_closeTag.Reason)
+                    {
+                    case eTcpServerCloseReason.None:
+                        _closeTag.Error = eTcpError.SocketError;
+                        _closeTag.SocketError = exception.SocketErrorCode;
+                        _closeTag.Reason = eTcpServerCloseReason.Exception;
+                        break;
+                    }
+                }
+            }
+            catch
+            {
+                lock (_closeTag)
+                {
+                    switch (_closeTag.Reason)
+                    {
+                    case eTcpServerCloseReason.None:
+                        _closeTag.Error = eTcpError.Exception;
+                        _closeTag.SocketError = SocketError.Success;
+                        _closeTag.Reason = eTcpServerCloseReason.Exception;
+                        break;
+                    }
+                }
+            }
+
+            if (safe)
+            {
+                switch (_state)
+                {
+                case eTcpServerState.Opened:
+                    lock (_clis)
+                    {
+                        _clisPre.Enqueue(cli);
+                    }
+
+                    LisAsync();
+                    break;
+                case eTcpServerState.Closing:
+                case eTcpServerState.Closed:
+                case eTcpServerState.Opening:
+                case eTcpServerState.ClosingWait:
+                    try
+                    {
+                        cli.Close();
+                    }
+                    catch
+                    {
+                    }
+
+                    _lising = false;
+                    break;
+                }
+            }
+            else
+            {
+                try
+                {
+                    cli.Close();
+                }
+                catch
+                {
+                }
+
+                _lising = false;
+            }
+        }
 
         void BeginLis()
         {
