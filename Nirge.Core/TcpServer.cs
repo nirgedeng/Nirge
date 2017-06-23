@@ -20,26 +20,26 @@ namespace Nirge.Core
 
     public class CTcpServerArgs
     {
-        int _sendBufferSize;
-        int _receiveBufferSize;
+        int _sendBufSize;
+        int _recvBufSize;
         int _pkgSize;
-        int _sendQueueSize;
-        int _recvQueueSize;
+        int _sendCapacity;
+        int _recvCapacity;
         int _capacity;
 
-        public int SendBufferSize
+        public int SendBufSize
         {
             get
             {
-                return _sendBufferSize;
+                return _sendBufSize;
             }
         }
 
-        public int ReceiveBufferSize
+        public int RecvBufSize
         {
             get
             {
-                return _receiveBufferSize;
+                return _recvBufSize;
             }
         }
 
@@ -51,19 +51,19 @@ namespace Nirge.Core
             }
         }
 
-        public int SendQueueSize
+        public int SendCapacity
         {
             get
             {
-                return _sendQueueSize;
+                return _sendCapacity;
             }
         }
 
-        public int RecvQueueSize
+        public int RecvCapacity
         {
             get
             {
-                return _recvQueueSize;
+                return _recvCapacity;
             }
         }
 
@@ -75,35 +75,35 @@ namespace Nirge.Core
             }
         }
 
-        public CTcpServerArgs(int sendBufferSize = 0, int receiveBufferSize = 0, int pkgSize = 0, int sendQueueSize = 0, int recvQueueSize = 0, int capacity = 0)
+        public CTcpServerArgs(int sendBufSize = 0, int recvBufSize = 0, int pkgSize = 0, int sendCapacity = 0, int recvCapacity = 0, int capacity = 0)
         {
-            _sendBufferSize = sendBufferSize;
-            _receiveBufferSize = receiveBufferSize;
+            _sendBufSize = sendBufSize;
+            _recvBufSize = recvBufSize;
             _pkgSize = pkgSize;
-            _sendQueueSize = sendQueueSize;
-            _recvQueueSize = recvQueueSize;
+            _sendCapacity = sendCapacity;
+            _recvCapacity = recvCapacity;
             _capacity = capacity;
 
-            if (_sendBufferSize == 0)
-                _sendBufferSize = 16384;
-            else if (_sendBufferSize < 8192)
-                _sendBufferSize = 8192;
-            else if (_sendBufferSize > 16384)
-                _sendBufferSize = 16384;
-            if (_receiveBufferSize == 0)
-                _receiveBufferSize = 16384;
-            else if (_receiveBufferSize < 8192)
-                _receiveBufferSize = 8192;
-            else if (_receiveBufferSize > 16384)
-                _receiveBufferSize = 16384;
+            if (_sendBufSize == 0)
+                _sendBufSize = 16384;
+            else if (_sendBufSize < 8192)
+                _sendBufSize = 8192;
+            else if (_sendBufSize > 16384)
+                _sendBufSize = 16384;
+            if (_recvBufSize == 0)
+                _recvBufSize = 16384;
+            else if (_recvBufSize < 8192)
+                _recvBufSize = 8192;
+            else if (_recvBufSize > 16384)
+                _recvBufSize = 16384;
             if (_pkgSize == 0)
                 _pkgSize = 16384;
             else if (_pkgSize < 8192)
                 _pkgSize = 8192;
             else if (_pkgSize > 1048576)
                 _pkgSize = 1048576;
-            _sendQueueSize = 1024;
-            _recvQueueSize = 1024;
+            _sendCapacity = 1024;
+            _recvCapacity = 1024;
             _capacity = 1024;
         }
     }
@@ -452,9 +452,9 @@ namespace Nirge.Core
 
         async void LisAsync()
         {
-            var safe = false;
             TcpClient cli = null;
 
+            var safe = false;
             try
             {
                 cli = await _lis.AcceptTcpClientAsync();
@@ -500,132 +500,6 @@ namespace Nirge.Core
                     }
 
                     LisAsync();
-                    break;
-                case eTcpServerState.Closing:
-                case eTcpServerState.Closed:
-                case eTcpServerState.Opening:
-                case eTcpServerState.ClosingWait:
-                    try
-                    {
-                        cli.Close();
-                    }
-                    catch
-                    {
-                    }
-
-                    _lising = false;
-                    break;
-                }
-            }
-            else
-            {
-                try
-                {
-                    cli.Close();
-                }
-                catch
-                {
-                }
-
-                _lising = false;
-            }
-        }
-
-        void BeginLis()
-        {
-            var safe = false;
-            try
-            {
-                _lis.BeginAcceptTcpClient((e) =>
-                {
-                    EndLis(e);
-                }, this);
-
-                safe = true;
-            }
-            catch (SocketException exception)
-            {
-                lock (_closeTag)
-                {
-                    switch (_closeTag.Reason)
-                    {
-                    case eTcpServerCloseReason.None:
-                        _closeTag.Error = eTcpError.SocketError;
-                        _closeTag.SocketError = exception.SocketErrorCode;
-                        _closeTag.Reason = eTcpServerCloseReason.Exception;
-                        break;
-                    }
-                }
-            }
-            catch
-            {
-                lock (_closeTag)
-                {
-                    switch (_closeTag.Reason)
-                    {
-                    case eTcpServerCloseReason.None:
-                        _closeTag.Error = eTcpError.Exception;
-                        _closeTag.SocketError = SocketError.Success;
-                        _closeTag.Reason = eTcpServerCloseReason.Exception;
-                        break;
-                    }
-                }
-            }
-
-            if (!safe)
-                _lising = false;
-        }
-
-        void EndLis(IAsyncResult e)
-        {
-            var safe = false;
-            TcpClient cli = null;
-
-            try
-            {
-                cli = _lis.EndAcceptTcpClient(e);
-                safe = true;
-            }
-            catch (SocketException exception)
-            {
-                lock (_closeTag)
-                {
-                    switch (_closeTag.Reason)
-                    {
-                    case eTcpServerCloseReason.None:
-                        _closeTag.Error = eTcpError.SocketError;
-                        _closeTag.SocketError = exception.SocketErrorCode;
-                        _closeTag.Reason = eTcpServerCloseReason.Exception;
-                        break;
-                    }
-                }
-            }
-            catch
-            {
-                lock (_closeTag)
-                {
-                    switch (_closeTag.Reason)
-                    {
-                    case eTcpServerCloseReason.None:
-                        _closeTag.Error = eTcpError.Exception;
-                        _closeTag.SocketError = SocketError.Success;
-                        _closeTag.Reason = eTcpServerCloseReason.Exception;
-                        break;
-                    }
-                }
-            }
-
-            if (safe)
-            {
-                switch (_state)
-                {
-                case eTcpServerState.Opened:
-                    lock (_clis)
-                    {
-                        _clisPre.Enqueue(cli);
-                    }
-
-                    BeginLis();
                     break;
                 case eTcpServerState.Closing:
                 case eTcpServerState.Closed:
@@ -715,7 +589,7 @@ namespace Nirge.Core
                         if (_clisPool.Count > 0)
                             cli = _clisPool.Dequeue();
                         else
-                            cli = new CTcpClient(new CTcpClientArgs(_args.SendBufferSize, _args.ReceiveBufferSize, _args.PkgSize, _args.SendQueueSize, _args.RecvQueueSize), _log);
+                            cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.PkgSize, _args.SendCapacity, _args.RecvCapacity), _log);
 
                         var cliid = ++_cliid;
                         _clis.Add(cliid, cli);

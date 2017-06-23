@@ -22,7 +22,7 @@ namespace Nirge.Core
             set;
         }
 
-        public int TaskQueueSize
+        public int TaskCapacity
         {
             get;
             set;
@@ -56,7 +56,7 @@ namespace Nirge.Core
                 _args.Procs = 1;
             if (_args.Procs > Environment.ProcessorCount)
                 _args.Procs = Environment.ProcessorCount;
-            _args.TaskQueueSize = 1024;
+            _args.TaskCapacity = 1024;
 
             _log = log;
 
@@ -69,16 +69,16 @@ namespace Nirge.Core
                 _procs.Add(proc);
             }
 
-            _tasks = new Queue<ITask>(_args.TaskQueueSize);
+            _tasks = new Queue<ITask>(_args.TaskCapacity);
             _tasksCount = 0;
-            _tasksAfter = new Queue<ITask>(_args.TaskQueueSize);
+            _tasksAfter = new Queue<ITask>(_args.TaskCapacity);
             _tasksAfterCount = 0;
 
             _quit = false;
         }
         public CTasker(ILog log)
             :
-            this(new CTaskerArgs() { Procs = 1, TaskQueueSize = 1024 }, log)
+            this(new CTaskerArgs() { Procs = 1, TaskCapacity = 1024 }, log)
         {
         }
 

@@ -20,25 +20,25 @@ namespace Nirge.Core
 
     public class CTcpClientArgs
     {
-        int _sendBufferSize;
-        int _receiveBufferSize;
+        int _sendBufSize;
+        int _recvBufSize;
         int _pkgSize;
-        int _sendQueueSize;
-        int _recvQueueSize;
+        int _sendCapacity;
+        int _recvCapacity;
 
-        public int SendBufferSize
+        public int SendBufSize
         {
             get
             {
-                return _sendBufferSize;
+                return _sendBufSize;
             }
         }
 
-        public int ReceiveBufferSize
+        public int RecvBufSize
         {
             get
             {
-                return _receiveBufferSize;
+                return _recvBufSize;
             }
         }
 
@@ -50,50 +50,50 @@ namespace Nirge.Core
             }
         }
 
-        public int SendQueueSize
+        public int SendCapacity
         {
             get
             {
-                return _sendQueueSize;
+                return _sendCapacity;
             }
         }
 
-        public int RecvQueueSize
+        public int RecvCapacity
         {
             get
             {
-                return _recvQueueSize;
+                return _recvCapacity;
             }
         }
 
-        public CTcpClientArgs(int sendBufferSize = 0, int receiveBufferSize = 0, int pkgSize = 0, int sendQueueSize = 0, int recvQueueSize = 0)
+        public CTcpClientArgs(int sendBufSize = 0, int recvBufSize = 0, int pkgSize = 0, int sendCapacity = 0, int recvCapacity = 0)
         {
-            _sendBufferSize = sendBufferSize;
-            _receiveBufferSize = receiveBufferSize;
+            _sendBufSize = sendBufSize;
+            _recvBufSize = recvBufSize;
             _pkgSize = pkgSize;
-            _sendQueueSize = sendQueueSize;
-            _recvQueueSize = recvQueueSize;
+            _sendCapacity = sendCapacity;
+            _recvCapacity = recvCapacity;
 
-            if (_sendBufferSize == 0)
-                _sendBufferSize = 16384;
-            else if (_sendBufferSize < 8192)
-                _sendBufferSize = 8192;
-            else if (_sendBufferSize > 16384)
-                _sendBufferSize = 16384;
-            if (_receiveBufferSize == 0)
-                _receiveBufferSize = 16384;
-            else if (_receiveBufferSize < 8192)
-                _receiveBufferSize = 8192;
-            else if (_receiveBufferSize > 16384)
-                _receiveBufferSize = 16384;
+            if (_sendBufSize == 0)
+                _sendBufSize = 16384;
+            else if (_sendBufSize < 8192)
+                _sendBufSize = 8192;
+            else if (_sendBufSize > 16384)
+                _sendBufSize = 16384;
+            if (_recvBufSize == 0)
+                _recvBufSize = 16384;
+            else if (_recvBufSize < 8192)
+                _recvBufSize = 8192;
+            else if (_recvBufSize > 16384)
+                _recvBufSize = 16384;
             if (_pkgSize == 0)
                 _pkgSize = 16384;
             else if (_pkgSize < 8192)
                 _pkgSize = 8192;
             else if (_pkgSize > 1048576)
                 _pkgSize = 1048576;
-            _sendQueueSize = 1024;
-            _recvQueueSize = 1024;
+            _sendCapacity = 1024;
+            _recvCapacity = 1024;
         }
     }
 
@@ -238,21 +238,21 @@ namespace Nirge.Core
             {
                 EndSend(_sendArgs);
             };
-            _sends = new Queue<ArraySegment<byte>>(_args.SendQueueSize);
-            _sendsAfter = new List<ArraySegment<byte>>(_args.SendQueueSize);
+            _sends = new Queue<ArraySegment<byte>>(_args.SendCapacity);
+            _sendsAfter = new List<ArraySegment<byte>>(_args.SendCapacity);
             _sending = false;
 
-            _recv = new byte[_args.ReceiveBufferSize];
+            _recv = new byte[_args.RecvBufSize];
             _recvArgs = new SocketAsyncEventArgs();
             _recvArgs.SetBuffer(_recv, 0, _recv.Length);
             _recvArgs.Completed += (sender, e) =>
             {
                 EndRecv(_recvArgs);
             };
-            _recvBuf = new CRingBuf(_args.PkgSize + _args.ReceiveBufferSize);
+            _recvBuf = new CRingBuf(_args.PkgSize + _args.RecvBufSize);
             _recvsBefore = new Queue<byte[]>(32);
-            _recvs = new Queue<byte[]>(_args.RecvQueueSize);
-            _recvsAfter = new Queue<byte[]>(_args.RecvQueueSize);
+            _recvs = new Queue<byte[]>(_args.RecvCapacity);
+            _recvsAfter = new Queue<byte[]>(_args.RecvCapacity);
             _recving = false;
         }
 
@@ -397,8 +397,8 @@ namespace Nirge.Core
 
         void Connect()
         {
-            _cli.SendBufferSize = _args.SendBufferSize;
-            _cli.ReceiveBufferSize = _args.ReceiveBufferSize;
+            _cli.SendBufferSize = _args.SendBufSize;
+            _cli.ReceiveBufferSize = _args.RecvBufSize;
             _cli.NoDelay = true;
         }
 
@@ -464,105 +464,6 @@ namespace Nirge.Core
                 case eTcpClientState.ClosingWait:
                     break;
                 }
-            }
-        }
-
-        void BeginConnect(IPEndPoint addr)
-        {
-            try
-            {
-                _cli = new TcpClient();
-
-                _cli.BeginConnect(addr.Address, addr.Port, (e) =>
-                {
-                    EndConnect(e);
-                }, this);
-            }
-            catch (SocketException exception)
-            {
-                lock (_connectTag)
-                {
-                    switch (_connectTag.Result)
-                    {
-                    case eTcpClientConnectResult.None:
-                        _connectTag.Error = eTcpError.SocketError;
-                        _connectTag.SocketError = exception.SocketErrorCode;
-                        _connectTag.Result = eTcpClientConnectResult.Fail;
-                        break;
-                    }
-                }
-            }
-            catch
-            {
-                lock (_connectTag)
-                {
-                    switch (_connectTag.Result)
-                    {
-                    case eTcpClientConnectResult.None:
-                        _connectTag.Error = eTcpError.Exception;
-                        _connectTag.SocketError = SocketError.Success;
-                        _connectTag.Result = eTcpClientConnectResult.Fail;
-                        break;
-                    }
-                }
-            }
-        }
-
-        void EndConnect(IAsyncResult e)
-        {
-            switch (_state)
-            {
-            case eTcpClientState.Connecting:
-                try
-                {
-                    _cli.EndConnect(e);
-
-                    lock (_connectTag)
-                    {
-                        switch (_connectTag.Result)
-                        {
-                        case eTcpClientConnectResult.None:
-                            _connectTag.Error = eTcpError.None;
-                            _connectTag.SocketError = SocketError.Success;
-                            _connectTag.Result = eTcpClientConnectResult.Success;
-                            break;
-                        }
-                    }
-                }
-                catch (SocketException exception)
-                {
-                    lock (_connectTag)
-                    {
-                        switch (_connectTag.Result)
-                        {
-                        case eTcpClientConnectResult.None:
-                            _connectTag.Error = eTcpError.SocketError;
-                            _connectTag.SocketError = exception.SocketErrorCode;
-                            _connectTag.Result = eTcpClientConnectResult.Fail;
-                            break;
-                        }
-                    }
-                }
-                catch
-                {
-                    lock (_connectTag)
-                    {
-                        switch (_connectTag.Result)
-                        {
-                        case eTcpClientConnectResult.None:
-                            _connectTag.Error = eTcpError.Exception;
-                            _connectTag.SocketError = SocketError.Success;
-                            _connectTag.Result = eTcpClientConnectResult.Fail;
-                            break;
-                        }
-                    }
-                }
-                break;
-            case eTcpClientState.Closed:
-            case eTcpClientState.Connected:
-            case eTcpClientState.Closing:
-            case eTcpClientState.ClosingWait:
-                break;
             }
         }
 
