@@ -188,9 +188,9 @@ namespace Nirge.Core
         byte[] _recv;
         SocketAsyncEventArgs _recvArgs;
         CRingBuf _recvBuf;
-        Queue<byte[]> _recvsBefore;
-        Queue<byte[]> _recvs;
-        Queue<byte[]> _recvsAfter;
+        Queue<ArraySegment<byte>> _recvsBefore;
+        Queue<ArraySegment<byte>> _recvs;
+        Queue<ArraySegment<byte>> _recvsAfter;
         bool _recving;
 
         public eTcpClientState State
@@ -251,9 +251,9 @@ namespace Nirge.Core
                 EndRecv(_recvArgs);
             };
             _recvBuf = new CRingBuf(_args.PkgSize + _args.RecvBufSize);
-            _recvsBefore = new Queue<byte[]>(32);
-            _recvs = new Queue<byte[]>(_args.RecvCapacity);
-            _recvsAfter = new Queue<byte[]>(_args.RecvCapacity);
+            _recvsBefore = new Queue<ArraySegment<byte>>(32);
+            _recvs = new Queue<ArraySegment<byte>>(_args.RecvCapacity);
+            _recvsAfter = new Queue<ArraySegment<byte>>(_args.RecvCapacity);
             _recving = false;
         }
 
@@ -262,6 +262,13 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpClientState.Closed:
+                _args = null;
+                _log = null;
+                _cache = null;
+
+                _connectTag = null;
+                _closeTag = null;
+
                 _pkgLen = null;
 
                 _sendArgs.Dispose();
@@ -882,10 +889,10 @@ namespace Nirge.Core
                     break;
 
                 _recvBuf.Read(_pkgLen, 0, _pkgLen.Length);
-                var pkg = _cache.FetchSendBuf(pkgLen);
+                var pkg = _cache.FetchRecvBuf(pkgLen);
                 _recvBuf.Read(pkg, 0, pkgLen);
 
-                _recvsBefore.Enqueue(pkg);
+                _recvsBefore.Enqueue(new ArraySegment<byte>(pkg, 0, pkgLen));
             }
 
             return true;
@@ -980,12 +987,12 @@ namespace Nirge.Core
                         try
                         {
                             if (Recved != null)
-                                Recved(this, pkg, 0, pkg.Length);
-                            _cache.BackRecvBuf(pkg);
+                                Recved(this, pkg.Array, pkg.Offset, pkg.Count);
+                            _cache.BackRecvBuf(pkg.Array);
                         }
                         catch (Exception exception)
                         {
-                            _log.Error(string.Format("[TcpClient]Recved exception, addr:\"{0},{1}\", pkg:\"{2}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, pkg.Length), exception);
+                            _log.Error(string.Format("[TcpClient]Recved exception, addr:\"{0},{1}\", pkg:\"{2}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, pkg.Count), exception);
                         }
                     }
                     break;

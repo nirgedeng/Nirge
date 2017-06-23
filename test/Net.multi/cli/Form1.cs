@@ -27,6 +27,7 @@ namespace cli
         }
 
         ILog _log;
+        TcpClientCache _cache;
 
         List<CTcpClient> _clis;
 
@@ -37,6 +38,7 @@ namespace cli
             base.OnLoad(e);
 
             _log = LogManager.Exists("all");
+            _cache = new TcpClientCache(new TcpClientCacheArgs(25600, 12800, 6400, 25600, 12800, 6400));
 
             var clients = 1024;
             var pkgs = 2;
@@ -44,7 +46,7 @@ namespace cli
             _clis = new List<CTcpClient>();
             for (var i = 0; i < clients; ++i)
             {
-                var cli = new CTcpClient(_log);
+                var cli = new CTcpClient(new CTcpClientArgs(), _log, _cache);
                 _clis.Add(cli);
 
                 cli.Connected += OnConnected;

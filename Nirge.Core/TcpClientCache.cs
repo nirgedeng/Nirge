@@ -1,4 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿/*------------------------------------------------------------------
+    Copyright © : All rights reserved
+    Author      : 邓晓峰
+------------------------------------------------------------------*/
+
+using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -6,7 +12,6 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System;
-using System.Collections.Concurrent;
 
 namespace Nirge.Core
 {

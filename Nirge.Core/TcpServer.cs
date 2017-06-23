@@ -242,6 +242,12 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpServerState.Closed:
+                _args = null;
+                _log = null;
+                _cache = null;
+
+                _closeTag = null;
+
                 _clisPool = null;
                 _clisPre = null;
                 _clisPost = null;
