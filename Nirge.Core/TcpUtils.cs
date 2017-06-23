@@ -29,4 +29,12 @@ namespace Nirge.Core
         RecvQueueFull,
         CliOutOfRange,
     }
+
+    public interface ITcpClientCache
+    {
+        byte[] FetchSendBuf(int count);
+        void BackSendBuf(byte[] buf);
+        byte[] FetchRecvBuf(int count);
+        void BackRecvBuf(byte[] buf);
+    }
 }

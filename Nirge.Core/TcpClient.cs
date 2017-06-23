@@ -75,25 +75,25 @@ namespace Nirge.Core
             _recvCapacity = recvCapacity;
 
             if (_sendBufSize == 0)
-                _sendBufSize = 16384;
+                _sendBufSize = 8192;
             else if (_sendBufSize < 8192)
                 _sendBufSize = 8192;
             else if (_sendBufSize > 16384)
                 _sendBufSize = 16384;
             if (_recvBufSize == 0)
-                _recvBufSize = 16384;
+                _recvBufSize = 8192;
             else if (_recvBufSize < 8192)
                 _recvBufSize = 8192;
             else if (_recvBufSize > 16384)
                 _recvBufSize = 16384;
             if (_pkgSize == 0)
-                _pkgSize = 16384;
+                _pkgSize = 8192;
             else if (_pkgSize < 8192)
                 _pkgSize = 8192;
             else if (_pkgSize > 1048576)
                 _pkgSize = 1048576;
-            _sendCapacity = 1024;
-            _recvCapacity = 1024;
+            _sendCapacity = 128;
+            _recvCapacity = 128;
         }
     }
 
@@ -166,10 +166,11 @@ namespace Nirge.Core
 
     #endregion
 
-    public class CTcpClient : IObjCtor<CTcpClientArgs, ILog>, IObjDtor
+    public class CTcpClient : IObjCtor<CTcpClientArgs, ILog, ITcpClientCache>, IObjDtor
     {
         CTcpClientArgs _args;
         ILog _log;
+        ITcpClientCache _cache;
 
         eTcpClientState _state;
         CTcpClientConnectArgs _connectTag;
@@ -200,22 +201,22 @@ namespace Nirge.Core
             }
         }
 
-        public CTcpClient(CTcpClientArgs args, ILog log)
+        public CTcpClient(CTcpClientArgs args, ILog log, ITcpClientCache cache)
         {
-            Init(args, log);
+            Init(args, log, cache);
         }
 
         public CTcpClient(ILog log)
             :
-            this(new CTcpClientArgs(), log)
+            this(new CTcpClientArgs(), log, new TcpClientCache(new TcpClientCacheArgs()))
         {
         }
 
-        public void Init(CTcpClientArgs args, ILog log)
+        public void Init(CTcpClientArgs args, ILog log, ITcpClientCache cache)
         {
             _args = args;
-
             _log = log;
+            _cache = cache;
 
             _state = eTcpClientState.Closed;
             _connectTag = new CTcpClientConnectArgs()
@@ -522,7 +523,7 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpClientState.Connected:
-                var pkg = new byte[pkgLen];
+                var pkg = _cache.FetchSendBuf(pkgLen);
                 var len = BitConverter.GetBytes(count);
                 Buffer.BlockCopy(len, 0, pkg, 0, _pkgLen.Length);
                 Buffer.BlockCopy(buf, offset, pkg, _pkgLen.Length, count);
@@ -541,6 +542,7 @@ namespace Nirge.Core
                     {
                         _sendArgs.BufferList = null;
                         _sendArgs.SetBuffer(pkg, 0, pkg.Length);
+                        _cache.BackSendBuf(pkg);
                         safe = true;
                     }
                     catch (SocketException exception)
@@ -605,6 +607,8 @@ namespace Nirge.Core
                 {
                     _sendArgs.SetBuffer(null, 0, 0);
                     _sendArgs.BufferList = _sendsAfter;
+                    foreach (var i in _sendsAfter)
+                        _cache.BackSendBuf(i.Array);
                     _sendsAfter.Clear();
                     safe = true;
                 }
@@ -878,7 +882,7 @@ namespace Nirge.Core
                     break;
 
                 _recvBuf.Read(_pkgLen, 0, _pkgLen.Length);
-                var pkg = new byte[pkgLen];
+                var pkg = _cache.FetchSendBuf(pkgLen);
                 _recvBuf.Read(pkg, 0, pkgLen);
 
                 _recvsBefore.Enqueue(pkg);
@@ -977,6 +981,7 @@ namespace Nirge.Core
                         {
                             if (Recved != null)
                                 Recved(this, pkg, 0, pkg.Length);
+                            _cache.BackRecvBuf(pkg);
                         }
                         catch (Exception exception)
                         {

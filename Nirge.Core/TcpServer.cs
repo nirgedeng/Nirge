@@ -85,25 +85,25 @@ namespace Nirge.Core
             _capacity = capacity;
 
             if (_sendBufSize == 0)
-                _sendBufSize = 16384;
+                _sendBufSize = 8192;
             else if (_sendBufSize < 8192)
                 _sendBufSize = 8192;
             else if (_sendBufSize > 16384)
                 _sendBufSize = 16384;
             if (_recvBufSize == 0)
-                _recvBufSize = 16384;
+                _recvBufSize = 8192;
             else if (_recvBufSize < 8192)
                 _recvBufSize = 8192;
             else if (_recvBufSize > 16384)
                 _recvBufSize = 16384;
             if (_pkgSize == 0)
-                _pkgSize = 16384;
+                _pkgSize = 8192;
             else if (_pkgSize < 8192)
                 _pkgSize = 8192;
             else if (_pkgSize > 1048576)
                 _pkgSize = 1048576;
-            _sendCapacity = 1024;
-            _recvCapacity = 1024;
+            _sendCapacity = 128;
+            _recvCapacity = 128;
             _capacity = 1024;
         }
     }
@@ -175,10 +175,11 @@ namespace Nirge.Core
 
     #endregion
 
-    public class CTcpServer : IObjCtor<CTcpServerArgs, ILog>, IObjDtor
+    public class CTcpServer : IObjCtor<CTcpServerArgs, ILog, ITcpClientCache>, IObjDtor
     {
         CTcpServerArgs _args;
         ILog _log;
+        ITcpClientCache _cache;
 
         eTcpServerState _state;
         CTcpServerCloseArgs _closeTag;
@@ -201,22 +202,22 @@ namespace Nirge.Core
             }
         }
 
-        public CTcpServer(CTcpServerArgs args, ILog log)
+        public CTcpServer(CTcpServerArgs args, ILog log, ITcpClientCache cache)
         {
-            Init(args, log);
+            Init(args, log, cache);
         }
 
         public CTcpServer(ILog log)
             :
-            this(new CTcpServerArgs(), log)
+            this(new CTcpServerArgs(), log, new TcpClientCache(new TcpClientCacheArgs(25600, 12800, 6400, 25600, 12800, 6400)))
         {
         }
 
-        public void Init(CTcpServerArgs args, ILog log)
+        public void Init(CTcpServerArgs args, ILog log, ITcpClientCache cache)
         {
             _args = args;
-
             _log = log;
+            _cache = cache;
 
             _state = eTcpServerState.Closed;
             _closeTag = new CTcpServerCloseArgs()
@@ -589,7 +590,7 @@ namespace Nirge.Core
                         if (_clisPool.Count > 0)
                             cli = _clisPool.Dequeue();
                         else
-                            cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.PkgSize, _args.SendCapacity, _args.RecvCapacity), _log);
+                            cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.PkgSize, _args.SendCapacity, _args.RecvCapacity), _log, _cache);
 
                         var cliid = ++_cliid;
                         _clis.Add(cliid, cli);
