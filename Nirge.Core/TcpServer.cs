@@ -18,7 +18,7 @@ namespace Nirge.Core
 {
     #region
 
-    public struct CTcpServerArgs
+    public class CTcpServerArgs
     {
         int _sendBufferSize;
         int _receiveBufferSize;
@@ -75,7 +75,7 @@ namespace Nirge.Core
             }
         }
 
-        public CTcpServerArgs(int sendBufferSize, int receiveBufferSize, int pkgSize, int sendQueueSize, int recvQueueSize, int capacity)
+        public CTcpServerArgs(int sendBufferSize = 0, int receiveBufferSize = 0, int pkgSize = 0, int sendQueueSize = 0, int recvQueueSize = 0, int capacity = 0)
         {
             _sendBufferSize = sendBufferSize;
             _receiveBufferSize = receiveBufferSize;
