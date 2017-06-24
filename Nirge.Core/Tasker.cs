@@ -35,16 +35,14 @@ namespace Nirge.Core
         ILog _log;
         List<Thread> _procs;
         Queue<ITask> _tasks;
-        int _tasksCount;
         Queue<ITask> _tasksAfter;
-        int _tasksAfterCount;
         bool _quit;
 
         public int TasksCount
         {
             get
             {
-                return _tasksCount + _tasksAfterCount;
+                return _tasks.Count + _tasksAfter.Count;
             }
         }
 
@@ -63,16 +61,13 @@ namespace Nirge.Core
             _procs = new List<Thread>(_args.Procs);
             for (int i = 0, len = _procs.Count; i < len; ++i)
             {
-                var proc = new Thread(Exec/*, 67108864*/);
+                var proc = new Thread(Exec);
                 proc.IsBackground = true;
-
                 _procs.Add(proc);
             }
 
             _tasks = new Queue<ITask>(_args.TaskCapacity);
-            _tasksCount = 0;
             _tasksAfter = new Queue<ITask>(_args.TaskCapacity);
-            _tasksAfterCount = 0;
 
             _quit = false;
         }
@@ -95,9 +90,10 @@ namespace Nirge.Core
 
         void Close()
         {
+            _quit = true;
+
             lock (_tasks)
             {
-                _quit = true;
                 Monitor.Pulse(_tasks);
             }
 
@@ -111,38 +107,30 @@ namespace Nirge.Core
         {
             lock (_tasks)
             {
-                if (_quit)
-                    return;
-
                 _tasks.Clear();
-                _tasksCount = 0;
             }
         }
 
         public void Exec(IEnumerable<ITask> tasks)
         {
+            if (_quit)
+                return;
+
             lock (_tasks)
             {
-                if (_quit)
-                    return;
-
                 foreach (var i in tasks)
-                {
                     _tasks.Enqueue(i);
-                    ++_tasksCount;
-                }
                 Monitor.Pulse(_tasks);
             }
         }
         public void Exec(ITask task)
         {
+            if (_quit)
+                return;
+
             lock (_tasks)
             {
-                if (_quit)
-                    return;
-
                 _tasks.Enqueue(task);
-                ++_tasksCount;
                 Monitor.Pulse(_tasks);
             }
         }
@@ -152,7 +140,7 @@ namespace Nirge.Core
             {
                 while (true)
                 {
-                    if (_tasksCount == 0)
+                    if (_tasks.Count == 0)
                     {
                         if (_quit)
                             break;
@@ -163,13 +151,13 @@ namespace Nirge.Core
                     {
                         while (_tasks.Count > 0)
                             _tasksAfter.Enqueue(_tasks.Dequeue());
-                        _tasksAfterCount = _tasksCount;
-                        _tasksCount = 0;
+
                         Monitor.Exit(_tasks);
 
-                        do
+                        while (_tasksAfter.Count > 0)
                         {
                             var task = _tasksAfter.Dequeue();
+
                             try
                             {
                                 task.Exec();
@@ -179,7 +167,6 @@ namespace Nirge.Core
                                 _log.Error(string.Format("[Task]Exec exception, type:\"{0}\"", task.GetType()), exception);
                             }
                         }
-                        while (--_tasksAfterCount > 0);
 
                         Monitor.Enter(_tasks);
                     }

@@ -549,7 +549,6 @@ namespace Nirge.Core
                     {
                         _sendArgs.BufferList = null;
                         _sendArgs.SetBuffer(pkg, 0, pkgLen);
-                        _cache.BackSendBuf(pkg);
                         safe = true;
                     }
                     catch (SocketException exception)
@@ -580,6 +579,8 @@ namespace Nirge.Core
                             }
                         }
                     }
+
+                    _cache.BackSendBuf(pkg);
 
                     if (safe)
                     {
@@ -614,9 +615,6 @@ namespace Nirge.Core
                 {
                     _sendArgs.SetBuffer(null, 0, 0);
                     _sendArgs.BufferList = _sendsAfter;
-                    foreach (var i in _sendsAfter)
-                        _cache.BackSendBuf(i.Array);
-                    _sendsAfter.Clear();
                     safe = true;
                 }
                 catch (SocketException exception)
@@ -647,6 +645,10 @@ namespace Nirge.Core
                         }
                     }
                 }
+
+                foreach (var i in _sendsAfter)
+                    _cache.BackSendBuf(i.Array);
+                _sendsAfter.Clear();
 
                 if (safe)
                     BeginSend();
@@ -988,12 +990,13 @@ namespace Nirge.Core
                         {
                             if (Recved != null)
                                 Recved(this, pkg.Array, pkg.Offset, pkg.Count);
-                            _cache.BackRecvBuf(pkg.Array);
                         }
                         catch (Exception exception)
                         {
                             _log.Error(string.Format("[TcpClient]Recved exception, addr:\"{0},{1}\", pkg:\"{2}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, pkg.Count), exception);
                         }
+
+                        _cache.BackRecvBuf(pkg.Array);
                     }
                     break;
                 case eTcpClientCloseReason.Active:
