@@ -18,42 +18,93 @@ namespace Nirge.Core
 {
     #region
 
-    public struct CTcpServerArgs
+    public class CTcpServerArgs
     {
-        public int SendBufferSize
+        int _sendBufSize;
+        int _recvBufSize;
+        int _pkgSize;
+        int _sendCapacity;
+        int _recvCapacity;
+        int _capacity;
+
+        public int SendBufSize
         {
-            get;
-            set;
+            get
+            {
+                return _sendBufSize;
+            }
         }
 
-        public int ReceiveBufferSize
+        public int RecvBufSize
         {
-            get;
-            set;
+            get
+            {
+                return _recvBufSize;
+            }
         }
 
         public int PkgSize
         {
-            get;
-            set;
+            get
+            {
+                return _pkgSize;
+            }
         }
 
-        public int SendQueueSize
+        public int SendCapacity
         {
-            get;
-            set;
+            get
+            {
+                return _sendCapacity;
+            }
         }
 
-        public int RecvQueueSize
+        public int RecvCapacity
         {
-            get;
-            set;
+            get
+            {
+                return _recvCapacity;
+            }
         }
 
         public int Capacity
         {
-            get;
-            set;
+            get
+            {
+                return _capacity;
+            }
+        }
+
+        public CTcpServerArgs(int sendBufSize = 0, int recvBufSize = 0, int pkgSize = 0, int sendCapacity = 0, int recvCapacity = 0, int capacity = 0)
+        {
+            _sendBufSize = sendBufSize;
+            _recvBufSize = recvBufSize;
+            _pkgSize = pkgSize;
+            _sendCapacity = sendCapacity;
+            _recvCapacity = recvCapacity;
+            _capacity = capacity;
+
+            if (_sendBufSize == 0)
+                _sendBufSize = 8192;
+            else if (_sendBufSize < 8192)
+                _sendBufSize = 8192;
+            else if (_sendBufSize > 16384)
+                _sendBufSize = 16384;
+            if (_recvBufSize == 0)
+                _recvBufSize = 8192;
+            else if (_recvBufSize < 8192)
+                _recvBufSize = 8192;
+            else if (_recvBufSize > 16384)
+                _recvBufSize = 16384;
+            if (_pkgSize == 0)
+                _pkgSize = 8192;
+            else if (_pkgSize < 8192)
+                _pkgSize = 8192;
+            else if (_pkgSize > 1048576)
+                _pkgSize = 1048576;
+            _sendCapacity = 128;
+            _recvCapacity = 128;
+            _capacity = 1024;
         }
     }
 
@@ -124,10 +175,11 @@ namespace Nirge.Core
 
     #endregion
 
-    public class CTcpServer : IObjCtor<CTcpServerArgs, ILog>, IObjDtor
+    public class CTcpServer : IObjCtor<CTcpServerArgs, ILog, ITcpClientCache>, IObjDtor
     {
         CTcpServerArgs _args;
         ILog _log;
+        ITcpClientCache _cache;
 
         eTcpServerState _state;
         CTcpServerCloseArgs _closeTag;
@@ -150,44 +202,22 @@ namespace Nirge.Core
             }
         }
 
-        public CTcpServer(CTcpServerArgs args, ILog log)
+        public CTcpServer(CTcpServerArgs args, ILog log, ITcpClientCache cache)
         {
-            Init(args, log);
+            Init(args, log, cache);
         }
 
         public CTcpServer(ILog log)
             :
-            this(new CTcpServerArgs(), log)
+            this(new CTcpServerArgs(), log, new TcpClientCache(new TcpClientCacheArgs(25600, 12800, 6400, 25600, 12800, 6400)))
         {
         }
 
-        public void Init(CTcpServerArgs args, ILog log)
+        public void Init(CTcpServerArgs args, ILog log, ITcpClientCache cache)
         {
             _args = args;
-
-            if (_args.SendBufferSize == 0)
-                _args.SendBufferSize = 16384;
-            else if (_args.SendBufferSize < 8192)
-                _args.SendBufferSize = 8192;
-            else if (_args.SendBufferSize > 16384)
-                _args.SendBufferSize = 16384;
-            if (_args.ReceiveBufferSize == 0)
-                _args.ReceiveBufferSize = 16384;
-            else if (_args.ReceiveBufferSize < 8192)
-                _args.ReceiveBufferSize = 8192;
-            else if (_args.ReceiveBufferSize > 16384)
-                _args.ReceiveBufferSize = 16384;
-            if (_args.PkgSize == 0)
-                _args.PkgSize = 16384;
-            else if (_args.PkgSize < 8192)
-                _args.PkgSize = 8192;
-            else if (_args.PkgSize > 1048576)
-                _args.PkgSize = 1048576;
-            _args.SendQueueSize = 1024;
-            _args.RecvQueueSize = 1024;
-            _args.Capacity = 1024;
-
             _log = log;
+            _cache = cache;
 
             _state = eTcpServerState.Closed;
             _closeTag = new CTcpServerCloseArgs()
@@ -212,6 +242,12 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpServerState.Closed:
+                _args = null;
+                _log = null;
+                _cache = null;
+
+                _closeTag = null;
+
                 _clisPool = null;
                 _clisPre = null;
                 _clisPost = null;
@@ -246,7 +282,9 @@ namespace Nirge.Core
 
                 try
                 {
-                    cli.Close();
+                    using (cli)
+                    {
+                    }
                 }
                 catch
                 {
@@ -344,7 +382,7 @@ namespace Nirge.Core
                 case eTcpServerOpenResult.Success:
                     _state = eTcpServerState.Opened;
                     _lising = true;
-                    BeginLis();
+                    LisAsync();
                     break;
                 }
 
@@ -421,59 +459,14 @@ namespace Nirge.Core
 
         #region
 
-        void BeginLis()
+        async void LisAsync()
         {
-            var safe = false;
-            try
-            {
-                _lis.BeginAcceptTcpClient((e) =>
-                {
-                    EndLis(e);
-                }, this);
-
-                safe = true;
-            }
-            catch (SocketException exception)
-            {
-                lock (_closeTag)
-                {
-                    switch (_closeTag.Reason)
-                    {
-                    case eTcpServerCloseReason.None:
-                        _closeTag.Error = eTcpError.SocketError;
-                        _closeTag.SocketError = exception.SocketErrorCode;
-                        _closeTag.Reason = eTcpServerCloseReason.Exception;
-                        break;
-                    }
-                }
-            }
-            catch
-            {
-                lock (_closeTag)
-                {
-                    switch (_closeTag.Reason)
-                    {
-                    case eTcpServerCloseReason.None:
-                        _closeTag.Error = eTcpError.Exception;
-                        _closeTag.SocketError = SocketError.Success;
-                        _closeTag.Reason = eTcpServerCloseReason.Exception;
-                        break;
-                    }
-                }
-            }
-
-            if (!safe)
-                _lising = false;
-        }
-
-        void EndLis(IAsyncResult e)
-        {
-            var safe = false;
             TcpClient cli = null;
 
+            var safe = false;
             try
             {
-                cli = _lis.EndAcceptTcpClient(e);
+                cli = await _lis.AcceptTcpClientAsync();
                 safe = true;
             }
             catch (SocketException exception)
@@ -515,7 +508,7 @@ namespace Nirge.Core
                         _clisPre.Enqueue(cli);
                     }
 
-                    BeginLis();
+                    LisAsync();
                     break;
                 case eTcpServerState.Closing:
                 case eTcpServerState.Closed:
@@ -523,7 +516,9 @@ namespace Nirge.Core
                 case eTcpServerState.ClosingWait:
                     try
                     {
-                        cli.Close();
+                        using (cli)
+                        {
+                        }
                     }
                     catch
                     {
@@ -537,7 +532,9 @@ namespace Nirge.Core
             {
                 try
                 {
-                    cli.Close();
+                    using (cli)
+                    {
+                    }
                 }
                 catch
                 {
@@ -605,7 +602,7 @@ namespace Nirge.Core
                         if (_clisPool.Count > 0)
                             cli = _clisPool.Dequeue();
                         else
-                            cli = new CTcpClient(new CTcpClientArgs() { SendBufferSize = _args.SendBufferSize, ReceiveBufferSize = _args.ReceiveBufferSize, PkgSize = _args.PkgSize, SendQueueSize = _args.SendQueueSize, RecvQueueSize = _args.RecvQueueSize, }, _log);
+                            cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.PkgSize, _args.SendCapacity, _args.RecvCapacity), _log, _cache);
 
                         var cliid = ++_cliid;
                         _clis.Add(cliid, cli);

@@ -282,7 +282,9 @@ namespace Nirge.Core
 
                 try
                 {
-                    cli.Close();
+                    using (cli)
+                    {
+                    }
                 }
                 catch
                 {
@@ -514,7 +516,9 @@ namespace Nirge.Core
                 case eTcpServerState.ClosingWait:
                     try
                     {
-                        cli.Close();
+                        using (cli)
+                        {
+                        }
                     }
                     catch
                     {
@@ -528,7 +532,9 @@ namespace Nirge.Core
             {
                 try
                 {
-                    cli.Close();
+                    using (cli)
+                    {
+                    }
                 }
                 catch
                 {
