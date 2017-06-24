@@ -40,7 +40,7 @@ namespace cli
             _log = LogManager.Exists("all");
             _cache = new TcpClientCache(new TcpClientCacheArgs(25600, 12800, 6400, 25600, 12800, 6400));
 
-            var clients = 1024;
+            var clients = 512;
             var pkgs = 2;
 
             _clis = new List<CTcpClient>();
