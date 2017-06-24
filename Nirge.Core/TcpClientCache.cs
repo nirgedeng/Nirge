@@ -129,37 +129,38 @@ namespace Nirge.Core
 
         TcpClientCacheArgs _args;
 
-        ConcurrentStack<byte[]> _2kSends;
-        ConcurrentStack<byte[]> _4kSends;
-        ConcurrentStack<byte[]> _8kSends;
+        ConcurrentQueue<byte[]> _2kSends;
+        ConcurrentQueue<byte[]> _4kSends;
+        ConcurrentQueue<byte[]> _8kSends;
 
-        ConcurrentStack<byte[]> _2kRecvs;
-        ConcurrentStack<byte[]> _4kRecvs;
-        ConcurrentStack<byte[]> _8kRecvs;
+        ConcurrentQueue<byte[]> _2kRecvs;
+        ConcurrentQueue<byte[]> _4kRecvs;
+        ConcurrentQueue<byte[]> _8kRecvs;
 
         public TcpClientCache(TcpClientCacheArgs args)
         {
             _args = args;
 
-            _2kSends = new ConcurrentStack<byte[]>();
-            _4kSends = new ConcurrentStack<byte[]>();
-            _8kSends = new ConcurrentStack<byte[]>();
+            _2kSends = new ConcurrentQueue<byte[]>();
+            _4kSends = new ConcurrentQueue<byte[]>();
+            _8kSends = new ConcurrentQueue<byte[]>();
 
-            _2kRecvs = new ConcurrentStack<byte[]>();
-            _4kRecvs = new ConcurrentStack<byte[]>();
-            _8kRecvs = new ConcurrentStack<byte[]>();
+            _2kRecvs = new ConcurrentQueue<byte[]>();
+            _4kRecvs = new ConcurrentQueue<byte[]>();
+            _8kRecvs = new ConcurrentQueue<byte[]>();
         }
 
         #region 
 
         public byte[] FetchSendBuf(int count)
         {
+#if CW
             if (count > g8k)
                 return new byte[count];
             else if (count > g4k)
             {
                 byte[] buf;
-                if (_8kSends.TryPop(out buf))
+                if (_8kSends.TryDequeue(out buf))
                     return buf;
                 else
                     return new byte[g8k];
@@ -167,7 +168,7 @@ namespace Nirge.Core
             else if (count > g2k)
             {
                 byte[] buf;
-                if (_4kSends.TryPop(out buf))
+                if (_4kSends.TryDequeue(out buf))
                     return buf;
                 else
                     return new byte[g4k];
@@ -175,29 +176,36 @@ namespace Nirge.Core
             else
             {
                 byte[] buf;
-                if (_2kSends.TryPop(out buf))
+                if (_2kSends.TryDequeue(out buf))
                     return buf;
                 else
                     return new byte[g2k];
             }
+#else
+            return new byte[count];
+#endif
+
         }
         public void BackSendBuf(byte[] buf)
         {
+#if CW
             switch (buf.Length)
             {
             case g2k:
                 if (_2kSends.Count < _args.K2SendCapacity)
-                    _2kSends.Push(buf);
+                    _2kSends.Enqueue(buf);
                 break;
             case g4k:
                 if (_4kSends.Count < _args.K4SendCapacity)
-                    _4kSends.Push(buf);
+                    _4kSends.Enqueue(buf);
                 break;
             case g8k:
                 if (_8kSends.Count < _args.K8SendCapacity)
-                    _8kSends.Push(buf);
+                    _8kSends.Enqueue(buf);
                 break;
             }
+#else
+#endif
         }
 
         #endregion
@@ -211,7 +219,7 @@ namespace Nirge.Core
             else if (count > g4k)
             {
                 byte[] buf;
-                if (_8kRecvs.TryPop(out buf))
+                if (_8kRecvs.TryDequeue(out buf))
                     return buf;
                 else
                     return new byte[g8k];
@@ -219,7 +227,7 @@ namespace Nirge.Core
             else if (count > g2k)
             {
                 byte[] buf;
-                if (_4kRecvs.TryPop(out buf))
+                if (_4kRecvs.TryDequeue(out buf))
                     return buf;
                 else
                     return new byte[g4k];
@@ -227,7 +235,7 @@ namespace Nirge.Core
             else
             {
                 byte[] buf;
-                if (_2kRecvs.TryPop(out buf))
+                if (_2kRecvs.TryDequeue(out buf))
                     return buf;
                 else
                     return new byte[g2k];
@@ -239,15 +247,15 @@ namespace Nirge.Core
             {
             case g2k:
                 if (_2kRecvs.Count < _args.K2RecvCapacity)
-                    _2kRecvs.Push(buf);
+                    _2kRecvs.Enqueue(buf);
                 break;
             case g4k:
                 if (_4kRecvs.Count < _args.K4RecvCapacity)
-                    _4kRecvs.Push(buf);
+                    _4kRecvs.Enqueue(buf);
                 break;
             case g8k:
                 if (_8kRecvs.Count < _args.K8RecvCapacity)
-                    _8kRecvs.Push(buf);
+                    _8kRecvs.Enqueue(buf);
                 break;
             }
         }
