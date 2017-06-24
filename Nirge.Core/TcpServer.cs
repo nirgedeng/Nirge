@@ -244,6 +244,7 @@ namespace Nirge.Core
             case eTcpServerState.Closed:
                 _args = null;
                 _log = null;
+                _cache.Clear();
                 _cache = null;
 
                 _closeTag = null;

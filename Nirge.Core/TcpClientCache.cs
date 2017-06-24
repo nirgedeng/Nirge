@@ -15,6 +15,8 @@ using System;
 
 namespace Nirge.Core
 {
+    #region 
+
     public class TcpClientCacheArgs
     {
         int _2kSendCapacity;
@@ -121,6 +123,8 @@ namespace Nirge.Core
         }
     }
 
+    #endregion
+
     public class TcpClientCache : ITcpClientCache
     {
         const int g2k = 2048;
@@ -148,6 +152,25 @@ namespace Nirge.Core
             _2kRecvs = new ConcurrentQueue<byte[]>();
             _4kRecvs = new ConcurrentQueue<byte[]>();
             _8kRecvs = new ConcurrentQueue<byte[]>();
+        }
+
+        public void Clear()
+        {
+            byte[] buf;
+
+            while (_2kSends.Count > 0)
+                _2kSends.TryDequeue(out buf);
+            while (_4kSends.Count > 0)
+                _2kSends.TryDequeue(out buf);
+            while (_8kSends.Count > 0)
+                _2kSends.TryDequeue(out buf);
+
+            while (_2kRecvs.Count > 0)
+                _2kRecvs.TryDequeue(out buf);
+            while (_4kRecvs.Count > 0)
+                _2kRecvs.TryDequeue(out buf);
+            while (_8kRecvs.Count > 0)
+                _2kRecvs.TryDequeue(out buf);
         }
 
         #region 
@@ -186,6 +209,7 @@ namespace Nirge.Core
 #endif
 
         }
+
         public void BackSendBuf(byte[] buf)
         {
 #if CW
@@ -241,6 +265,7 @@ namespace Nirge.Core
                     return new byte[g2k];
             }
         }
+
         public void BackRecvBuf(byte[] buf)
         {
             switch (buf.Length)

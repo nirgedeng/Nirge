@@ -32,6 +32,7 @@ namespace Nirge.Core
 
     public interface ITcpClientCache
     {
+        void Clear();
         byte[] FetchSendBuf(int count);
         void BackSendBuf(byte[] buf);
         byte[] FetchRecvBuf(int count);
