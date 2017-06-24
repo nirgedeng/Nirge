@@ -161,16 +161,16 @@ namespace Nirge.Core
             while (_2kSends.Count > 0)
                 _2kSends.TryDequeue(out buf);
             while (_4kSends.Count > 0)
-                _2kSends.TryDequeue(out buf);
+                _4kSends.TryDequeue(out buf);
             while (_8kSends.Count > 0)
-                _2kSends.TryDequeue(out buf);
+                _8kSends.TryDequeue(out buf);
 
             while (_2kRecvs.Count > 0)
                 _2kRecvs.TryDequeue(out buf);
             while (_4kRecvs.Count > 0)
-                _2kRecvs.TryDequeue(out buf);
+                _4kRecvs.TryDequeue(out buf);
             while (_8kRecvs.Count > 0)
-                _2kRecvs.TryDequeue(out buf);
+                _8kRecvs.TryDequeue(out buf);
         }
 
         #region 
