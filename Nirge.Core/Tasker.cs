@@ -59,7 +59,7 @@ namespace Nirge.Core
             _log = log;
 
             _procs = new List<Thread>(_args.Procs);
-            for (int i = 0, len = _procs.Count; i < len; ++i)
+            for (int i = 0, len = _args.Procs; i < len; ++i)
             {
                 var proc = new Thread(Exec);
                 proc.IsBackground = true;
