@@ -1,11 +1,16 @@
-﻿using System;
+﻿/*------------------------------------------------------------------
+    Copyright © : All rights reserved
+    Author      : 邓晓峰
+------------------------------------------------------------------*/
+
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using log4net;
 using Nirge.Core;
 using System.Net;
+using log4net;
+using System;
 
 namespace ser
 {
