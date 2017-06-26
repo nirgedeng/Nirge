@@ -29,9 +29,6 @@ namespace ser
             _ser.CliClosed += Ser_CliClosed;
             _ser.CliRecved += Ser_CliRecved;
 
-            _task.Init();
-            _timer.Init();
-
             _task.Exec(CCall.Create(() =>
             {
                 _ser.Open(new IPEndPoint(IPAddress.Any, 9527));
@@ -41,6 +38,9 @@ namespace ser
                 for (int i = 0; i < 8; ++i)
                     _ser.Exec();
             }), 10);
+
+            _task.Init();
+            _timer.Init();
         }
 
         public void Destroy()

@@ -15,9 +15,9 @@ namespace cli
         CTasker _task;
         CTaskTimer _timer;
 
+        List<byte[]> _pkgs;
         TcpClientCache _cache;
         List<CTcpClient> _clis;
-        List<byte[]> _pkgs;
 
         public void Init()
         {
@@ -25,10 +25,6 @@ namespace cli
 
             _task = new CTasker(_log);
             _timer = new CTaskTimer(_task, _log);
-
-            _cache = new TcpClientCache(new TcpClientCacheArgs(25600, 12800, 6400, 25600, 12800, 6400));
-
-            _clis = new List<CTcpClient>();
 
             var clients = 512;
             var pkgs = 2;
@@ -42,6 +38,9 @@ namespace cli
                 pkg[0] = (byte)size;
                 _pkgs.Add(pkg);
             }
+
+            _cache = new TcpClientCache(new TcpClientCacheArgs(25600, 12800, 6400, 25600, 12800, 6400));
+            _clis = new List<CTcpClient>();
 
             _task.Exec(CCall.Create(() =>
             {
@@ -62,6 +61,9 @@ namespace cli
                 for (var i = 0; i < 8; ++i)
                     Exec();
             }), 10);
+
+            _task.Init();
+            _timer.Init();
         }
 
         public void Destroy()
