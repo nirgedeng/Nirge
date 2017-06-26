@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ser", "ser\ser.csproj", "{98CE16F4-1339-4C6D-ABDA-13B86DC50E59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cli", "cli\cli.csproj", "{719029AB-CDA8-4CC9-B2D0-4440840D411B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nirge.Core", "..\..\Nirge.Core\Nirge.Core.csproj", "{9CFED86F-16B8-439E-887F-9540F1EB8B92}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{98CE16F4-1339-4C6D-ABDA-13B86DC50E59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98CE16F4-1339-4C6D-ABDA-13B86DC50E59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98CE16F4-1339-4C6D-ABDA-13B86DC50E59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98CE16F4-1339-4C6D-ABDA-13B86DC50E59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{719029AB-CDA8-4CC9-B2D0-4440840D411B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{719029AB-CDA8-4CC9-B2D0-4440840D411B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{719029AB-CDA8-4CC9-B2D0-4440840D411B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{719029AB-CDA8-4CC9-B2D0-4440840D411B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CFED86F-16B8-439E-887F-9540F1EB8B92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CFED86F-16B8-439E-887F-9540F1EB8B92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CFED86F-16B8-439E-887F-9540F1EB8B92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CFED86F-16B8-439E-887F-9540F1EB8B92}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
