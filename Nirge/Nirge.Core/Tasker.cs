@@ -14,20 +14,45 @@ using System;
 
 namespace Nirge.Core
 {
-    public struct CTaskerArgs
+    #region
+
+    public class CTaskerArgs
     {
+        int _procs;
+        int _taskCapacity;
+
         public int Procs
         {
-            get;
-            set;
+            get
+            {
+                return _procs;
+            }
         }
 
         public int TaskCapacity
         {
-            get;
-            set;
+            get
+            {
+                return _taskCapacity;
+            }
+        }
+
+        public CTaskerArgs(int procs = 0, int taskCapacity = 0)
+        {
+            _procs = procs;
+            _taskCapacity = taskCapacity;
+
+            if (_procs == 0)
+                _procs = 1;
+            else if (_procs < 1)
+                _procs = 1;
+            else if (_procs > Environment.ProcessorCount)
+                _procs = Environment.ProcessorCount;
+            _taskCapacity = 1024;
         }
     }
+
+    #endregion
 
     public class CTasker
     {
@@ -49,17 +74,10 @@ namespace Nirge.Core
         CTasker(CTaskerArgs args, ILog log)
         {
             _args = args;
-
-            if (_args.Procs < 1)
-                _args.Procs = 1;
-            if (_args.Procs > Environment.ProcessorCount)
-                _args.Procs = Environment.ProcessorCount;
-            _args.TaskCapacity = 1024;
-
             _log = log;
 
             _procs = new List<Thread>(_args.Procs);
-            for (int i = 0, len = _procs.Count; i < len; ++i)
+            for (int i = 0, len = _args.Procs; i < len; ++i)
             {
                 var proc = new Thread(Exec);
                 proc.IsBackground = true;
@@ -73,7 +91,7 @@ namespace Nirge.Core
         }
         public CTasker(ILog log)
             :
-            this(new CTaskerArgs() { Procs = 1, TaskCapacity = 1024 }, log)
+            this(new CTaskerArgs(), log)
         {
         }
 
