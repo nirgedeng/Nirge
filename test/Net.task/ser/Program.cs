@@ -9,7 +9,7 @@ using System.Net;
 
 namespace ser
 {
-    public class Ser
+    class CSer
     {
         ILog _log;
         CTasker _task;
@@ -78,7 +78,7 @@ namespace ser
     {
         static void Main(string[] args)
         {
-            var ser = new Ser();
+            var ser = new CSer();
             ser.Init();
             Console.ReadKey();
             ser.Destroy();
