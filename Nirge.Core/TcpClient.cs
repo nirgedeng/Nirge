@@ -311,7 +311,7 @@ namespace Nirge.Core
             _sends.Clear();
             if (_sendArgs.Buffer != null)
                 _cache.BackSendBuf(_sendArgs.Buffer);
-            else if (_sendArgs.BufferList != null)
+            if (_sendArgs.BufferList != null)
             {
                 foreach (var i in _sendArgs.BufferList)
                     _cache.BackSendBuf(i.Array);
