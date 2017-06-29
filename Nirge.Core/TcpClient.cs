@@ -306,8 +306,17 @@ namespace Nirge.Core
 
             _cli = null;
 
+            foreach (var i in _sends)
+                _cache.BackSendBuf(i.Array);
             _sends.Clear();
-            _sendsAfter.Clear();
+            if (_sendArgs.Buffer != null)
+                _cache.BackSendBuf(_sendArgs.Buffer);
+            else if (_sendArgs.BufferList != null)
+            {
+                foreach (var i in _sendArgs.BufferList)
+                    _cache.BackSendBuf(i.Array);
+                _sendsAfter.Clear();
+            }
 
             _recvBuf.Clear();
             _recvsBefore.Clear();
@@ -582,12 +591,14 @@ namespace Nirge.Core
                         }
                     }
 
-                    _cache.BackSendBuf(pkg);
-
                     if (safe)
                     {
                         _sending = true;
                         BeginSend();
+                    }
+                    else
+                    {
+                        _cache.BackSendBuf(pkg);
                     }
                 }
                 return eTcpError.None;
@@ -648,10 +659,6 @@ namespace Nirge.Core
                     }
                 }
 
-                foreach (var i in _sendsAfter)
-                    _cache.BackSendBuf(i.Array);
-                _sendsAfter.Clear();
-
                 if (safe)
                     BeginSend();
                 else
@@ -707,6 +714,26 @@ namespace Nirge.Core
 
         void EndSend(SocketAsyncEventArgs e)
         {
+            switch (_state)
+            {
+            case eTcpClientState.Closed:
+            case eTcpClientState.Connecting:
+                break;
+            case eTcpClientState.Connected:
+            case eTcpClientState.Closing:
+            case eTcpClientState.ClosingWait:
+
+                if (_sendArgs.Buffer != null)
+                    _cache.BackSendBuf(_sendArgs.Buffer);
+                else if (_sendArgs.BufferList != null)
+                {
+                    foreach (var i in _sendArgs.BufferList)
+                        _cache.BackSendBuf(i.Array);
+                    _sendsAfter.Clear();
+                }
+                break;
+            }
+
             switch (_state)
             {
             case eTcpClientState.Connected:

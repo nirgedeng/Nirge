@@ -177,7 +177,6 @@ namespace Nirge.Core
 
         public byte[] FetchSendBuf(int count)
         {
-#if CW
             if (count > g8k)
                 return new byte[count];
             else if (count > g4k)
@@ -204,15 +203,10 @@ namespace Nirge.Core
                 else
                     return new byte[g2k];
             }
-#else
-            return new byte[count];
-#endif
-
         }
 
         public void BackSendBuf(byte[] buf)
         {
-#if CW
             switch (buf.Length)
             {
             case g2k:
@@ -228,8 +222,6 @@ namespace Nirge.Core
                     _8kSends.Enqueue(buf);
                 break;
             }
-#else
-#endif
         }
 
         #endregion
