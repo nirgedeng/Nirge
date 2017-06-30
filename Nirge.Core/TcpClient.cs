@@ -306,8 +306,6 @@ namespace Nirge.Core
 
             _cli = null;
 
-            if (_sendArgs.Buffer != null)
-                _cache.BackSendBuf(_sendArgs.Buffer);
             foreach (var i in _sends)
                 _cache.BackSendBuf(i.Array);
             _sends.Clear();
@@ -594,6 +592,10 @@ namespace Nirge.Core
                     {
                         _sending = true;
                         BeginSend();
+                    }
+                    else
+                    {
+                        _cache.BackSendBuf(pkg);
                     }
                 }
                 return eTcpError.None;

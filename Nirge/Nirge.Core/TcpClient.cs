@@ -309,18 +309,15 @@ namespace Nirge.Core
             foreach (var i in _sends)
                 _cache.BackSendBuf(i.Array);
             _sends.Clear();
-            if (_sendArgs.Buffer != null)
-                _cache.BackSendBuf(_sendArgs.Buffer);
-            if (_sendArgs.BufferList != null)
-            {
-                foreach (var i in _sendArgs.BufferList)
-                    _cache.BackSendBuf(i.Array);
-                _sendsAfter.Clear();
-            }
+            foreach (var i in _sendsAfter)
+                _cache.BackSendBuf(i.Array);
+            _sendsAfter.Clear();
 
             _recvBuf.Clear();
-            _recvsBefore.Clear();
-            _recvs.Clear();
+            while (_recvsBefore.Count > 0)
+                _cache.BackRecvBuf(_recvsBefore.Dequeue().Array);
+            while (_recvs.Count > 0)
+                _cache.BackRecvBuf(_recvs.Dequeue().Array);
             _recvsAfter.Clear();
         }
 
@@ -722,7 +719,6 @@ namespace Nirge.Core
             case eTcpClientState.Connected:
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
-
                 if (_sendArgs.Buffer != null)
                     _cache.BackSendBuf(_sendArgs.Buffer);
                 else if (_sendArgs.BufferList != null)
