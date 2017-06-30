@@ -308,8 +308,6 @@ namespace Nirge.Core
 
             if (_sendArgs.Buffer != null)
                 _cache.BackSendBuf(_sendArgs.Buffer);
-            _sendArgs.SetBuffer(null, 0, 0);
-            _sendArgs.BufferList = null;
             foreach (var i in _sends)
                 _cache.BackSendBuf(i.Array);
             _sends.Clear();
@@ -317,8 +315,6 @@ namespace Nirge.Core
                 _cache.BackSendBuf(i.Array);
             _sendsAfter.Clear();
 
-            _recvArgs.SetBuffer(null, 0, 0);
-            _recvArgs.BufferList = null;
             _recvBuf.Clear();
             while (_recvsBefore.Count > 0)
                 _cache.BackRecvBuf(_recvsBefore.Dequeue().Array);
