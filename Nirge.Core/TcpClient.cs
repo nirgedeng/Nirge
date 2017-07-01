@@ -593,10 +593,6 @@ namespace Nirge.Core
                         _sending = true;
                         BeginSend();
                     }
-                    else
-                    {
-                        _cache.BackSendBuf(pkg);
-                    }
                 }
                 return eTcpError.None;
             case eTcpClientState.Closed:
