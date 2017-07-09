@@ -188,7 +188,7 @@ namespace Nirge.Core
         bool _lising;
 
         Queue<CTcpClient> _clisPool;
-        int _cliid;
+        int _cliId;
         Queue<TcpClient> _clisPre;
         Queue<TcpClient> _clisPost;
         List<CTcpClient> _clis;
@@ -230,7 +230,7 @@ namespace Nirge.Core
             _lising = false;
 
             _clisPool = new Queue<CTcpClient>(_args.Capacity);
-            _cliid = 0;
+            _cliId = 0;
             _clisPre = new Queue<TcpClient>(32);
             _clisPost = new Queue<TcpClient>(32);
             _clis = new List<CTcpClient>(_args.Capacity);
@@ -292,7 +292,7 @@ namespace Nirge.Core
                 }
             }
 
-            _cliid = 0;
+            _cliId = 0;
             _clisPost.Clear();
             _clis.Clear();
             _clisDict.Clear();
@@ -605,7 +605,7 @@ namespace Nirge.Core
                         else
                             cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.PkgSize, _args.SendCapacity, _args.RecvCapacity), _log, _cache);
 
-                        var cliid = ++_cliid;
+                        var cliid = ++_cliId;
                         _clis.Add(cli);
                         _clisDict.Add(cliid, cli);
 
