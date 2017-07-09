@@ -191,8 +191,8 @@ namespace Nirge.Core
         int _cliid;
         Queue<TcpClient> _clisPre;
         Queue<TcpClient> _clisPost;
-        Dictionary<int, CTcpClient> _clis;
-        List<int> _clisAfter;
+        List<CTcpClient> _clis;
+        Dictionary<int, CTcpClient> _clisDict;
 
         public eTcpServerState State
         {
@@ -233,8 +233,8 @@ namespace Nirge.Core
             _cliid = 0;
             _clisPre = new Queue<TcpClient>(32);
             _clisPost = new Queue<TcpClient>(32);
-            _clis = new Dictionary<int, CTcpClient>(_args.Capacity);
-            _clisAfter = new List<int>(_args.Capacity);
+            _clis = new List<CTcpClient>(_args.Capacity);
+            _clisDict = new Dictionary<int, CTcpClient>(_args.Capacity);
         }
 
         public void Destroy()
@@ -253,7 +253,7 @@ namespace Nirge.Core
                 _clisPre = null;
                 _clisPost = null;
                 _clis = null;
-                _clisAfter = null;
+                _clisDict = null;
                 break;
             case eTcpServerState.Opening:
             case eTcpServerState.Opened:
@@ -295,7 +295,7 @@ namespace Nirge.Core
             _cliid = 0;
             _clisPost.Clear();
             _clis.Clear();
-            _clisAfter.Clear();
+            _clisDict.Clear();
         }
 
         #region
@@ -445,7 +445,7 @@ namespace Nirge.Core
             {
             case eTcpServerState.Opened:
                 CTcpClient e;
-                if (_clis.TryGetValue(cli, out e))
+                if (_clisDict.TryGetValue(cli, out e))
                     e.Close(graceful: true);
                 break;
             case eTcpServerState.Closed:
@@ -504,7 +504,7 @@ namespace Nirge.Core
                 switch (_state)
                 {
                 case eTcpServerState.Opened:
-                    lock (_clis)
+                    lock (_clisPre)
                     {
                         _clisPre.Enqueue(cli);
                     }
@@ -555,7 +555,7 @@ namespace Nirge.Core
             {
             case eTcpServerState.Opened:
                 CTcpClient e;
-                if (!_clis.TryGetValue(cli, out e))
+                if (!_clisDict.TryGetValue(cli, out e))
                     return eTcpError.CliOutOfRange;
                 return e.Send(buf, offset, count);
             case eTcpServerState.Closed:
@@ -590,7 +590,7 @@ namespace Nirge.Core
                 case eTcpServerCloseReason.None:
                     if (_clisPre.Count > 0)
                     {
-                        lock (_clis)
+                        lock (_clisPre)
                         {
                             while (_clisPre.Count > 0)
                                 _clisPost.Enqueue(_clisPre.Dequeue());
@@ -606,7 +606,8 @@ namespace Nirge.Core
                             cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.PkgSize, _args.SendCapacity, _args.RecvCapacity), _log, _cache);
 
                         var cliid = ++_cliid;
-                        _clis.Add(cliid, cli);
+                        _clis.Add(cli);
+                        _clisDict.Add(cliid, cli);
 
                         EventHandler<CDataEventArgs<CTcpClientConnectArgs>> cbCliConnected = null;
                         EventHandler<CDataEventArgs<CTcpClientCloseArgs>> cbCliClosed = null;
@@ -625,7 +626,8 @@ namespace Nirge.Core
                         };
                         cbCliClosed = (sender, e) =>
                         {
-                            _clis.Remove(cliid);
+                            _clis.Remove(cli);
+                            _clisDict.Remove(cliid);
 
                             cli.Connected -= cbCliConnected;
                             cli.Closed -= cbCliClosed;
@@ -664,21 +666,14 @@ namespace Nirge.Core
 
                     if (_clis.Count > 0)
                     {
-                        _clisAfter.AddRange(_clis.Keys);
-                        foreach (var i in _clisAfter)
-                        {
-                            CTcpClient cli;
-                            if (_clis.TryGetValue(i, out cli))
-                                cli.Exec();
-                        }
-                        _clisAfter.Clear();
+                        for (var i = _clis.Count - 1; i >= 0; --i)
+                            _clis[i].Exec();
                     }
-
                     break;
                 case eTcpServerCloseReason.Active:
                 case eTcpServerCloseReason.Exception:
                     eClose();
-                    foreach (var i in _clis.Values)
+                    foreach (var i in _clis)
                         i.Close(graceful: false);
                     _state = eTcpServerState.ClosingWait;
                     break;
@@ -690,13 +685,13 @@ namespace Nirge.Core
                 case eTcpServerCloseReason.None:
                 case eTcpServerCloseReason.Active:
                     eClose();
-                    foreach (var i in _clis.Values)
+                    foreach (var i in _clis)
                         i.Close(graceful: true);
                     _state = eTcpServerState.ClosingWait;
                     break;
                 case eTcpServerCloseReason.Exception:
                     eClose();
-                    foreach (var i in _clis.Values)
+                    foreach (var i in _clis)
                         i.Close(graceful: false);
                     _state = eTcpServerState.ClosingWait;
                     break;
