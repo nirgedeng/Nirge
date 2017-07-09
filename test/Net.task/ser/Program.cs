@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Linq;
 using System.Text;
 using Nirge.Core;
@@ -19,6 +20,7 @@ namespace ser
         ILog _log;
         CTasker _task;
         CTaskTimer _timer;
+        CTicker _tick;
         CTcpServer _ser;
 
         public void Init()
@@ -27,6 +29,7 @@ namespace ser
 
             _task = new CTasker(_log);
             _timer = new CTaskTimer(_task, _log);
+            _tick = new CTicker();
 
             _ser = new CTcpServer(_log);
             _ser.Closed += Ser_Closed;
@@ -43,14 +46,20 @@ namespace ser
                 for (int i = 0; i < 8; ++i)
                     _ser.Exec();
             }), 10);
+            _tick.Ticked += (sender, e) =>
+            {
+                _timer.Exec(e);
+            };
 
             _task.Init();
             _timer.Init();
+            _tick.Init();
         }
 
         public void Destroy()
         {
             _ser.Close();
+            _tick.Destroy();
             _timer.Destroy();
             _task.Destroy();
         }

@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Linq;
 using System.Text;
 using Nirge.Core;
@@ -19,6 +20,7 @@ namespace cli
         ILog _log;
         CTasker _task;
         CTaskTimer _timer;
+        CTicker _tick;
 
         List<byte[]> _pkgs;
         TcpClientCache _cache;
@@ -30,6 +32,7 @@ namespace cli
 
             _task = new CTasker(_log);
             _timer = new CTaskTimer(_task, _log);
+            _tick = new CTicker();
 
             var clients = 512;
             var pkgs = 2;
@@ -66,19 +69,26 @@ namespace cli
                 for (var i = 0; i < 8; ++i)
                     Exec();
             }), 10);
+            _tick.Ticked += (sender, e) =>
+            {
+                _timer.Exec(e);
+            };
 
             _task.Init();
             _timer.Init();
+            _tick.Init();
         }
 
         public void Destroy()
         {
+            _tick.Destroy();
+            _timer.Destroy();
+
             _task.Exec(CCall.Create(() =>
             {
                 foreach (var i in _clis)
                     i.Close();
             }));
-            _timer.Destroy();
             _task.Destroy();
         }
 

@@ -1,10 +1,11 @@
 ﻿/*------------------------------------------------------------------
-    Copyright ? : All rights reserved
+    Copyright © : All rights reserved
     Author      : 邓晓峰
 ------------------------------------------------------------------*/
 
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using System.Linq;
@@ -29,44 +30,26 @@ namespace Nirge.Core
 
         CTasker _proc;
         ILog _log;
-        Thread _tick;
-        int _timerid;
+        int _timerId;
         Dictionary<int, CTimer> _timers;
         List<int> _timersAfter;
-        bool _quit;
 
         public CTaskTimer(CTasker proc, ILog log)
         {
             _proc = proc;
             _log = log;
 
-            _tick = new Thread(() =>
-            {
-                while (!_quit)
-                {
-                    Thread.Sleep(gIntervalMin);
-                    _proc.Exec(CCall.Create(Exec));
-                }
-            });
-            _tick.IsBackground = true;
-
-            _timerid = 0;
+            _timerId = 0;
             _timers = new Dictionary<int, CTimer>(32);
             _timersAfter = new List<int>(32);
-
-            _quit = false;
         }
 
         public void Init()
         {
-            _tick.Start();
         }
 
         public void Destroy()
         {
-            _quit = true;
-            _tick.Join();
-
             Clear();
         }
 
@@ -78,7 +61,7 @@ namespace Nirge.Core
             if (interval < gIntervalMin)
                 interval = gIntervalMin;
 
-            var timerid = ++_timerid;
+            var timerid = ++_timerId;
             _timers.Add(timerid, new CTimer()
             {
                 _task = task,
@@ -97,12 +80,18 @@ namespace Nirge.Core
 
         public void Clear()
         {
-            _timerid = 0;
+            _timerId = 0;
             _timers.Clear();
             _timersAfter.Clear();
         }
 
-        void Exec()
+        public void Exec(int tick)
+        {
+            Trace.Assert(tick > 0 && tick <= gIntervalMin, string.Format("{0} > 0 && {0} <= gIntervalMin", tick));
+            eExec(tick);
+        }
+
+        void eExec(int tick)
         {
             if (_timers.Count == 0)
                 return;
@@ -113,15 +102,15 @@ namespace Nirge.Core
             {
                 CTimer timer;
                 if (_timers.TryGetValue(i, out timer))
-                    Exec(i, timer);
+                    eExec(tick, i, timer);
             }
 
             _timersAfter.Clear();
         }
 
-        void Exec(int timerid, CTimer timer)
+        void eExec(int tick, int timerid, CTimer timer)
         {
-            timer._pass += gIntervalMin;
+            timer._pass += tick;
             if (timer._pass < timer._interval)
                 return;
             timer._pass = 0;

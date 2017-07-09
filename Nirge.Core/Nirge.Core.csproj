@@ -52,6 +52,7 @@
     <Compile Include="RingBuf.cs" />
     <Compile Include="Tasker.cs" />
     <Compile Include="TaskTimer.cs" />
+    <Compile Include="Ticker.cs" />
     <Compile Include="TcpClient.cs" />
     <Compile Include="TcpClientCache.cs" />
     <Compile Include="TcpServer.cs" />
