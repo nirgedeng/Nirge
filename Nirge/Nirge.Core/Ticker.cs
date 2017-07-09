@@ -24,7 +24,11 @@ namespace Nirge.Core
         public CTicker(int interval = 0)
         {
             _interval = interval;
-            if (_interval < 10)
+            if (_interval == 0)
+                _interval = 10;
+            else if (_interval < 0)
+                _interval = 10;
+            else if (_interval > 10)
                 _interval = 10;
 
             _tick = new Thread(() =>
