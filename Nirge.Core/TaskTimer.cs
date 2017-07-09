@@ -61,8 +61,8 @@ namespace Nirge.Core
             if (interval < gIntervalMin)
                 interval = gIntervalMin;
 
-            var timerid = ++_timerId;
-            _timers.Add(timerid, new CTimer()
+            var timerId = ++_timerId;
+            _timers.Add(timerId, new CTimer()
             {
                 _task = task,
                 _interval = interval,
@@ -70,7 +70,7 @@ namespace Nirge.Core
                 _count = count,
             });
 
-            return timerid;
+            return timerId;
         }
 
         public bool Unreg(int timer)
@@ -108,7 +108,7 @@ namespace Nirge.Core
             _timersAfter.Clear();
         }
 
-        void eExec(int tick, int timerid, CTimer timer)
+        void eExec(int tick, int timerId, CTimer timer)
         {
             timer._pass += tick;
             if (timer._pass < timer._interval)
@@ -124,11 +124,11 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                _log.Error(string.Format("[Timer]Exec exception, timer:\"{0}\", task:\"{1}\"", timerid, timer._task.GetType()), exception);
+                _log.Error(string.Format("[Timer]Exec exception, timer:\"{0}\", task:\"{1}\"", timerId, timer._task.GetType()), exception);
             }
 
             if (timer._count == 0)
-                _timers.Remove(timerid);
+                _timers.Remove(timerId);
         }
     }
 }

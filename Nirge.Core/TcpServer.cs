@@ -605,9 +605,9 @@ namespace Nirge.Core
                         else
                             cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.PkgSize, _args.SendCapacity, _args.RecvCapacity), _log, _cache);
 
-                        var cliid = ++_cliId;
+                        var cliId = ++_cliId;
                         _clis.Add(cli);
-                        _clisDict.Add(cliid, cli);
+                        _clisDict.Add(cliId, cli);
 
                         EventHandler<CDataEventArgs<CTcpClientConnectArgs>> cbCliConnected = null;
                         EventHandler<CDataEventArgs<CTcpClientCloseArgs>> cbCliClosed = null;
@@ -617,17 +617,17 @@ namespace Nirge.Core
                         {
                             try
                             {
-                                OnCliConnected(cliid);
+                                OnCliConnected(cliId);
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[TcpServer]OnCliConnected exception, cli:\"{0}\", connectArgs:\"{1},{2},{3}\"", cliid, e.Arg1.Error, e.Arg1.Error, e.Arg1.SocketError), exception);
+                                _log.Error(string.Format("[TcpServer]OnCliConnected exception, cli:\"{0}\", connectArgs:\"{1},{2},{3}\"", cliId, e.Arg1.Error, e.Arg1.Error, e.Arg1.SocketError), exception);
                             }
                         };
                         cbCliClosed = (sender, e) =>
                         {
                             _clis.Remove(cli);
-                            _clisDict.Remove(cliid);
+                            _clisDict.Remove(cliId);
 
                             cli.Connected -= cbCliConnected;
                             cli.Closed -= cbCliClosed;
@@ -637,11 +637,11 @@ namespace Nirge.Core
 
                             try
                             {
-                                OnCliClosed(cliid, e.Arg1);
+                                OnCliClosed(cliId, e.Arg1);
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[TcpServer]OnCliClosed exception, cli:\"{0}\", closeArgs:\"{1},{2},{3}\"", cliid, e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError), exception);
+                                _log.Error(string.Format("[TcpServer]OnCliClosed exception, cli:\"{0}\", closeArgs:\"{1},{2},{3}\"", cliId, e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError), exception);
                             }
                         };
                         cbCliRecved = (sender, buf, offset, count) =>
@@ -649,11 +649,11 @@ namespace Nirge.Core
                             try
                             {
                                 if (CliRecved != null)
-                                    CliRecved(this, cliid, buf, offset, count);
+                                    CliRecved(this, cliId, buf, offset, count);
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[TcpServer]CliRecved exception, cli:\"{0}\", pkg:\"{1}\"", cliid, count), exception);
+                                _log.Error(string.Format("[TcpServer]CliRecved exception, cli:\"{0}\", pkg:\"{1}\"", cliId, count), exception);
                             }
                         };
 
