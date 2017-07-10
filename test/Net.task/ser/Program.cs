@@ -48,7 +48,7 @@ namespace ser
             }), 10);
             _tick.Ticked += (sender, e) =>
             {
-                _timer.Exec(e);
+                CCall.Create(_timer.Exec, e);
             };
 
             _task.Init();
