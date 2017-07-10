@@ -71,7 +71,7 @@ namespace cli
             }), 10);
             _tick.Ticked += (sender, e) =>
             {
-                CCall.Create(_timer.Exec, e);
+                _task.Exec(CCall.Create(_timer.Exec, e));
             };
 
             _task.Init();
