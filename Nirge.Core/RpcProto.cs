@@ -23,19 +23,16 @@ namespace Nirge.Core {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg5ScGNQcm90by5wcm90bxIPZ29vZ2xlLnByb3RvYnVmGgtQcm90by5wcm90",
-            "byInCgpScGNDYWxsQXJnEgsKA1VpZBgBIAEoBRIMCgRBcmdzGAIgASgMImUK",
-            "CkMyc1JwY0NhbGwSDgoGU2VyaWFsGAEgASgFEg8KB1NlcnZpY2UYAiABKAUS",
-            "DAoEQ2FsbBgDIAEoBRIoCgNBcmcYBCABKAsyGy5nb29nbGUucHJvdG9idWYu",
-            "UnBjQ2FsbEFyZyJlCgpTMmNScGNDYWxsEg4KBlNlcmlhbBgBIAEoBRIPCgdT",
-            "ZXJ2aWNlGAIgASgFEgwKBENhbGwYAyABKAUSKAoDUmV0GAQgASgLMhsuZ29v",
-            "Z2xlLnByb3RvYnVmLlJwY0NhbGxBcmciPgoNUzJjUnBjQ2FsbEVychIOCgZT",
-            "ZXJpYWwYASABKAUSDwoHU2VydmljZRgCIAEoBRIMCgRDYWxsGAMgASgFQg2q",
-            "AgpOaXJnZS5Db3JlYgZwcm90bzM="));
+            "byJJCgpDMnNScGNDYWxsEg4KBlNlcmlhbBgBIAEoBRIPCgdTZXJ2aWNlGAIg",
+            "ASgFEgwKBENhbGwYAyABKAUSDAoEQXJncxgEIAEoDCJICgpTMmNScGNDYWxs",
+            "Eg4KBlNlcmlhbBgBIAEoBRIPCgdTZXJ2aWNlGAIgASgFEgwKBENhbGwYAyAB",
+            "KAUSCwoDUmV0GAQgASgMIj4KDVMyY1JwY0NhbGxFcnISDgoGU2VyaWFsGAEg",
+            "ASgFEg8KB1NlcnZpY2UYAiABKAUSDAoEQ2FsbBgDIAEoBUINqgIKTmlyZ2Uu",
+            "Q29yZWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Nirge.Core.ProtoReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallArg), global::Nirge.Core.RpcCallArg.Parser, new[]{ "Uid", "Args" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.C2sRpcCall), global::Nirge.Core.C2sRpcCall.Parser, new[]{ "Serial", "Service", "Call", "Arg" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.C2sRpcCall), global::Nirge.Core.C2sRpcCall.Parser, new[]{ "Serial", "Service", "Call", "Args" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.S2cRpcCall), global::Nirge.Core.S2cRpcCall.Parser, new[]{ "Serial", "Service", "Call", "Ret" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.S2cRpcCallErr), global::Nirge.Core.S2cRpcCallErr.Parser, new[]{ "Serial", "Service", "Call" }, null, null, null)
           }));
@@ -44,151 +41,6 @@ namespace Nirge.Core {
 
   }
   #region Messages
-  public sealed partial class RpcCallArg : pb::IMessage<RpcCallArg> {
-    private static readonly pb::MessageParser<RpcCallArg> _parser = new pb::MessageParser<RpcCallArg>(() => new RpcCallArg());
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<RpcCallArg> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[0]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcCallArg() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcCallArg(RpcCallArg other) : this() {
-      uid_ = other.uid_;
-      args_ = other.args_;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcCallArg Clone() {
-      return new RpcCallArg(this);
-    }
-
-    /// <summary>Field number for the "Uid" field.</summary>
-    public const int UidFieldNumber = 1;
-    private int uid_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Uid {
-      get { return uid_; }
-      set {
-        uid_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Args" field.</summary>
-    public const int ArgsFieldNumber = 2;
-    private pb::ByteString args_ = pb::ByteString.Empty;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pb::ByteString Args {
-      get { return args_; }
-      set {
-        args_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as RpcCallArg);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(RpcCallArg other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (Uid != other.Uid) return false;
-      if (Args != other.Args) return false;
-      return true;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (Uid != 0) hash ^= Uid.GetHashCode();
-      if (Args.Length != 0) hash ^= Args.GetHashCode();
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (Uid != 0) {
-        output.WriteRawTag(8);
-        output.WriteInt32(Uid);
-      }
-      if (Args.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteBytes(Args);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (Uid != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Uid);
-      }
-      if (Args.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Args);
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(RpcCallArg other) {
-      if (other == null) {
-        return;
-      }
-      if (other.Uid != 0) {
-        Uid = other.Uid;
-      }
-      if (other.Args.Length != 0) {
-        Args = other.Args;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            input.SkipLastField();
-            break;
-          case 8: {
-            Uid = input.ReadInt32();
-            break;
-          }
-          case 18: {
-            Args = input.ReadBytes();
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
   public sealed partial class C2sRpcCall : pb::IMessage<C2sRpcCall> {
     private static readonly pb::MessageParser<C2sRpcCall> _parser = new pb::MessageParser<C2sRpcCall>(() => new C2sRpcCall());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -196,7 +48,7 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -216,7 +68,7 @@ namespace Nirge.Core {
       serial_ = other.serial_;
       service_ = other.service_;
       call_ = other.call_;
-      Arg = other.arg_ != null ? other.Arg.Clone() : null;
+      args_ = other.args_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -257,14 +109,14 @@ namespace Nirge.Core {
       }
     }
 
-    /// <summary>Field number for the "Arg" field.</summary>
-    public const int ArgFieldNumber = 4;
-    private global::Nirge.Core.RpcCallArg arg_;
+    /// <summary>Field number for the "Args" field.</summary>
+    public const int ArgsFieldNumber = 4;
+    private pb::ByteString args_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Nirge.Core.RpcCallArg Arg {
-      get { return arg_; }
+    public pb::ByteString Args {
+      get { return args_; }
       set {
-        arg_ = value;
+        args_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -284,7 +136,7 @@ namespace Nirge.Core {
       if (Serial != other.Serial) return false;
       if (Service != other.Service) return false;
       if (Call != other.Call) return false;
-      if (!object.Equals(Arg, other.Arg)) return false;
+      if (Args != other.Args) return false;
       return true;
     }
 
@@ -294,7 +146,7 @@ namespace Nirge.Core {
       if (Serial != 0) hash ^= Serial.GetHashCode();
       if (Service != 0) hash ^= Service.GetHashCode();
       if (Call != 0) hash ^= Call.GetHashCode();
-      if (arg_ != null) hash ^= Arg.GetHashCode();
+      if (Args.Length != 0) hash ^= Args.GetHashCode();
       return hash;
     }
 
@@ -317,9 +169,9 @@ namespace Nirge.Core {
         output.WriteRawTag(24);
         output.WriteInt32(Call);
       }
-      if (arg_ != null) {
+      if (Args.Length != 0) {
         output.WriteRawTag(34);
-        output.WriteMessage(Arg);
+        output.WriteBytes(Args);
       }
     }
 
@@ -335,8 +187,8 @@ namespace Nirge.Core {
       if (Call != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Call);
       }
-      if (arg_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Arg);
+      if (Args.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Args);
       }
       return size;
     }
@@ -355,11 +207,8 @@ namespace Nirge.Core {
       if (other.Call != 0) {
         Call = other.Call;
       }
-      if (other.arg_ != null) {
-        if (arg_ == null) {
-          arg_ = new global::Nirge.Core.RpcCallArg();
-        }
-        Arg.MergeFrom(other.Arg);
+      if (other.Args.Length != 0) {
+        Args = other.Args;
       }
     }
 
@@ -384,10 +233,7 @@ namespace Nirge.Core {
             break;
           }
           case 34: {
-            if (arg_ == null) {
-              arg_ = new global::Nirge.Core.RpcCallArg();
-            }
-            input.ReadMessage(arg_);
+            Args = input.ReadBytes();
             break;
           }
         }
@@ -403,7 +249,7 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -423,7 +269,7 @@ namespace Nirge.Core {
       serial_ = other.serial_;
       service_ = other.service_;
       call_ = other.call_;
-      Ret = other.ret_ != null ? other.Ret.Clone() : null;
+      ret_ = other.ret_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -466,12 +312,12 @@ namespace Nirge.Core {
 
     /// <summary>Field number for the "Ret" field.</summary>
     public const int RetFieldNumber = 4;
-    private global::Nirge.Core.RpcCallArg ret_;
+    private pb::ByteString ret_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Nirge.Core.RpcCallArg Ret {
+    public pb::ByteString Ret {
       get { return ret_; }
       set {
-        ret_ = value;
+        ret_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -491,7 +337,7 @@ namespace Nirge.Core {
       if (Serial != other.Serial) return false;
       if (Service != other.Service) return false;
       if (Call != other.Call) return false;
-      if (!object.Equals(Ret, other.Ret)) return false;
+      if (Ret != other.Ret) return false;
       return true;
     }
 
@@ -501,7 +347,7 @@ namespace Nirge.Core {
       if (Serial != 0) hash ^= Serial.GetHashCode();
       if (Service != 0) hash ^= Service.GetHashCode();
       if (Call != 0) hash ^= Call.GetHashCode();
-      if (ret_ != null) hash ^= Ret.GetHashCode();
+      if (Ret.Length != 0) hash ^= Ret.GetHashCode();
       return hash;
     }
 
@@ -524,9 +370,9 @@ namespace Nirge.Core {
         output.WriteRawTag(24);
         output.WriteInt32(Call);
       }
-      if (ret_ != null) {
+      if (Ret.Length != 0) {
         output.WriteRawTag(34);
-        output.WriteMessage(Ret);
+        output.WriteBytes(Ret);
       }
     }
 
@@ -542,8 +388,8 @@ namespace Nirge.Core {
       if (Call != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Call);
       }
-      if (ret_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Ret);
+      if (Ret.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Ret);
       }
       return size;
     }
@@ -562,11 +408,8 @@ namespace Nirge.Core {
       if (other.Call != 0) {
         Call = other.Call;
       }
-      if (other.ret_ != null) {
-        if (ret_ == null) {
-          ret_ = new global::Nirge.Core.RpcCallArg();
-        }
-        Ret.MergeFrom(other.Ret);
+      if (other.Ret.Length != 0) {
+        Ret = other.Ret;
       }
     }
 
@@ -591,10 +434,7 @@ namespace Nirge.Core {
             break;
           }
           case 34: {
-            if (ret_ == null) {
-              ret_ = new global::Nirge.Core.RpcCallArg();
-            }
-            input.ReadMessage(ret_);
+            Ret = input.ReadBytes();
             break;
           }
         }
@@ -610,7 +450,7 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
