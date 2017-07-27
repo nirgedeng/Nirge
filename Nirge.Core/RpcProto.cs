@@ -26,15 +26,15 @@ namespace Nirge.Core {
             "byJJCgpDMnNScGNDYWxsEg4KBlNlcmlhbBgBIAEoBRIPCgdTZXJ2aWNlGAIg",
             "ASgFEgwKBENhbGwYAyABKAUSDAoEQXJncxgEIAEoDCJICgpTMmNScGNDYWxs",
             "Eg4KBlNlcmlhbBgBIAEoBRIPCgdTZXJ2aWNlGAIgASgFEgwKBENhbGwYAyAB",
-            "KAUSCwoDUmV0GAQgASgMIj4KDVMyY1JwY0NhbGxFcnISDgoGU2VyaWFsGAEg",
-            "ASgFEg8KB1NlcnZpY2UYAiABKAUSDAoEQ2FsbBgDIAEoBUINqgIKTmlyZ2Uu",
-            "Q29yZWIGcHJvdG8z"));
+            "KAUSCwoDUmV0GAQgASgMIkQKE1MyY1JwY0NhbGxFeGNlcHRpb24SDgoGU2Vy",
+            "aWFsGAEgASgFEg8KB1NlcnZpY2UYAiABKAUSDAoEQ2FsbBgDIAEoBUINqgIK",
+            "TmlyZ2UuQ29yZWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Nirge.Core.ProtoReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.C2sRpcCall), global::Nirge.Core.C2sRpcCall.Parser, new[]{ "Serial", "Service", "Call", "Args" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.S2cRpcCall), global::Nirge.Core.S2cRpcCall.Parser, new[]{ "Serial", "Service", "Call", "Ret" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.S2cRpcCallErr), global::Nirge.Core.S2cRpcCallErr.Parser, new[]{ "Serial", "Service", "Call" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.S2cRpcCallException), global::Nirge.Core.S2cRpcCallException.Parser, new[]{ "Serial", "Service", "Call" }, null, null, null)
           }));
     }
     #endregion
@@ -443,10 +443,10 @@ namespace Nirge.Core {
 
   }
 
-  public sealed partial class S2cRpcCallErr : pb::IMessage<S2cRpcCallErr> {
-    private static readonly pb::MessageParser<S2cRpcCallErr> _parser = new pb::MessageParser<S2cRpcCallErr>(() => new S2cRpcCallErr());
+  public sealed partial class S2cRpcCallException : pb::IMessage<S2cRpcCallException> {
+    private static readonly pb::MessageParser<S2cRpcCallException> _parser = new pb::MessageParser<S2cRpcCallException>(() => new S2cRpcCallException());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<S2cRpcCallErr> Parser { get { return _parser; } }
+    public static pb::MessageParser<S2cRpcCallException> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -459,22 +459,22 @@ namespace Nirge.Core {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public S2cRpcCallErr() {
+    public S2cRpcCallException() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public S2cRpcCallErr(S2cRpcCallErr other) : this() {
+    public S2cRpcCallException(S2cRpcCallException other) : this() {
       serial_ = other.serial_;
       service_ = other.service_;
       call_ = other.call_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public S2cRpcCallErr Clone() {
-      return new S2cRpcCallErr(this);
+    public S2cRpcCallException Clone() {
+      return new S2cRpcCallException(this);
     }
 
     /// <summary>Field number for the "Serial" field.</summary>
@@ -512,11 +512,11 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as S2cRpcCallErr);
+      return Equals(other as S2cRpcCallException);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(S2cRpcCallErr other) {
+    public bool Equals(S2cRpcCallException other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -575,7 +575,7 @@ namespace Nirge.Core {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(S2cRpcCallErr other) {
+    public void MergeFrom(S2cRpcCallException other) {
       if (other == null) {
         return;
       }

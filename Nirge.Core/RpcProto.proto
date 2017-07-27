@@ -28,7 +28,7 @@ message S2cRpcCall
     bytes Ret = 4;
 }
 
-message S2cRpcCallErr
+message S2cRpcCallException
 {
     int32 Serial = 1;
     int32 Service = 2;
