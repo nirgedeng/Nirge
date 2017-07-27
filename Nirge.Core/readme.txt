@@ -1,0 +1,1 @@
+protoc.exe --proto_path=E:\Nirge\trunk\Nirge.Core\ --csharp_out=E:\Nirge\trunk\Nirge.Core E:\Nirge\trunk\Nirge.Core\RpcProto.proto E:\Nirge\trunk\Nirge.Core\Proto.proto

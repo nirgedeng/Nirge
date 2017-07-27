@@ -1,0 +1,44 @@
+//----------------------------------------------------------------------------------------
+
+syntax = "proto3";
+
+//----------------------------------------------------------------------------------------
+
+import "Proto.proto";
+
+package google.protobuf;
+
+option csharp_namespace = "Nirge.Core";
+
+//----------------------------------------------------------------------------------------
+
+message RpcCallArg
+{
+    int32 Uid = 1;
+    bytes Args = 2;
+}
+
+message C2sRpcCall
+{
+    int32 Serial = 1;
+    int32 Service = 2;
+    int32 Call = 3;
+    RpcCallArg Arg = 4;
+}
+
+message S2cRpcCall
+{
+    int32 Serial = 1;
+    int32 Service = 2;
+    int32 Call = 3;
+    RpcCallArg Ret = 4;
+}
+
+message S2cRpcCallErr
+{
+    int32 Serial = 1;
+    int32 Service = 2;
+    int32 Call = 3;
+}
+
+//----------------------------------------------------------------------------------------
