@@ -59,6 +59,7 @@
     <Compile Include="RpcCallStub.cs" />
     <Compile Include="RpcChannel.cs" />
     <Compile Include="RpcProto.cs" />
+    <Compile Include="RpcUtils.cs" />
     <Compile Include="Tasker.cs" />
     <Compile Include="TaskTimer.cs" />
     <Compile Include="Ticker.cs" />
