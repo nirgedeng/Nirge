@@ -15,14 +15,34 @@ using System;
 
 namespace Nirge.Core
 {
+    public class CRpcCallerArgs
+    {
+        int _timeout;
+
+        public int Timeout
+        {
+            get
+            {
+                return _timeout;
+            }
+        }
+
+        public CRpcCallerArgs(int timeout)
+        {
+            _timeout = timeout;
+        }
+    }
+
     public class CRpcCaller
     {
+        CRpcCallerArgs _args;
         ILog _log;
         CRpcCallStubProvider _stubs;
         CRpcChannel _channel;
 
-        public CRpcCaller(ILog log, CRpcCallStubProvider stubs, CRpcChannel channel)
+        public CRpcCaller(CRpcCallerArgs args, ILog log, CRpcCallStubProvider stubs, CRpcChannel channel)
         {
+            _args = args;
             _log = log;
             _stubs = stubs;
             _channel = channel;
