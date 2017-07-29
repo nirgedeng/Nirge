@@ -52,15 +52,7 @@
     <Compile Include="ITask.cs" />
     <Compile Include="ObjPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Proto.cs" />
-    <Compile Include="ProtoUtils.cs" />
     <Compile Include="RingBuf.cs" />
-    <Compile Include="RpcCallee.cs" />
-    <Compile Include="RpcCaller.cs" />
-    <Compile Include="RpcCallStub.cs" />
-    <Compile Include="RpcChannel.cs" />
-    <Compile Include="RpcProto.cs" />
-    <Compile Include="RpcUtils.cs" />
     <Compile Include="Tasker.cs" />
     <Compile Include="TaskTimer.cs" />
     <Compile Include="Ticker.cs" />
@@ -71,10 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Proto.proto" />
-    <None Include="RpcProto.proto" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
