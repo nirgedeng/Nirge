@@ -15,5 +15,9 @@ namespace Nirge.Core
 {
     public class RpcChannel
     {
+        public bool Send(byte[] buf, int offset, int count)
+        {
+            return false;
+        }
     }
 }

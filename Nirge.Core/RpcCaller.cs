@@ -33,6 +33,13 @@ namespace Nirge.Core
             var stub = _stubs.CreateStub(service, call);
             var task = stub.Awaiter.Task;
 
+            var pkg = new C2sRpcCall()
+            {
+                Serial = stub.Serial,
+                Service = stub.Service,
+                Call = stub.Call,
+            };
+
             try
             {
                 await task;
