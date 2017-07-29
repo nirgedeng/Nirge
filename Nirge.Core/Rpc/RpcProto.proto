@@ -7,8 +7,6 @@ syntax = "proto3";
 import "google/protobuf/any.proto";
 import "Proto.proto";
 
-package google.protobuf;
-
 option csharp_namespace = "Nirge.Core";
 
 //----------------------------------------------------------------------------------------
