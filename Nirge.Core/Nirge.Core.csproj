@@ -49,10 +49,10 @@
   <ItemGroup>
     <Compile Include="Call.cs" />
     <Compile Include="DataEventArgs.cs" />
-    <Compile Include="ITask.cs" />
+    <Compile Include="Task\ITask.cs" />
     <Compile Include="ObjPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RingBuf.cs" />
+    <Compile Include="Net\RingBuf.cs" />
     <Compile Include="Rpc\Proto.cs" />
     <Compile Include="Rpc\ProtoUtils.cs" />
     <Compile Include="Rpc\RpcCallee.cs" />
@@ -62,13 +62,13 @@
     <Compile Include="Rpc\RpcProto.cs" />
     <Compile Include="Rpc\RpcService.cs" />
     <Compile Include="Rpc\RpcUtils.cs" />
-    <Compile Include="Tasker.cs" />
-    <Compile Include="TaskTimer.cs" />
-    <Compile Include="Ticker.cs" />
-    <Compile Include="TcpClient.cs" />
-    <Compile Include="TcpClientCache.cs" />
-    <Compile Include="TcpServer.cs" />
-    <Compile Include="TcpUtils.cs" />
+    <Compile Include="Task\Tasker.cs" />
+    <Compile Include="Task\TaskTimer.cs" />
+    <Compile Include="Task\Ticker.cs" />
+    <Compile Include="Net\TcpClient.cs" />
+    <Compile Include="Net\TcpClientCache.cs" />
+    <Compile Include="Net\TcpServer.cs" />
+    <Compile Include="Net\TcpUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="readme.txt" />
