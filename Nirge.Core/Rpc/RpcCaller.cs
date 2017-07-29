@@ -44,10 +44,7 @@ namespace Nirge.Core
             {
                 await task;
             }
-            catch (RpcException exception)
-            {
-            }
-            catch (Exception exception)
+            catch
             {
             }
 
