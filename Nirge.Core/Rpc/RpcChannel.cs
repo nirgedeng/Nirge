@@ -13,11 +13,24 @@ using System;
 
 namespace Nirge.Core
 {
-    public class RpcChannel
+    public abstract class CRpcChannel
     {
-        public bool Send(byte[] buf, int offset, int count)
+        public abstract bool Send(int channel, byte[] buf, int offset, int count);
+    }
+
+    public class CClientRpcChannel
+    {
+        public virtual bool Send(int channel, byte[] buf, int offset, int count)
         {
-            return false;
+            return true;
+        }
+    }
+
+    public class CServerRpcChannel
+    {
+        public virtual bool Send(int channel, byte[] buf, int offset, int count)
+        {
+            return true;
         }
     }
 }

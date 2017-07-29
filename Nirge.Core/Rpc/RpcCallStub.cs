@@ -15,11 +15,12 @@ using System;
 
 namespace Nirge.Core
 {
-    public class RpcCallStub
+    public class CRpcCallStub
     {
         int _serial;
         int _service;
         int _call;
+        long _time;
         TaskCompletionSource<ArraySegment<byte>> _awaiter;
 
         public int Serial
@@ -46,6 +47,14 @@ namespace Nirge.Core
             }
         }
 
+        public long Time
+        {
+            get
+            {
+                return _time;
+            }
+        }
+
         public TaskCompletionSource<ArraySegment<byte>> Awaiter
         {
             get
@@ -54,39 +63,39 @@ namespace Nirge.Core
             }
         }
 
-        public RpcCallStub(int serial, int service, int call)
+        public CRpcCallStub(int serial, int service, int call)
         {
             _serial = serial;
             _service = service;
             _call = call;
+            _time = 0;
             _awaiter = new TaskCompletionSource<ArraySegment<byte>>();
-            ;
         }
     }
 
-    public class RpcCallStubProvider
+    public class CRpcCallStubProvider
     {
         ILog _log;
-        Dictionary<int, RpcCallStub> _stubs;
+        Dictionary<int, CRpcCallStub> _stubs;
         int _serial;
 
-        public RpcCallStubProvider(ILog log)
+        public CRpcCallStubProvider(ILog log)
         {
             _log = log;
-            _stubs = new Dictionary<int, RpcCallStub>(32);
+            _stubs = new Dictionary<int, CRpcCallStub>(32);
         }
 
-        public RpcCallStub CreateStub(int service, int call)
+        public CRpcCallStub CreateStub(int service, int call)
         {
             var serial = ++_serial;
-            var stub = new RpcCallStub(serial, service, call);
+            var stub = new CRpcCallStub(serial, service, call);
             _stubs.Add(serial, stub);
             return stub;
         }
 
-        public RpcCallStub GetStub(int serial)
+        public CRpcCallStub GetStub(int serial)
         {
-            RpcCallStub stub;
+            CRpcCallStub stub;
             if (_stubs.TryGetValue(serial, out stub))
                 return stub;
             return null;

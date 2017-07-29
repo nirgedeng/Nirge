@@ -13,7 +13,7 @@ using System;
 
 namespace Nirge.Core
 {
-    public class CRpcCallee
+    public interface IRpcService
     {
     }
 }

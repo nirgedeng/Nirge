@@ -15,13 +15,13 @@ using System;
 
 namespace Nirge.Core
 {
-    public class RpcCaller
+    public class CRpcCaller
     {
         ILog _log;
-        RpcCallStubProvider _stubs;
-        RpcChannel _channel;
+        CRpcCallStubProvider _stubs;
+        CRpcChannel _channel;
 
-        public RpcCaller(ILog log, RpcCallStubProvider stubs, RpcChannel channel)
+        public CRpcCaller(ILog log, CRpcCallStubProvider stubs, CRpcChannel channel)
         {
             _log = log;
             _stubs = stubs;

@@ -13,75 +13,87 @@ using System;
 
 namespace Nirge.Core
 {
-    public enum RpcCallException
+    #region 
+
+    public enum eRpcException
     {
         None,
+        CallerChannel,
+        CallerArgsSerialize,
+        CallerRetDeserialize,
+        CallerTimeout,
         CalleeArgsDeserialize,
         CalleeExec,
         CalleeRetSerialize,
     }
 
-    public class RpcException : Exception
+    public class CRpcException : Exception
     {
-        public RpcException() : base() { }
-        public RpcException(string message) : base(message) { }
-        public RpcException(string message, Exception innerException) : base(message, innerException) { }
+        public CRpcException() : base() { }
+        public CRpcException(string message) : base(message) { }
+        public CRpcException(string message, Exception innerException) : base(message, innerException) { }
     }
 
-    public class CallerChannelRpcException : RpcException
+    public class CCallerChannelRpcException : CRpcException
     {
-        public CallerChannelRpcException()
+        public CCallerChannelRpcException()
         {
         }
     }
 
-    public class CallerArgsSerializeRpcException : RpcException
+    public class CCallerArgsSerializeRpcException : CRpcException
     {
-        public CallerArgsSerializeRpcException()
+        public CCallerArgsSerializeRpcException()
         {
         }
     }
 
-    public class CallerRetDeserializeRpcException : RpcException
+    public class CCallerRetDeserializeRpcException : CRpcException
     {
-        public CallerRetDeserializeRpcException()
+        public CCallerRetDeserializeRpcException()
         {
         }
     }
 
-    public class CallerTimeoutRpcException : RpcException
+    public class CCallerTimeoutRpcException : CRpcException
     {
-        public CallerTimeoutRpcException()
+        public CCallerTimeoutRpcException()
         {
         }
     }
 
-    public class CalleeArgsDeserializeRpcException : RpcException
+    public class CCalleeArgsDeserializeRpcException : CRpcException
     {
-        public CalleeArgsDeserializeRpcException()
+        public CCalleeArgsDeserializeRpcException()
         {
         }
     }
 
-    public class CalleeExecRpcException : RpcException
+    public class CCalleeExecRpcException : CRpcException
     {
-        public CalleeExecRpcException()
+        public CCalleeExecRpcException()
         {
         }
     }
 
-    public class CalleeRetSerializeRpcException : RpcException
+    public class CCalleeRetSerializeRpcException : CRpcException
     {
-        public CalleeRetSerializeRpcException()
+        public CCalleeRetSerializeRpcException()
         {
         }
     }
 
-    public enum RpcProto
+    #endregion
+
+    #region 
+
+    public enum eRpcProto
     {
         C2sRpcCall = 1,
 
-        S2cRpcCall = 11,
+        S2cRpcCall = 6,
         S2cRpcCallException,
     }
+
+    #endregion
 }
