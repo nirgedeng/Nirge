@@ -4,6 +4,7 @@ syntax = "proto3";
 
 //----------------------------------------------------------------------------------------
 
+import "google/protobuf/any.proto";
 import "Proto.proto";
 
 package google.protobuf;
@@ -17,7 +18,7 @@ message C2sRpcCall
     int32 Serial = 1;
     int32 Service = 2;
     int32 Call = 3;
-    bytes Args = 4;
+    google.protobuf.Any Args = 4;
 }
 
 message S2cRpcCall
@@ -25,7 +26,7 @@ message S2cRpcCall
     int32 Serial = 1;
     int32 Service = 2;
     int32 Call = 3;
-    bytes Ret = 4;
+    google.protobuf.Any Ret = 4;
 }
 
 message S2cRpcCallException
