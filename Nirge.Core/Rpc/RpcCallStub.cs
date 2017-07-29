@@ -21,7 +21,7 @@ namespace Nirge.Core
         int _service;
         int _call;
         long _time;
-        TaskCompletionSource<ArraySegment<byte>> _awaiter;
+        TaskCompletionSource<Google.Protobuf.WellKnownTypes.Any> _awaiter;
 
         public int Serial
         {
@@ -55,7 +55,7 @@ namespace Nirge.Core
             }
         }
 
-        public TaskCompletionSource<ArraySegment<byte>> Awaiter
+        public TaskCompletionSource<Google.Protobuf.WellKnownTypes.Any> Awaiter
         {
             get
             {
@@ -69,7 +69,7 @@ namespace Nirge.Core
             _service = service;
             _call = call;
             _time = 0;
-            _awaiter = new TaskCompletionSource<ArraySegment<byte>>();
+            _awaiter = new TaskCompletionSource<Google.Protobuf.WellKnownTypes.Any>();
         }
     }
 

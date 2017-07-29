@@ -48,7 +48,7 @@ namespace Nirge.Core
             _channel = channel;
         }
 
-        async Task<ArraySegment<byte>> Call(int service, int call, ArraySegment<byte> args)
+        async Task<Google.Protobuf.WellKnownTypes.Any> Call(int service, int call, Google.Protobuf.WellKnownTypes.Any args)
         {
             var stub = _stubs.CreateStub(service, call);
             var task = stub.Awaiter.Task;
