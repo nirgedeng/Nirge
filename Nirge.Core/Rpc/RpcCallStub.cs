@@ -85,9 +85,13 @@ namespace Nirge.Core
             _stubs = new Dictionary<int, CRpcCallStub>(32);
         }
 
-        public CRpcCallStub CreateStub(int service, int call)
+        public int CreateSerial()
         {
-            var serial = ++_serial;
+            return ++_serial;
+        }
+
+        public CRpcCallStub CreateStub(int serial, int service, int call)
+        {
             var stub = new CRpcCallStub(serial, service, call);
             _stubs.Add(serial, stub);
             return stub;

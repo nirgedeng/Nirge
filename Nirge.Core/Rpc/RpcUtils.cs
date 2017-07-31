@@ -86,6 +86,16 @@ namespace Nirge.Core
         {
         }
 
+        public ArraySegment<byte> GetInputBuf()
+        {
+            return new ArraySegment<byte>(_buf.Array, _buf.Offset, (int)_inputStream.Position);
+        }
+
+        public ArraySegment<byte> GetOutputBuf()
+        {
+            return new ArraySegment<byte>(_buf.Array, _buf.Offset, (int)_outputStream.Position);
+        }
+
         public void Reset()
         {
             _stream.Position = 0;
@@ -106,7 +116,7 @@ namespace Nirge.Core
     public enum eRpcException
     {
         None,
-        CallerChannel,
+        CallerCommunicator,
         CallerArgsSerialize,
         CallerRetDeserialize,
         CallerTimeout,
@@ -122,9 +132,9 @@ namespace Nirge.Core
         public CRpcException(string message, Exception innerException) : base(message, innerException) { }
     }
 
-    public class CCallerChannelRpcException : CRpcException
+    public class CCallerCommunicatorRpcException : CRpcException
     {
-        public CCallerChannelRpcException()
+        public CCallerCommunicatorRpcException()
         {
         }
     }
