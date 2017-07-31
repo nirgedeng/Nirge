@@ -46,11 +46,11 @@ namespace Nirge.Core
 
     public class CRpcCaller
     {
-        CRpcCallerArgs _args;
-        ILog _log;
-        CRpcStream _stream;
-        CRpcCommunicator _communicator;
-        CRpcCallStubProvider _stubs;
+        protected CRpcCallerArgs _args;
+        protected ILog _log;
+        protected CRpcStream _stream;
+        protected CRpcCommunicator _communicator;
+        protected CRpcCallStubProvider _stubs;
 
         public CRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
         {
