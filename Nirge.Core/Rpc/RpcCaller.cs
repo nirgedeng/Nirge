@@ -19,6 +19,7 @@ namespace Nirge.Core
     public class CRpcCallerArgs
     {
         int _timeout;
+        bool _logCall;
 
         public int Timeout
         {
@@ -28,9 +29,18 @@ namespace Nirge.Core
             }
         }
 
-        public CRpcCallerArgs(int timeout)
+        public bool LogCall
+        {
+            get
+            {
+                return _logCall;
+            }
+        }
+
+        public CRpcCallerArgs(int timeout, bool logCall)
         {
             _timeout = timeout;
+            _logCall = logCall;
         }
     }
 
@@ -51,7 +61,7 @@ namespace Nirge.Core
             _stubs = stubs;
         }
 
-        void Call(int channel, int service, int call)
+        protected void Call(int channel, int service, int call)
         {
             var pkg = new RpcCallReq()
             {
@@ -77,7 +87,7 @@ namespace Nirge.Core
                 throw new CCallerCommunicatorRpcException();
         }
 
-        void Call<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
+        protected void Call<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
         {
             if (args == null)
                 throw new CCallerArgsNullRpcException();
@@ -116,7 +126,7 @@ namespace Nirge.Core
                 throw new CCallerCommunicatorRpcException();
         }
 
-        async Task<Google.Protobuf.WellKnownTypes.Any> CallAsync<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
+        protected async Task<Google.Protobuf.WellKnownTypes.Any> CallAsync<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
         {
             if (args == null)
                 throw new CCallerArgsNullRpcException();
@@ -177,7 +187,7 @@ namespace Nirge.Core
             return task.Result;
         }
 
-        Task<TRet> CallAsync<TArgs, TRet>(int channel, int service, int call, TArgs args) where TArgs : IMessage where TRet : IMessage, new()
+        protected Task<TRet> CallAsync<TArgs, TRet>(int channel, int service, int call, TArgs args) where TArgs : IMessage where TRet : IMessage, new()
         {
             var task = CallAsync<TArgs>(channel, service, call, args);
             if (task == null)
