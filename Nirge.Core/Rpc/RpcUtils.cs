@@ -10,6 +10,7 @@ using System.Text;
 using System.IO;
 using log4net;
 using System;
+using Google.Protobuf;
 
 namespace Nirge.Core
 {
@@ -87,6 +88,23 @@ namespace Nirge.Core
 
     #region 
 
+    public abstract class CRpcCommunicator
+    {
+        public abstract bool Send(int channel, byte[] buf, int offset, int count);
+    }
+
+    #endregion
+
+    #region 
+
+    public interface IRpcService
+    {
+    }
+
+    #endregion
+
+    #region 
+
     public enum eRpcProto
     {
         None,
@@ -103,17 +121,54 @@ namespace Nirge.Core
 
     #region 
 
-    public abstract class CRpcCommunicator
+    public class CRpcStream : IDisposable
     {
-        public abstract bool Send(int channel, byte[] buf, int offset, int count);
-    }
+        ArraySegment<byte> _buf;
+        MemoryStream _stream;
+        CodedInputStream _inputStream;
+        CodedOutputStream _outputStream;
 
-    #endregion
+        public CodedInputStream InputStream
+        {
+            get
+            {
+                return _inputStream;
+            }
+        }
 
-    #region 
+        public CodedOutputStream OutputStream
+        {
+            get
+            {
+                return _outputStream;
+            }
+        }
 
-    public interface IRpcService
-    {
+        private CRpcStream(byte[] buf, int offset, int count)
+        {
+            _buf = new ArraySegment<byte>(buf, offset, count);
+            _stream = new MemoryStream(buf, offset, count);
+            _inputStream = new CodedInputStream(_stream, true);
+            _outputStream = new CodedOutputStream(_stream, true);
+        }
+
+        public CRpcStream(int capacity)
+            :
+            this(new byte[capacity], 0, capacity)
+        {
+        }
+
+        public void Reset()
+        {
+            _stream.Position = 0;
+        }
+
+        public void Dispose()
+        {
+            _inputStream.Dispose();
+            _outputStream.Dispose();
+            _stream.Dispose();
+        }
     }
 
     #endregion
