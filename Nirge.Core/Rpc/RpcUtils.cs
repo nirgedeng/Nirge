@@ -117,7 +117,10 @@ namespace Nirge.Core
     {
         None,
         CallerCommunicator,
+        CallerArgsNull,
         CallerArgsSerialize,
+        CCallerReqSerialize,
+        CallerRetNull,
         CallerRetDeserialize,
         CallerTimeout,
         CalleeArgsDeserialize,
@@ -139,9 +142,30 @@ namespace Nirge.Core
         }
     }
 
+    public class CCallerArgsNullRpcException : CRpcException
+    {
+        public CCallerArgsNullRpcException()
+        {
+        }
+    }
+
     public class CCallerArgsSerializeRpcException : CRpcException
     {
         public CCallerArgsSerializeRpcException()
+        {
+        }
+    }
+
+    public class CCCallerReqSerializeRpcException : CRpcException
+    {
+        public CCCallerReqSerializeRpcException()
+        {
+        }
+    }
+
+    public class CCallerRetNullRpcException : CRpcException
+    {
+        public CCallerRetNullRpcException()
         {
         }
     }
