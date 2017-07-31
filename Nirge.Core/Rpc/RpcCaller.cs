@@ -130,7 +130,7 @@ namespace Nirge.Core
                 throw new CCCallerReqSerializeRpcException();
             }
 
-            var buf = _stream.GetInputBuf();
+            var buf = _stream.GetOutputBuf();
 
             if (_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
             {
@@ -209,7 +209,7 @@ namespace Nirge.Core
                 throw new CCCallerReqSerializeRpcException();
             }
 
-            var buf = _stream.GetInputBuf();
+            var buf = _stream.GetOutputBuf();
 
             if (_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
             {
