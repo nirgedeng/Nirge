@@ -61,14 +61,8 @@ namespace Nirge.Core
             _stubs = stubs;
         }
 
-        protected void Call(int channel, int service, int call)
+        void Call(int channel, int service, int call, RpcCallReq pkg)
         {
-            var pkg = new RpcCallReq()
-            {
-                Service = service,
-                Call = call,
-            };
-
             _stream.Reset();
 
             try
@@ -97,6 +91,17 @@ namespace Nirge.Core
             }
         }
 
+        protected void Call(int channel, int service, int call)
+        {
+            var pkg = new RpcCallReq()
+            {
+                Service = service,
+                Call = call,
+            };
+
+            Call(channel, service, call, pkg);
+        }
+
         protected void Call<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
         {
             if (args == null)
@@ -118,32 +123,7 @@ namespace Nirge.Core
                 throw new CCallerArgsSerializeRpcException();
             }
 
-            _stream.Reset();
-
-            try
-            {
-                pkg.WriteTo(_stream.OutputStream);
-            }
-            catch (Exception exception)
-            {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
-                throw new CCCallerReqSerializeRpcException();
-            }
-
-            var buf = _stream.GetOutputBuf();
-
-            if (_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
-            {
-                if (_args.LogCall)
-                {
-                    _log.InfoFormat("[Rpc]RpcCaller.Call , channel:\"{0}\", service:\"{1}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
-                }
-            }
-            else
-            {
-                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
-                throw new CCallerCommunicatorRpcException();
-            }
+            Call(channel, service, call, pkg);
         }
 
         async Task<Google.Protobuf.WellKnownTypes.Any> CallAsync<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
@@ -170,32 +150,7 @@ namespace Nirge.Core
             var serial = _stubs.CreateSerial();
             pkg.Serial = serial;
 
-            _stream.Reset();
-
-            try
-            {
-                pkg.WriteTo(_stream.OutputStream);
-            }
-            catch (Exception exception)
-            {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
-                throw new CCCallerReqSerializeRpcException();
-            }
-
-            var buf = _stream.GetOutputBuf();
-
-            if (_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
-            {
-                if (_args.LogCall)
-                {
-                    _log.InfoFormat("[Rpc]RpcCaller.Call Req, channel:\"{0}\", service:\"{1}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
-                }
-            }
-            else
-            {
-                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
-                throw new CCallerCommunicatorRpcException();
-            }
+            Call(channel, service, call, pkg);
 
             var stub = _stubs.CreateStub(serial, service, call, _args.Timeout);
 
