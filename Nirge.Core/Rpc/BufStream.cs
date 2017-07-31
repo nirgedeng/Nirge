@@ -34,6 +34,12 @@ namespace Nirge.Core
         {
         }
 
+        public CBufStream(int count)
+            :
+            this(new byte[count], 0, count)
+        {
+        }
+
         public void SetBuf(byte[] buf, int offset, int count)
         {
             _buf = buf;
@@ -106,7 +112,7 @@ namespace Nirge.Core
             {
                 if (value < 0 || value >= _len)
                 {
-                    throw new ArgumentOutOfRangeException("_pos");
+                    throw new ArgumentOutOfRangeException("pos");
                 }
                 _pos = (int)value;
             }
@@ -183,7 +189,7 @@ namespace Nirge.Core
             var r = _pos + len;
             if (r > _r)
             {
-                throw new ArgumentOutOfRangeException("_pos");
+                throw new ArgumentOutOfRangeException("pos");
             }
             else
             {
@@ -200,7 +206,7 @@ namespace Nirge.Core
             }
             else
             {
-                throw new ArgumentOutOfRangeException("_pos");
+                throw new ArgumentOutOfRangeException("pos");
             }
         }
 
