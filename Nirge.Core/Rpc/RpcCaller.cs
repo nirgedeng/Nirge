@@ -146,33 +146,6 @@ namespace Nirge.Core
             }
         }
 
-        protected Task<TRet> CallAsync<TArgs, TRet>(int channel, int service, int call, TArgs args) where TArgs : IMessage where TRet : IMessage, new()
-        {
-            var task = CallAsync<TArgs>(channel, service, call, args);
-            if (task == null)
-                throw new CCallerRetNullRpcException();
-            if (task.Result == null)
-                throw new CCallerRetNullRpcException();
-
-            TRet ret;
-            try
-            {
-                ret = task.Result.Unpack<TRet>();
-            }
-            catch (Exception exception)
-            {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
-                throw new CCallerRetDeserializeRpcException();
-            }
-
-            if (_args.LogCall)
-            {
-                _log.InfoFormat("[Rpc]RpcCaller.Call Rsp, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\", ret:\"{4}\"", channel, service, call, args, ret);
-            }
-
-            return Task.FromResult(ret);
-        }
-
         async Task<Google.Protobuf.WellKnownTypes.Any> CallAsync<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
         {
             if (args == null)
@@ -242,6 +215,33 @@ namespace Nirge.Core
                 throw new CRpcException("", exception);
             }
             return task.Result;
+        }
+
+        protected Task<TRet> CallAsync<TArgs, TRet>(int channel, int service, int call, TArgs args) where TArgs : IMessage where TRet : IMessage, new()
+        {
+            var task = CallAsync<TArgs>(channel, service, call, args);
+            if (task == null)
+                throw new CCallerRetNullRpcException();
+            if (task.Result == null)
+                throw new CCallerRetNullRpcException();
+
+            TRet ret;
+            try
+            {
+                ret = task.Result.Unpack<TRet>();
+            }
+            catch (Exception exception)
+            {
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
+                throw new CCallerRetDeserializeRpcException();
+            }
+
+            if (_args.LogCall)
+            {
+                _log.InfoFormat("[Rpc]RpcCaller.Call Rsp, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\", ret:\"{4}\"", channel, service, call, args, ret);
+            }
+
+            return Task.FromResult(ret);
         }
     }
 }
