@@ -20,7 +20,7 @@ namespace Nirge.Core
         int _serial;
         int _service;
         int _call;
-        long _time;
+        DateTime _time;
         TaskCompletionSource<Google.Protobuf.WellKnownTypes.Any> _awaiter;
 
         public int Serial
@@ -47,7 +47,7 @@ namespace Nirge.Core
             }
         }
 
-        public long Time
+        public DateTime Time
         {
             get
             {
@@ -68,7 +68,7 @@ namespace Nirge.Core
             _serial = serial;
             _service = service;
             _call = call;
-            _time = 0;
+            _time = DateTime.Now;
             _awaiter = new TaskCompletionSource<Google.Protobuf.WellKnownTypes.Any>();
         }
     }
