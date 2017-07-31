@@ -54,7 +54,6 @@ namespace Nirge.Core
         ArraySegment<byte> _buf;
         MemoryStream _stream;
         CodedInputStream _inputStream;
-        CodedOutputStream _outputStream;
 
         public CodedInputStream InputStream
         {
@@ -64,11 +63,11 @@ namespace Nirge.Core
             }
         }
 
-        public CodedOutputStream OutputStream
+        public MemoryStream OutputStream
         {
             get
             {
-                return _outputStream;
+                return _stream;
             }
         }
 
@@ -77,7 +76,6 @@ namespace Nirge.Core
             _buf = new ArraySegment<byte>(buf, offset, count);
             _stream = new MemoryStream(buf, offset, count);
             _inputStream = new CodedInputStream(_stream, true);
-            _outputStream = new CodedOutputStream(_stream, true);
         }
 
         public CRpcStream(int capacity)
@@ -86,14 +84,9 @@ namespace Nirge.Core
         {
         }
 
-        public ArraySegment<byte> GetInputBuf()
-        {
-            return new ArraySegment<byte>(_buf.Array, _buf.Offset, (int)_inputStream.Position);
-        }
-
         public ArraySegment<byte> GetOutputBuf()
         {
-            return new ArraySegment<byte>(_buf.Array, _buf.Offset, (int)_outputStream.Position);
+            return new ArraySegment<byte>(_buf.Array, _buf.Offset, (int)_stream.Position);
         }
 
         public void Reset()
@@ -104,7 +97,6 @@ namespace Nirge.Core
         public void Dispose()
         {
             _inputStream.Dispose();
-            _outputStream.Dispose();
             _stream.Dispose();
         }
     }
