@@ -141,7 +141,7 @@ namespace Nirge.Core
             }
             else
             {
-                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
+                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
                 throw new CCallerCommunicatorRpcException();
             }
         }
@@ -220,7 +220,7 @@ namespace Nirge.Core
             }
             else
             {
-                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
+                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
                 throw new CCallerCommunicatorRpcException();
             }
 
