@@ -37,15 +37,17 @@ namespace Nirge.Core
     {
         CRpcCallerArgs _args;
         ILog _log;
-        CRpcCallStubProvider _stubs;
+        CRpcStream _stream;
         CRpcCommunicator _communicator;
+        CRpcCallStubProvider _stubs;
 
-        public CRpcCaller(CRpcCallerArgs args, ILog log, CRpcCallStubProvider stubs, CRpcCommunicator communicator)
+        public CRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
         {
             _args = args;
             _log = log;
-            _stubs = stubs;
+            _stream = stream;
             _communicator = communicator;
+            _stubs = stubs;
         }
 
         async Task<Google.Protobuf.WellKnownTypes.Any> Call(int service, int call, Google.Protobuf.WellKnownTypes.Any args)
