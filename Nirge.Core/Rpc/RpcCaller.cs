@@ -167,7 +167,7 @@ namespace Nirge.Core
             if (!_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
                 throw new CCallerCommunicatorRpcException();
 
-            var stub = _stubs.CreateStub(serial, service, call);
+            var stub = _stubs.CreateStub(serial, service, call, _args.Timeout);
 
             var task = stub.Awaiter.Task;
             try
@@ -191,6 +191,8 @@ namespace Nirge.Core
         {
             var task = CallAsync<TArgs>(channel, service, call, args);
             if (task == null)
+                throw new CCallerRetNullRpcException();
+            if (task.Result == null)
                 throw new CCallerRetNullRpcException();
 
             TRet ret;
