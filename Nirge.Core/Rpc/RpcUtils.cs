@@ -89,10 +89,14 @@ namespace Nirge.Core
 
     public enum eRpcProto
     {
-        C2sRpcCall = 1,
+        None,
 
-        S2cRpcCall = 6,
-        S2cRpcCallException,
+        RpcCallReq = 1,
+
+        RpcCallRsp = 6,
+        RpcCallExceptionRsp,
+
+        Total,
     }
 
     #endregion

@@ -12,7 +12,7 @@ option csharp_namespace = "Nirge.Core";
 
 //----------------------------------------------------------------------------------------
 
-message C2sRpcCall
+message RpcCallReq
 {
     int32 Serial = 1;
     int32 Service = 2;
@@ -20,7 +20,7 @@ message C2sRpcCall
     google.protobuf.Any Args = 4;
 }
 
-message S2cRpcCall
+message RpcCallRsp
 {
     int32 Serial = 1;
     int32 Service = 2;
@@ -28,7 +28,7 @@ message S2cRpcCall
     google.protobuf.Any Ret = 4;
 }
 
-message S2cRpcCallException
+message RpcCallExceptionRsp
 {
     int32 Serial = 1;
     int32 Service = 2;

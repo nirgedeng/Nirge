@@ -58,7 +58,7 @@
     <Compile Include="Rpc\RpcCallee.cs" />
     <Compile Include="Rpc\RpcCaller.cs" />
     <Compile Include="Rpc\RpcCallStub.cs" />
-    <Compile Include="Rpc\RpcChannel.cs" />
+    <Compile Include="Rpc\RpcCommunicator.cs" />
     <Compile Include="Rpc\RpcProto.cs" />
     <Compile Include="Rpc\RpcService.cs" />
     <Compile Include="Rpc\RpcUtils.cs" />

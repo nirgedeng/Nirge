@@ -38,14 +38,14 @@ namespace Nirge.Core
         CRpcCallerArgs _args;
         ILog _log;
         CRpcCallStubProvider _stubs;
-        CRpcChannel _channel;
+        CRpcCommunicator _communicator;
 
-        public CRpcCaller(CRpcCallerArgs args, ILog log, CRpcCallStubProvider stubs, CRpcChannel channel)
+        public CRpcCaller(CRpcCallerArgs args, ILog log, CRpcCallStubProvider stubs, CRpcCommunicator communicator)
         {
             _args = args;
             _log = log;
             _stubs = stubs;
-            _channel = channel;
+            _communicator = communicator;
         }
 
         async Task<Google.Protobuf.WellKnownTypes.Any> Call(int service, int call, Google.Protobuf.WellKnownTypes.Any args)
@@ -53,7 +53,7 @@ namespace Nirge.Core
             var stub = _stubs.CreateStub(service, call);
             var task = stub.Awaiter.Task;
 
-            var pkg = new C2sRpcCall()
+            var pkg = new RpcCallReq()
             {
                 Serial = stub.Serial,
                 Service = stub.Service,

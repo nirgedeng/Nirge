@@ -23,30 +23,30 @@ namespace Nirge.Core {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg5ScGNQcm90by5wcm90bxoZZ29vZ2xlL3Byb3RvYnVmL2FueS5wcm90bxoL",
-            "UHJvdG8ucHJvdG8iXwoKQzJzUnBjQ2FsbBIOCgZTZXJpYWwYASABKAUSDwoH",
+            "UHJvdG8ucHJvdG8iXwoKUnBjQ2FsbFJlcRIOCgZTZXJpYWwYASABKAUSDwoH",
             "U2VydmljZRgCIAEoBRIMCgRDYWxsGAMgASgFEiIKBEFyZ3MYBCABKAsyFC5n",
-            "b29nbGUucHJvdG9idWYuQW55Il4KClMyY1JwY0NhbGwSDgoGU2VyaWFsGAEg",
+            "b29nbGUucHJvdG9idWYuQW55Il4KClJwY0NhbGxSc3ASDgoGU2VyaWFsGAEg",
             "ASgFEg8KB1NlcnZpY2UYAiABKAUSDAoEQ2FsbBgDIAEoBRIhCgNSZXQYBCAB",
-            "KAsyFC5nb29nbGUucHJvdG9idWYuQW55IlcKE1MyY1JwY0NhbGxFeGNlcHRp",
-            "b24SDgoGU2VyaWFsGAEgASgFEg8KB1NlcnZpY2UYAiABKAUSDAoEQ2FsbBgD",
+            "KAsyFC5nb29nbGUucHJvdG9idWYuQW55IlcKE1JwY0NhbGxFeGNlcHRpb25S",
+            "c3ASDgoGU2VyaWFsGAEgASgFEg8KB1NlcnZpY2UYAiABKAUSDAoEQ2FsbBgD",
             "IAEoBRIRCglFeGNlcHRpb24YBCABKAVCDaoCCk5pcmdlLkNvcmViBnByb3Rv",
             "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, global::Nirge.Core.ProtoReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.C2sRpcCall), global::Nirge.Core.C2sRpcCall.Parser, new[]{ "Serial", "Service", "Call", "Args" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.S2cRpcCall), global::Nirge.Core.S2cRpcCall.Parser, new[]{ "Serial", "Service", "Call", "Ret" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.S2cRpcCallException), global::Nirge.Core.S2cRpcCallException.Parser, new[]{ "Serial", "Service", "Call", "Exception" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallReq), global::Nirge.Core.RpcCallReq.Parser, new[]{ "Serial", "Service", "Call", "Args" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallRsp), global::Nirge.Core.RpcCallRsp.Parser, new[]{ "Serial", "Service", "Call", "Ret" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallExceptionRsp), global::Nirge.Core.RpcCallExceptionRsp.Parser, new[]{ "Serial", "Service", "Call", "Exception" }, null, null, null)
           }));
     }
     #endregion
 
   }
   #region Messages
-  public sealed partial class C2sRpcCall : pb::IMessage<C2sRpcCall> {
-    private static readonly pb::MessageParser<C2sRpcCall> _parser = new pb::MessageParser<C2sRpcCall>(() => new C2sRpcCall());
+  public sealed partial class RpcCallReq : pb::IMessage<RpcCallReq> {
+    private static readonly pb::MessageParser<RpcCallReq> _parser = new pb::MessageParser<RpcCallReq>(() => new RpcCallReq());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<C2sRpcCall> Parser { get { return _parser; } }
+    public static pb::MessageParser<RpcCallReq> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -59,14 +59,14 @@ namespace Nirge.Core {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public C2sRpcCall() {
+    public RpcCallReq() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public C2sRpcCall(C2sRpcCall other) : this() {
+    public RpcCallReq(RpcCallReq other) : this() {
       serial_ = other.serial_;
       service_ = other.service_;
       call_ = other.call_;
@@ -74,8 +74,8 @@ namespace Nirge.Core {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public C2sRpcCall Clone() {
-      return new C2sRpcCall(this);
+    public RpcCallReq Clone() {
+      return new RpcCallReq(this);
     }
 
     /// <summary>Field number for the "Serial" field.</summary>
@@ -124,11 +124,11 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as C2sRpcCall);
+      return Equals(other as RpcCallReq);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(C2sRpcCall other) {
+    public bool Equals(RpcCallReq other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -196,7 +196,7 @@ namespace Nirge.Core {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(C2sRpcCall other) {
+    public void MergeFrom(RpcCallReq other) {
       if (other == null) {
         return;
       }
@@ -250,10 +250,10 @@ namespace Nirge.Core {
 
   }
 
-  public sealed partial class S2cRpcCall : pb::IMessage<S2cRpcCall> {
-    private static readonly pb::MessageParser<S2cRpcCall> _parser = new pb::MessageParser<S2cRpcCall>(() => new S2cRpcCall());
+  public sealed partial class RpcCallRsp : pb::IMessage<RpcCallRsp> {
+    private static readonly pb::MessageParser<RpcCallRsp> _parser = new pb::MessageParser<RpcCallRsp>(() => new RpcCallRsp());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<S2cRpcCall> Parser { get { return _parser; } }
+    public static pb::MessageParser<RpcCallRsp> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -266,14 +266,14 @@ namespace Nirge.Core {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public S2cRpcCall() {
+    public RpcCallRsp() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public S2cRpcCall(S2cRpcCall other) : this() {
+    public RpcCallRsp(RpcCallRsp other) : this() {
       serial_ = other.serial_;
       service_ = other.service_;
       call_ = other.call_;
@@ -281,8 +281,8 @@ namespace Nirge.Core {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public S2cRpcCall Clone() {
-      return new S2cRpcCall(this);
+    public RpcCallRsp Clone() {
+      return new RpcCallRsp(this);
     }
 
     /// <summary>Field number for the "Serial" field.</summary>
@@ -331,11 +331,11 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as S2cRpcCall);
+      return Equals(other as RpcCallRsp);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(S2cRpcCall other) {
+    public bool Equals(RpcCallRsp other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -403,7 +403,7 @@ namespace Nirge.Core {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(S2cRpcCall other) {
+    public void MergeFrom(RpcCallRsp other) {
       if (other == null) {
         return;
       }
@@ -457,10 +457,10 @@ namespace Nirge.Core {
 
   }
 
-  public sealed partial class S2cRpcCallException : pb::IMessage<S2cRpcCallException> {
-    private static readonly pb::MessageParser<S2cRpcCallException> _parser = new pb::MessageParser<S2cRpcCallException>(() => new S2cRpcCallException());
+  public sealed partial class RpcCallExceptionRsp : pb::IMessage<RpcCallExceptionRsp> {
+    private static readonly pb::MessageParser<RpcCallExceptionRsp> _parser = new pb::MessageParser<RpcCallExceptionRsp>(() => new RpcCallExceptionRsp());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<S2cRpcCallException> Parser { get { return _parser; } }
+    public static pb::MessageParser<RpcCallExceptionRsp> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -473,14 +473,14 @@ namespace Nirge.Core {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public S2cRpcCallException() {
+    public RpcCallExceptionRsp() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public S2cRpcCallException(S2cRpcCallException other) : this() {
+    public RpcCallExceptionRsp(RpcCallExceptionRsp other) : this() {
       serial_ = other.serial_;
       service_ = other.service_;
       call_ = other.call_;
@@ -488,8 +488,8 @@ namespace Nirge.Core {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public S2cRpcCallException Clone() {
-      return new S2cRpcCallException(this);
+    public RpcCallExceptionRsp Clone() {
+      return new RpcCallExceptionRsp(this);
     }
 
     /// <summary>Field number for the "Serial" field.</summary>
@@ -538,11 +538,11 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as S2cRpcCallException);
+      return Equals(other as RpcCallExceptionRsp);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(S2cRpcCallException other) {
+    public bool Equals(RpcCallExceptionRsp other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -610,7 +610,7 @@ namespace Nirge.Core {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(S2cRpcCallException other) {
+    public void MergeFrom(RpcCallExceptionRsp other) {
       if (other == null) {
         return;
       }
