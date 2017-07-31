@@ -100,4 +100,13 @@ namespace Nirge.Core
     }
 
     #endregion
+
+    #region 
+
+    public abstract class CRpcCommunicator
+    {
+        public abstract bool Send(int channel, byte[] buf, int offset, int count);
+    }
+
+    #endregion
 }
