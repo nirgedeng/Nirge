@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Call.cs" />
     <Compile Include="DataEventArgs.cs" />
+    <Compile Include="Rpc\BufStream.cs" />
     <Compile Include="Task\ITask.cs" />
     <Compile Include="ObjPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
