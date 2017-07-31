@@ -146,7 +146,7 @@ namespace Nirge.Core
         {
             get
             {
-                return (int)Length;
+                return _pos - _l;
             }
         }
 
