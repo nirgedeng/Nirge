@@ -83,8 +83,18 @@ namespace Nirge.Core
 
             var buf = _stream.GetOutputBuf();
 
-            if (!_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
+            if (_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
+            {
+                if (_args.LogCall)
+                {
+                    _log.InfoFormat("[Rpc]RpcCaller.Call , channel:\"{0}\", service:\"{1}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
+                }
+            }
+            else
+            {
+                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
                 throw new CCallerCommunicatorRpcException();
+            }
         }
 
         protected void Call<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
@@ -122,8 +132,18 @@ namespace Nirge.Core
 
             var buf = _stream.GetInputBuf();
 
-            if (!_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
+            if (_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
+            {
+                if (_args.LogCall)
+                {
+                    _log.InfoFormat("[Rpc]RpcCaller.Call , channel:\"{0}\", service:\"{1}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
+                }
+            }
+            else
+            {
+                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
                 throw new CCallerCommunicatorRpcException();
+            }
         }
 
         protected async Task<Google.Protobuf.WellKnownTypes.Any> CallAsync<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
@@ -164,8 +184,18 @@ namespace Nirge.Core
 
             var buf = _stream.GetInputBuf();
 
-            if (!_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
+            if (_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
+            {
+                if (_args.LogCall)
+                {
+                    _log.InfoFormat("[Rpc]RpcCaller.Call Req, channel:\"{0}\", service:\"{1}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
+                }
+            }
+            else
+            {
+                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
                 throw new CCallerCommunicatorRpcException();
+            }
 
             var stub = _stubs.CreateStub(serial, service, call, _args.Timeout);
 
@@ -204,6 +234,11 @@ namespace Nirge.Core
             {
                 _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
                 throw new CCallerRetDeserializeRpcException();
+            }
+
+            if (_args.LogCall)
+            {
+                _log.InfoFormat("[Rpc]RpcCaller.Call Rsp, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\", ret:\"{4}\"", channel, service, call, args, ret);
             }
 
             return Task.FromResult(ret);
