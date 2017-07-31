@@ -33,13 +33,13 @@ namespace Nirge.Core
 
     public class CRpcCallee
     {
-        protected CRpcCallerArgs _args;
+        protected CRpcCalleeArgs _args;
         protected ILog _log;
         protected CRpcStream _stream;
         protected CRpcCommunicator _communicator;
         protected IRpcService _service;
 
-        public CRpcCallee(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, IRpcService service)
+        public CRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, IRpcService service)
         {
             _args = args;
             _log = log;
