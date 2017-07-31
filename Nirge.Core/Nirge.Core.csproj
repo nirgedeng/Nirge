@@ -60,7 +60,6 @@
     <Compile Include="Rpc\RpcCallStub.cs" />
     <Compile Include="Rpc\RpcCommunicator.cs" />
     <Compile Include="Rpc\RpcProto.cs" />
-    <Compile Include="Rpc\RpcService.cs" />
     <Compile Include="Rpc\RpcUtils.cs" />
     <Compile Include="Task\Tasker.cs" />
     <Compile Include="Task\TaskTimer.cs" />

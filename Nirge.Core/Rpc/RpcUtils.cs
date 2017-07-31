@@ -109,4 +109,12 @@ namespace Nirge.Core
     }
 
     #endregion
+
+    #region 
+
+    public interface IRpcService
+    {
+    }
+
+    #endregion
 }
