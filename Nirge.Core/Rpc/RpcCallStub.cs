@@ -104,7 +104,7 @@ namespace Nirge.Core
 
         public CRpcCallStub CreateStub(int serial, int service, int call, TimeSpan timeout)
         {
-            var stub = new CRpcCallStub(serial, service, call, DateTime.Now + timeout);
+            var stub = new CRpcCallStub(serial, service, call, DateTime.Now.Add(timeout));
             _stubs.Add(stub);
             _stubsDict.Add(serial, stub);
             return stub;
