@@ -50,6 +50,8 @@ namespace Nirge.Core
 
     public class CRpcCaller
     {
+        static RpcCallArgsEmpty ArgsEmpty = new RpcCallArgsEmpty();
+
         CRpcCallerArgs _args;
         ILog _log;
         CRpcStream _stream;
