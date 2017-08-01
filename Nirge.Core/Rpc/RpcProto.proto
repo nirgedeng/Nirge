@@ -12,6 +12,10 @@ option csharp_namespace = "Nirge.Core";
 
 //----------------------------------------------------------------------------------------
 
+message RpcCallArgsEmpty
+{
+}
+
 message RpcCallReq
 {
     int32 Serial = 1;

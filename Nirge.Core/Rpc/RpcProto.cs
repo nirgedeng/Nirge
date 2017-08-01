@@ -23,17 +23,18 @@ namespace Nirge.Core {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg5ScGNQcm90by5wcm90bxoZZ29vZ2xlL3Byb3RvYnVmL2FueS5wcm90bxoL",
-            "UHJvdG8ucHJvdG8iXwoKUnBjQ2FsbFJlcRIOCgZTZXJpYWwYASABKAUSDwoH",
-            "U2VydmljZRgCIAEoBRIMCgRDYWxsGAMgASgFEiIKBEFyZ3MYBCABKAsyFC5n",
-            "b29nbGUucHJvdG9idWYuQW55Il4KClJwY0NhbGxSc3ASDgoGU2VyaWFsGAEg",
-            "ASgFEg8KB1NlcnZpY2UYAiABKAUSDAoEQ2FsbBgDIAEoBRIhCgNSZXQYBCAB",
-            "KAsyFC5nb29nbGUucHJvdG9idWYuQW55IlcKE1JwY0NhbGxFeGNlcHRpb25S",
-            "c3ASDgoGU2VyaWFsGAEgASgFEg8KB1NlcnZpY2UYAiABKAUSDAoEQ2FsbBgD",
-            "IAEoBRIRCglFeGNlcHRpb24YBCABKAVCDaoCCk5pcmdlLkNvcmViBnByb3Rv",
-            "Mw=="));
+            "UHJvdG8ucHJvdG8iEgoQUnBjQ2FsbEFyZ3NFbXB0eSJfCgpScGNDYWxsUmVx",
+            "Eg4KBlNlcmlhbBgBIAEoBRIPCgdTZXJ2aWNlGAIgASgFEgwKBENhbGwYAyAB",
+            "KAUSIgoEQXJncxgEIAEoCzIULmdvb2dsZS5wcm90b2J1Zi5BbnkiXgoKUnBj",
+            "Q2FsbFJzcBIOCgZTZXJpYWwYASABKAUSDwoHU2VydmljZRgCIAEoBRIMCgRD",
+            "YWxsGAMgASgFEiEKA1JldBgEIAEoCzIULmdvb2dsZS5wcm90b2J1Zi5Bbnki",
+            "VwoTUnBjQ2FsbEV4Y2VwdGlvblJzcBIOCgZTZXJpYWwYASABKAUSDwoHU2Vy",
+            "dmljZRgCIAEoBRIMCgRDYWxsGAMgASgFEhEKCUV4Y2VwdGlvbhgEIAEoBUIN",
+            "qgIKTmlyZ2UuQ29yZWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, global::Nirge.Core.ProtoReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallArgsEmpty), global::Nirge.Core.RpcCallArgsEmpty.Parser, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallReq), global::Nirge.Core.RpcCallReq.Parser, new[]{ "Serial", "Service", "Call", "Args" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallRsp), global::Nirge.Core.RpcCallRsp.Parser, new[]{ "Serial", "Service", "Call", "Ret" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallExceptionRsp), global::Nirge.Core.RpcCallExceptionRsp.Parser, new[]{ "Serial", "Service", "Call", "Exception" }, null, null, null)
@@ -43,6 +44,95 @@ namespace Nirge.Core {
 
   }
   #region Messages
+  public sealed partial class RpcCallArgsEmpty : pb::IMessage<RpcCallArgsEmpty> {
+    private static readonly pb::MessageParser<RpcCallArgsEmpty> _parser = new pb::MessageParser<RpcCallArgsEmpty>(() => new RpcCallArgsEmpty());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<RpcCallArgsEmpty> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[0]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcCallArgsEmpty() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcCallArgsEmpty(RpcCallArgsEmpty other) : this() {
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcCallArgsEmpty Clone() {
+      return new RpcCallArgsEmpty(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as RpcCallArgsEmpty);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(RpcCallArgsEmpty other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(RpcCallArgsEmpty other) {
+      if (other == null) {
+        return;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+        }
+      }
+    }
+
+  }
+
   public sealed partial class RpcCallReq : pb::IMessage<RpcCallReq> {
     private static readonly pb::MessageParser<RpcCallReq> _parser = new pb::MessageParser<RpcCallReq>(() => new RpcCallReq());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -50,7 +140,7 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -257,7 +347,7 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -464,7 +554,7 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
