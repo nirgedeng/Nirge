@@ -67,7 +67,7 @@ namespace Nirge.Core
 
         void Call(int channel, int service, int call, RpcCallReq pkg)
         {
-            _stream.Reset();
+            _stream.Clear();
 
             try
             {
@@ -75,6 +75,17 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg), exception);
+                throw new CCCallerReqSerializeRpcException();
+            }
+
+            try
+            {
+                _stream.OutputStream.Flush();
+            }
+            catch (Exception exception)
+            {
+                _stream.Reset();
                 _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg), exception);
                 throw new CCCallerReqSerializeRpcException();
             }

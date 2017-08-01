@@ -92,9 +92,32 @@ namespace Nirge.Core
             return new ArraySegment<byte>(_stream.Array, _stream.Offset, _stream.Count);
         }
 
-        public void Reset()
+        public void Clear()
         {
             _stream.Position = 0;
+        }
+
+        public void Reset()
+        {
+            Clear();
+
+            try
+            {
+                _inputStream.Dispose();
+            }
+            catch
+            {
+            }
+            _inputStream = new CodedInputStream(_stream, true);
+
+            try
+            {
+                _outputStream.Dispose();
+            }
+            catch
+            {
+            }
+            _outputStream = new CodedOutputStream(_stream, true);
         }
 
         public void Dispose()
