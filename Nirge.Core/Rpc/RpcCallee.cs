@@ -13,6 +13,8 @@ using System;
 
 namespace Nirge.Core
 {
+    #region
+
     public class CRpcCalleeArgs
     {
         bool _logCall;
@@ -31,15 +33,17 @@ namespace Nirge.Core
         }
     }
 
-    public class CRpcCallee
+    #endregion
+
+    public class CRpcCallee<TRpcService> where TRpcService : IRpcService
     {
-        protected CRpcCalleeArgs _args;
-        protected ILog _log;
-        protected CBufStream _stream;
-        protected CRpcCommunicator _communicator;
+        CRpcCalleeArgs _args;
+        ILog _log;
+        CBufStream _stream;
+        CRpcCommunicator _communicator;
         protected IRpcService _service;
 
-        public CRpcCallee(CRpcCalleeArgs args, ILog log, CBufStream stream, CRpcCommunicator communicator, IRpcService service)
+        public CRpcCallee(CRpcCalleeArgs args, ILog log, CBufStream stream, CRpcCommunicator communicator, TRpcService service)
         {
             _args = args;
             _log = log;

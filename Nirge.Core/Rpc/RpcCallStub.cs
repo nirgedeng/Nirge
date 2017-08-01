@@ -102,9 +102,9 @@ namespace Nirge.Core
             return ++_serial;
         }
 
-        public CRpcCallStub CreateStub(int serial, int service, int call, int timeout)
+        public CRpcCallStub CreateStub(int serial, int service, int call, TimeSpan timeout)
         {
-            var stub = new CRpcCallStub(serial, service, call, DateTime.Now.AddMilliseconds(timeout));
+            var stub = new CRpcCallStub(serial, service, call, DateTime.Now + timeout);
             _stubs.Add(stub);
             _stubsDict.Add(serial, stub);
             return stub;

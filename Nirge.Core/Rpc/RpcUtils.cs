@@ -27,6 +27,7 @@ namespace Nirge.Core
 
     public interface IRpcService
     {
+        void Exec(int channel, RpcCallReq req);
     }
 
     #endregion

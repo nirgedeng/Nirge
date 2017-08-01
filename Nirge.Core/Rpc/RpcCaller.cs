@@ -16,12 +16,14 @@ using System;
 
 namespace Nirge.Core
 {
+    #region 
+
     public class CRpcCallerArgs
     {
-        int _timeout;
+        TimeSpan _timeout;
         bool _logCall;
 
-        public int Timeout
+        public TimeSpan Timeout
         {
             get
             {
@@ -37,20 +39,22 @@ namespace Nirge.Core
             }
         }
 
-        public CRpcCallerArgs(int timeout, bool logCall)
+        public CRpcCallerArgs(TimeSpan timeout, bool logCall)
         {
             _timeout = timeout;
             _logCall = logCall;
         }
     }
 
+    #endregion
+
     public class CRpcCaller
     {
-        protected CRpcCallerArgs _args;
-        protected ILog _log;
-        protected CBufStream _stream;
-        protected CRpcCommunicator _communicator;
-        protected CRpcCallStubProvider _stubs;
+        CRpcCallerArgs _args;
+        ILog _log;
+        CBufStream _stream;
+        CRpcCommunicator _communicator;
+        CRpcCallStubProvider _stubs;
 
         public CRpcCaller(CRpcCallerArgs args, ILog log, CBufStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
         {
@@ -87,41 +91,6 @@ namespace Nirge.Core
                 _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", pkg:\"{3}\"", channel, service, call, pkg);
                 throw new CCallerCommunicatorRpcException();
             }
-        }
-
-        protected void Call(int channel, int service, int call)
-        {
-            var pkg = new RpcCallReq()
-            {
-                Service = service,
-                Call = call,
-            };
-
-            Call(channel, service, call, pkg);
-        }
-
-        protected void Call<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
-        {
-            if (args == null)
-                throw new CCallerArgsNullRpcException();
-
-            var pkg = new RpcCallReq()
-            {
-                Service = service,
-                Call = call,
-            };
-
-            try
-            {
-                pkg.Args = Google.Protobuf.WellKnownTypes.Any.Pack(args);
-            }
-            catch (Exception exception)
-            {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
-                throw new CCallerArgsSerializeRpcException();
-            }
-
-            Call(channel, service, call, pkg);
         }
 
         async Task<Google.Protobuf.WellKnownTypes.Any> CallAsync<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
@@ -168,6 +137,30 @@ namespace Nirge.Core
                 throw new CRpcException("", exception);
             }
             return task.Result;
+        }
+
+        protected void Call<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
+        {
+            if (args == null)
+                throw new CCallerArgsNullRpcException();
+
+            var pkg = new RpcCallReq()
+            {
+                Service = service,
+                Call = call,
+            };
+
+            try
+            {
+                pkg.Args = Google.Protobuf.WellKnownTypes.Any.Pack(args);
+            }
+            catch (Exception exception)
+            {
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
+                throw new CCallerArgsSerializeRpcException();
+            }
+
+            Call(channel, service, call, pkg);
         }
 
         protected Task<TRet> CallAsync<TArgs, TRet>(int channel, int service, int call, TArgs args) where TArgs : IMessage where TRet : IMessage, new()
