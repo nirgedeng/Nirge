@@ -50,6 +50,65 @@ namespace Nirge.Core
 
     #region 
 
+    public class CRpcStream : IDisposable
+    {
+        ArraySegment<byte> _buf;
+        CBufStream _stream;
+        CodedInputStream _inputStream;
+        CodedOutputStream _outputStream;
+
+        public CodedInputStream InputStream
+        {
+            get
+            {
+                return _inputStream;
+            }
+        }
+
+        public CodedOutputStream OutputStream
+        {
+            get
+            {
+                return _outputStream;
+            }
+        }
+
+        private CRpcStream(byte[] buf, int offset, int count)
+        {
+            _buf = new ArraySegment<byte>(buf, offset, count);
+            _stream = new CBufStream(buf, offset, count);
+            _inputStream = new CodedInputStream(_stream, true);
+            _outputStream = new CodedOutputStream(_stream, true);
+        }
+
+        public CRpcStream(int capacity)
+            :
+            this(new byte[capacity], 0, capacity)
+        {
+        }
+
+        public ArraySegment<byte> GetOutputBuf()
+        {
+            return new ArraySegment<byte>(_stream.Array, _stream.Offset, _stream.Count);
+        }
+
+        public void Reset()
+        {
+            _stream.Position = 0;
+        }
+
+        public void Dispose()
+        {
+            _inputStream.Dispose();
+            _outputStream.Dispose();
+            _stream.Dispose();
+        }
+    }
+
+    #endregion
+
+    #region 
+
     public enum eRpcException
     {
         None,

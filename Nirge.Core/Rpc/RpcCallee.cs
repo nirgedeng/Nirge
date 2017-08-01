@@ -39,11 +39,11 @@ namespace Nirge.Core
     {
         CRpcCalleeArgs _args;
         ILog _log;
-        CBufStream _stream;
+        CRpcStream _stream;
         CRpcCommunicator _communicator;
         protected TRpcService _service;
 
-        public CRpcCallee(CRpcCalleeArgs args, ILog log, CBufStream stream, CRpcCommunicator communicator, TRpcService service)
+        public CRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, TRpcService service)
         {
             _args = args;
             _log = log;

@@ -52,11 +52,11 @@ namespace Nirge.Core
     {
         CRpcCallerArgs _args;
         ILog _log;
-        CBufStream _stream;
+        CRpcStream _stream;
         CRpcCommunicator _communicator;
         CRpcCallStubProvider _stubs;
 
-        public CRpcCaller(CRpcCallerArgs args, ILog log, CBufStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
+        public CRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
         {
             _args = args;
             _log = log;
@@ -67,11 +67,11 @@ namespace Nirge.Core
 
         void Call(int channel, int service, int call, RpcCallReq pkg)
         {
-            _stream.Position = 0;
+            _stream.Reset();
 
             try
             {
-                pkg.WriteTo(_stream);
+                pkg.WriteTo(_stream.OutputStream);
             }
             catch (Exception exception)
             {
@@ -79,7 +79,9 @@ namespace Nirge.Core
                 throw new CCCallerReqSerializeRpcException();
             }
 
-            if (_communicator.Send(channel, _stream.Array, _stream.Offset, _stream.Count))
+            var buf = _stream.GetOutputBuf();
+
+            if (_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
             {
                 if (_args.LogCall)
                 {
