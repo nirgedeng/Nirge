@@ -52,19 +52,16 @@ namespace Nirge.Core
             _service = service;
         }
 
+        protected TRet Call<TArgs, TRet>(int channel, RpcCallReq req, Func<TArgs, int, TRet> call)
+        {
+            return default(TRet);
+        }
+
+        protected void CallAsync<TArgs, TRet>(int channel, RpcCallReq req, Func<TArgs, int, TRet> call)
+        {
+        }
+
         public virtual void Call(int channel, RpcCallReq req)
-        {
-        }
-
-        protected void Call<TArgs>(int channel, RpcCallReq req, Action<int> call)
-        {
-        }
-
-        protected void Call<TArgs>(int channel, RpcCallReq req, Action<TArgs, int> call)
-        {
-        }
-
-        protected void Call<TArgs, TRet>(int channel, RpcCallReq req, Func<TArgs, int, TRet> call)
         {
         }
     }
