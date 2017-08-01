@@ -110,11 +110,19 @@ namespace Nirge.Core
             }
             set
             {
-                if (value < 0 || value >= _len)
+                if (value < 0 || value > _len)
                 {
                     throw new ArgumentOutOfRangeException("pos");
                 }
                 _pos = (int)value;
+            }
+        }
+
+        public override long Length
+        {
+            get
+            {
+                return _pos - _l;
             }
         }
 
@@ -131,14 +139,6 @@ namespace Nirge.Core
             get
             {
                 return _l;
-            }
-        }
-
-        public override long Length
-        {
-            get
-            {
-                return _pos - _l;
             }
         }
 
