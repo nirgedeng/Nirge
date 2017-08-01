@@ -8,7 +8,6 @@ using System.Threading;
 using System.Linq;
 using System.Text;
 using System.IO;
-using log4net;
 using System;
 
 namespace Nirge.Core
@@ -80,6 +79,7 @@ namespace Nirge.Core
 
         public override void Flush()
         {
+            throw new NotImplementedException();
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -94,9 +94,6 @@ namespace Nirge.Core
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-            }
             base.Dispose(disposing);
         }
 
@@ -106,7 +103,7 @@ namespace Nirge.Core
         {
             get
             {
-                return _pos;
+                return _pos - _l;
             }
             set
             {
@@ -114,7 +111,7 @@ namespace Nirge.Core
                 {
                     throw new ArgumentOutOfRangeException("pos");
                 }
-                _pos = (int)value;
+                _pos = (int)value + _l;
             }
         }
 
@@ -122,7 +119,7 @@ namespace Nirge.Core
         {
             get
             {
-                return _pos - _l;
+                return _len;
             }
         }
 
@@ -152,9 +149,9 @@ namespace Nirge.Core
 
         public byte[] ToArray()
         {
-            var buf = new byte[Count];
-            Buffer.BlockCopy(_buf, _l, buf, 0, Count);
-            return buf;
+            var e = new byte[Count];
+            Buffer.BlockCopy(_buf, _l, e, 0, Count);
+            return e;
         }
 
         public override int Read(byte[] buf, int offset, int count)
@@ -162,14 +159,13 @@ namespace Nirge.Core
             var r = _pos + count;
             if (r > _r)
             {
-                return 0;
+                count = _r - _pos;
+                r = _r;
             }
-            else
-            {
-                Buffer.BlockCopy(_buf, _pos, buf, offset, count);
-                _pos = r;
-                return count;
-            }
+
+            Buffer.BlockCopy(_buf, _pos, buf, offset, count);
+            _pos = r;
+            return count;
         }
 
         public override int ReadByte()
