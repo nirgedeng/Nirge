@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using Google.Protobuf;
 using System.Linq;
 using System.Text;
 using Nirge.Core;
@@ -21,7 +22,13 @@ namespace ser
         CTasker _task;
         CTaskTimer _timer;
         CTicker _tick;
+
         CTcpServer _ser;
+
+        CRpcCommunicator _communicator;
+        CRpcStream _stream;
+        CGameRpcService _service;
+        CGameRpcCallee _callee;
 
         public void Init()
         {
@@ -36,6 +43,11 @@ namespace ser
             _ser.CliConnected += Ser_CliConnected;
             _ser.CliClosed += Ser_CliClosed;
             _ser.CliRecved += Ser_CliRecved;
+
+            _communicator = new CServerRpcCommunicator(_log, _ser);
+            _stream = new CRpcStream(new CRpcInputStream(), new CRpcOutputStream(new byte[1024], 0, 1024));
+            _service = new CGameRpcService();
+            _callee = new CGameRpcCallee(new CRpcCalleeArgs(true), _log, _stream, _communicator, _service);
 
             _task.Exec(CCall.Create(() =>
             {
@@ -70,6 +82,16 @@ namespace ser
 
         private void Ser_CliRecved(object sender, int cli, byte[] arg2, int arg3, int arg4)
         {
+            var cmd = BitConverter.ToInt32(arg2, arg3);
+
+            switch ((eRpcProto)cmd)
+            {
+            case eRpcProto.RpcCallReq:
+                _stream.Input.Buf.SetBuf(arg2, arg3 + 4, arg4 - 4);
+                var req = RpcCallReq.Parser.ParseFrom(_stream.Input.Stream);
+                _callee.Call(cli, req);
+                break;
+            }
         }
 
         private void Ser_CliClosed(object sender, CDataEventArgs<int, CTcpClientCloseArgs> e)

@@ -100,7 +100,7 @@ namespace cli
             _log.InfoFormat("OnConnect {0}:{1}:{2}", e.Arg1.Result, e.Arg1.Error, e.Arg1.SocketError);
 
             //_caller.f();
-            _caller.g(new gargs() { A = 1, B = 1, C = 1, });
+            _caller.g(new gargs() { A = 1, B = 2, C = 3, });
         }
 
         void OnClosed(object sender, CDataEventArgs<CTcpClientCloseArgs> e)
@@ -118,8 +118,8 @@ namespace cli
         async void f()
         {
             await _caller.h();
-            await _caller.p(new pargs() { A = 1, B = 1, C = 1, });
-            var qret = _caller.q(new qargs() { A = 1, B = 1, C = 1, });
+            await _caller.p(new pargs() { A = 1, B = 2, C = 3, });
+            var qret = _caller.q(new qargs() { A = 1, B = 2, C = 3, });
             await qret;
         }
     }

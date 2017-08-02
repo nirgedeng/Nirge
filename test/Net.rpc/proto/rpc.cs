@@ -23,7 +23,7 @@ namespace Nirge.Core
         qret q(int channel, qargs args);
     }
 
-    public class GameRpcService : IGameRpcService
+    public class CGameRpcService : IGameRpcService
     {
         public void f(int channel)
         {
@@ -89,9 +89,9 @@ namespace Nirge.Core
 
     }
 
-    public class CGameRpcCallee : CRpcCallee<GameRpcService>
+    public class CGameRpcCallee : CRpcCallee<CGameRpcService>
     {
-        public CGameRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, GameRpcService service)
+        public CGameRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CGameRpcService service)
             : base(args, log, stream, communicator, service)
         {
         }
