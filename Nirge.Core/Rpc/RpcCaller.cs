@@ -121,6 +121,9 @@ namespace Nirge.Core
 
         async Task<Google.Protobuf.WellKnownTypes.Any> CallAsync<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
         {
+            if (args == null)
+                throw new CCallerArgsNullRpcException();
+
             var pkg = new RpcCallReq()
             {
                 Service = service,
@@ -168,9 +171,8 @@ namespace Nirge.Core
 
         protected Task<TRet> CallAsync<TArgs, TRet>(int channel, int service, int call, TArgs args) where TArgs : IMessage where TRet : IMessage, new()
         {
-            if (args == null)
-                throw new CCallerArgsNullRpcException();
             var task = CallAsync<TArgs>(channel, service, call, args);
+
             if (task == null)
                 throw new CCallerRetNullRpcException();
             if (task.Result == null)
