@@ -115,6 +115,7 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
+                    _stream.Reset();
                     _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, req.Serial, req.Service, req.Call, args, ret), exception);
                     return eRpcException.CalleeRetSerialize;
                 }
@@ -182,6 +183,7 @@ namespace Nirge.Core
 
                 try
                 {
+                    _stream.Reset();
                     pkg.WriteTo(_stream.OutputStream);
                 }
                 catch (Exception exception)
