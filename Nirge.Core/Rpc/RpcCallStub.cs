@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Threading;
+using Google.Protobuf;
 using System.Linq;
 using System.Text;
 using System.IO;
@@ -21,7 +22,7 @@ namespace Nirge.Core
         int _service;
         int _call;
         DateTime _time;
-        TaskCompletionSource<Google.Protobuf.WellKnownTypes.Any> _awaiter;
+        TaskCompletionSource<ByteString> _awaiter;
 
         public int Serial
         {
@@ -55,7 +56,7 @@ namespace Nirge.Core
             }
         }
 
-        public TaskCompletionSource<Google.Protobuf.WellKnownTypes.Any> Awaiter
+        public TaskCompletionSource<ByteString> Awaiter
         {
             get
             {
@@ -69,7 +70,7 @@ namespace Nirge.Core
             _service = service;
             _call = call;
             _time = time;
-            _awaiter = new TaskCompletionSource<Google.Protobuf.WellKnownTypes.Any>();
+            _awaiter = new TaskCompletionSource<ByteString>();
         }
     }
 

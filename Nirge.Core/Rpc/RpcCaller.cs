@@ -71,7 +71,7 @@ namespace Nirge.Core
         {
             try
             {
-                pkg.Args = Google.Protobuf.WellKnownTypes.Any.Pack(args);
+                pkg.Args = args.ToByteString();
             }
             catch (Exception exception)
             {
@@ -131,7 +131,7 @@ namespace Nirge.Core
             }
         }
 
-        async Task<Google.Protobuf.WellKnownTypes.Any> CallAsync<TArgs>(int channel, int serial, int service, int call, TArgs args, RpcCallReq pkg) where TArgs : IMessage
+        async Task<ByteString> CallAsync<TArgs>(int channel, int serial, int service, int call, TArgs args, RpcCallReq pkg) where TArgs : IMessage
         {
             Call<TArgs>(channel, serial, service, call, args, pkg);
 
@@ -190,10 +190,10 @@ namespace Nirge.Core
             if (task.Result == null)
                 throw new CCallerRetNullRpcException();
 
-            TRet ret;
+            var ret = new TRet();
             try
             {
-                ret = task.Result.Unpack<TRet>();
+                ret.MergeFrom(task.Result);
             }
             catch (Exception exception)
             {

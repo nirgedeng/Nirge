@@ -22,17 +22,15 @@ namespace Nirge.Core {
     static RpcProtoReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg5ScGNQcm90by5wcm90bxoZZ29vZ2xlL3Byb3RvYnVmL2FueS5wcm90bxoL",
-            "UHJvdG8ucHJvdG8iEgoQUnBjQ2FsbEFyZ3NFbXB0eSJfCgpScGNDYWxsUmVx",
-            "Eg4KBlNlcmlhbBgBIAEoBRIPCgdTZXJ2aWNlGAIgASgFEgwKBENhbGwYAyAB",
-            "KAUSIgoEQXJncxgEIAEoCzIULmdvb2dsZS5wcm90b2J1Zi5BbnkiXgoKUnBj",
-            "Q2FsbFJzcBIOCgZTZXJpYWwYASABKAUSDwoHU2VydmljZRgCIAEoBRIMCgRD",
-            "YWxsGAMgASgFEiEKA1JldBgEIAEoCzIULmdvb2dsZS5wcm90b2J1Zi5Bbnki",
-            "VwoTUnBjQ2FsbEV4Y2VwdGlvblJzcBIOCgZTZXJpYWwYASABKAUSDwoHU2Vy",
-            "dmljZRgCIAEoBRIMCgRDYWxsGAMgASgFEhEKCUV4Y2VwdGlvbhgEIAEoBUIN",
-            "qgIKTmlyZ2UuQ29yZWIGcHJvdG8z"));
+            "Cg5ScGNQcm90by5wcm90bxoLUHJvdG8ucHJvdG8iEgoQUnBjQ2FsbEFyZ3NF",
+            "bXB0eSJJCgpScGNDYWxsUmVxEg4KBlNlcmlhbBgBIAEoBRIPCgdTZXJ2aWNl",
+            "GAIgASgFEgwKBENhbGwYAyABKAUSDAoEQXJncxgEIAEoDCJICgpScGNDYWxs",
+            "UnNwEg4KBlNlcmlhbBgBIAEoBRIPCgdTZXJ2aWNlGAIgASgFEgwKBENhbGwY",
+            "AyABKAUSCwoDUmV0GAQgASgMIlcKE1JwY0NhbGxFeGNlcHRpb25Sc3ASDgoG",
+            "U2VyaWFsGAEgASgFEg8KB1NlcnZpY2UYAiABKAUSDAoEQ2FsbBgDIAEoBRIR",
+            "CglFeGNlcHRpb24YBCABKAVCDaoCCk5pcmdlLkNvcmViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, global::Nirge.Core.ProtoReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Nirge.Core.ProtoReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallArgsEmpty), global::Nirge.Core.RpcCallArgsEmpty.Parser, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallReq), global::Nirge.Core.RpcCallReq.Parser, new[]{ "Serial", "Service", "Call", "Args" }, null, null, null),
@@ -160,7 +158,7 @@ namespace Nirge.Core {
       serial_ = other.serial_;
       service_ = other.service_;
       call_ = other.call_;
-      Args = other.args_ != null ? other.Args.Clone() : null;
+      args_ = other.args_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -203,12 +201,12 @@ namespace Nirge.Core {
 
     /// <summary>Field number for the "Args" field.</summary>
     public const int ArgsFieldNumber = 4;
-    private global::Google.Protobuf.WellKnownTypes.Any args_;
+    private pb::ByteString args_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Google.Protobuf.WellKnownTypes.Any Args {
+    public pb::ByteString Args {
       get { return args_; }
       set {
-        args_ = value;
+        args_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -228,7 +226,7 @@ namespace Nirge.Core {
       if (Serial != other.Serial) return false;
       if (Service != other.Service) return false;
       if (Call != other.Call) return false;
-      if (!object.Equals(Args, other.Args)) return false;
+      if (Args != other.Args) return false;
       return true;
     }
 
@@ -238,7 +236,7 @@ namespace Nirge.Core {
       if (Serial != 0) hash ^= Serial.GetHashCode();
       if (Service != 0) hash ^= Service.GetHashCode();
       if (Call != 0) hash ^= Call.GetHashCode();
-      if (args_ != null) hash ^= Args.GetHashCode();
+      if (Args.Length != 0) hash ^= Args.GetHashCode();
       return hash;
     }
 
@@ -261,9 +259,9 @@ namespace Nirge.Core {
         output.WriteRawTag(24);
         output.WriteInt32(Call);
       }
-      if (args_ != null) {
+      if (Args.Length != 0) {
         output.WriteRawTag(34);
-        output.WriteMessage(Args);
+        output.WriteBytes(Args);
       }
     }
 
@@ -279,8 +277,8 @@ namespace Nirge.Core {
       if (Call != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Call);
       }
-      if (args_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Args);
+      if (Args.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Args);
       }
       return size;
     }
@@ -299,11 +297,8 @@ namespace Nirge.Core {
       if (other.Call != 0) {
         Call = other.Call;
       }
-      if (other.args_ != null) {
-        if (args_ == null) {
-          args_ = new global::Google.Protobuf.WellKnownTypes.Any();
-        }
-        Args.MergeFrom(other.Args);
+      if (other.Args.Length != 0) {
+        Args = other.Args;
       }
     }
 
@@ -328,10 +323,7 @@ namespace Nirge.Core {
             break;
           }
           case 34: {
-            if (args_ == null) {
-              args_ = new global::Google.Protobuf.WellKnownTypes.Any();
-            }
-            input.ReadMessage(args_);
+            Args = input.ReadBytes();
             break;
           }
         }
@@ -367,7 +359,7 @@ namespace Nirge.Core {
       serial_ = other.serial_;
       service_ = other.service_;
       call_ = other.call_;
-      Ret = other.ret_ != null ? other.Ret.Clone() : null;
+      ret_ = other.ret_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -410,12 +402,12 @@ namespace Nirge.Core {
 
     /// <summary>Field number for the "Ret" field.</summary>
     public const int RetFieldNumber = 4;
-    private global::Google.Protobuf.WellKnownTypes.Any ret_;
+    private pb::ByteString ret_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Google.Protobuf.WellKnownTypes.Any Ret {
+    public pb::ByteString Ret {
       get { return ret_; }
       set {
-        ret_ = value;
+        ret_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -435,7 +427,7 @@ namespace Nirge.Core {
       if (Serial != other.Serial) return false;
       if (Service != other.Service) return false;
       if (Call != other.Call) return false;
-      if (!object.Equals(Ret, other.Ret)) return false;
+      if (Ret != other.Ret) return false;
       return true;
     }
 
@@ -445,7 +437,7 @@ namespace Nirge.Core {
       if (Serial != 0) hash ^= Serial.GetHashCode();
       if (Service != 0) hash ^= Service.GetHashCode();
       if (Call != 0) hash ^= Call.GetHashCode();
-      if (ret_ != null) hash ^= Ret.GetHashCode();
+      if (Ret.Length != 0) hash ^= Ret.GetHashCode();
       return hash;
     }
 
@@ -468,9 +460,9 @@ namespace Nirge.Core {
         output.WriteRawTag(24);
         output.WriteInt32(Call);
       }
-      if (ret_ != null) {
+      if (Ret.Length != 0) {
         output.WriteRawTag(34);
-        output.WriteMessage(Ret);
+        output.WriteBytes(Ret);
       }
     }
 
@@ -486,8 +478,8 @@ namespace Nirge.Core {
       if (Call != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Call);
       }
-      if (ret_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Ret);
+      if (Ret.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Ret);
       }
       return size;
     }
@@ -506,11 +498,8 @@ namespace Nirge.Core {
       if (other.Call != 0) {
         Call = other.Call;
       }
-      if (other.ret_ != null) {
-        if (ret_ == null) {
-          ret_ = new global::Google.Protobuf.WellKnownTypes.Any();
-        }
-        Ret.MergeFrom(other.Ret);
+      if (other.Ret.Length != 0) {
+        Ret = other.Ret;
       }
     }
 
@@ -535,10 +524,7 @@ namespace Nirge.Core {
             break;
           }
           case 34: {
-            if (ret_ == null) {
-              ret_ = new global::Google.Protobuf.WellKnownTypes.Any();
-            }
-            input.ReadMessage(ret_);
+            Ret = input.ReadBytes();
             break;
           }
         }

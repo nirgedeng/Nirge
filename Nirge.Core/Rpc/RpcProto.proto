@@ -4,8 +4,6 @@ syntax = "proto3";
 
 //----------------------------------------------------------------------------------------
 
-import "google/protobuf/any.proto";
-
 import "Proto.proto";
 
 option csharp_namespace = "Nirge.Core";
@@ -21,7 +19,7 @@ message RpcCallReq
     int32 Serial = 1;
     int32 Service = 2;
     int32 Call = 3;
-    google.protobuf.Any Args = 4;
+    bytes Args = 4;
 }
 
 message RpcCallRsp
@@ -29,7 +27,7 @@ message RpcCallRsp
     int32 Serial = 1;
     int32 Service = 2;
     int32 Call = 3;
-    google.protobuf.Any Ret = 4;
+    bytes Ret = 4;
 }
 
 message RpcCallExceptionRsp

@@ -57,12 +57,12 @@ namespace Nirge.Core
 
         eRpcException Call<TArgs, TRet>(int channel, RpcCallReq req, Func<int, TArgs, TRet> call, out TArgs args, out TRet ret) where TArgs : IMessage, new() where TRet : IMessage
         {
-            args = default(TArgs);
+            args = new TArgs();
             ret = default(TRet);
 
             try
             {
-                args = req.Args.Unpack<TArgs>();
+                args.MergeFrom(req.Args);
             }
             catch (Exception exception)
             {
@@ -99,7 +99,7 @@ namespace Nirge.Core
 
                 try
                 {
-                    pkg.Ret = Google.Protobuf.WellKnownTypes.Any.Pack(ret);
+                    pkg.Ret = ret.ToByteString();
                 }
                 catch (Exception exception)
                 {
