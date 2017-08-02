@@ -132,7 +132,7 @@ namespace Nirge.Core
             var serial = _stubs.CreateSerial();
             pkg.Serial = serial;
 
-            Call(channel, service, call, args, pkg);
+            Call<TArgs>(channel, service, call, args, pkg);
 
             var stub = _stubs.CreateStub(serial, service, call, _args.Timeout);
 
@@ -175,7 +175,7 @@ namespace Nirge.Core
                 throw new CCallerArgsSerializeRpcException();
             }
 
-            Call(channel, service, call, args, pkg);
+            Call<TArgs>(channel, service, call, args, pkg);
         }
 
         protected Task<TRet> CallAsync<TArgs, TRet>(int channel, int service, int call, TArgs args) where TArgs : IMessage where TRet : IMessage, new()
