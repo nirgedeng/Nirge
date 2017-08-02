@@ -114,6 +114,14 @@ namespace cli
         {
             CTcpClient cli = (CTcpClient)sender;
         }
+
+        async void f()
+        {
+            await _caller.h();
+            await _caller.p(new pargs() { A = 1, B = 1, C = 1, });
+            var qret = _caller.q(new qargs() { A = 1, B = 1, C = 1, });
+            await qret;
+        }
     }
 
     class Program
