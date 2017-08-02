@@ -70,7 +70,6 @@ namespace ser
 
         private void Ser_CliRecved(object sender, int cli, byte[] arg2, int arg3, int arg4)
         {
-            _ser.Send(cli, arg2, arg3, arg4);
         }
 
         private void Ser_CliClosed(object sender, CDataEventArgs<int, CTcpClientCloseArgs> e)
