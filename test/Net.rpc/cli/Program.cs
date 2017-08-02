@@ -91,6 +91,7 @@ namespace cli
         void Exec()
         {
             _cli.Exec();
+            _stubs.Exec();
         }
 
         void OnConnected(object sender, CDataEventArgs<CTcpClientConnectArgs> e)
@@ -113,6 +114,26 @@ namespace cli
         void OnRecvd(object sender, byte[] arg1, int arg2, int arg3)
         {
             CTcpClient cli = (CTcpClient)sender;
+
+            var cmd = BitConverter.ToInt32(arg1, arg2);
+
+            switch ((eRpcProto)cmd)
+            {
+            case eRpcProto.RpcCallRsp:
+                {
+                    _stream.Input.Buf.SetBuf(arg1, arg2 + 4, arg3 - 4);
+                    var rsp = RpcCallRsp.Parser.ParseFrom(_stream.Input.Stream);
+                    _stubs.Exec(rsp);
+                }
+                break;
+            case eRpcProto.RpcCallExceptionRsp:
+                {
+                    _stream.Input.Buf.SetBuf(arg1, arg2 + 4, arg3 - 4);
+                    var rsp = RpcCallExceptionRsp.Parser.ParseFrom(_stream.Input.Stream);
+                    _stubs.Exec(rsp);
+                }
+                break;
+            }
         }
 
         async void f()
