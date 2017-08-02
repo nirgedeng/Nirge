@@ -73,15 +73,45 @@ namespace Nirge.Core
         }
     }
 
+    public class CRpcCallStubArgs
+    {
+        bool _logCall;
+        bool _logTimeout;
+
+        public bool LogCall
+        {
+            get
+            {
+                return _logCall;
+            }
+        }
+
+        public bool LogTimeout
+        {
+            get
+            {
+                return _logTimeout;
+            }
+        }
+
+        public CRpcCallStubArgs(bool logCall, bool logTimeout)
+        {
+            _logCall = logCall;
+            _logTimeout = logTimeout;
+        }
+    }
+
     public class CRpcCallStubProvider
     {
+        CRpcCallStubArgs _args;
         ILog _log;
         List<CRpcCallStub> _stubs;
         Dictionary<int, CRpcCallStub> _stubsDict;
         int _serial;
 
-        public CRpcCallStubProvider(ILog log)
+        public CRpcCallStubProvider(CRpcCallStubArgs args, ILog log)
         {
+            _args = args;
             _log = log;
             _stubs = new List<CRpcCallStub>(32);
             _stubsDict = new Dictionary<int, CRpcCallStub>(32);
@@ -135,6 +165,11 @@ namespace Nirge.Core
 
                 DelStub(stub);
 
+                if (_args.LogTimeout)
+                {
+                    _log.InfoFormat("[Rpc]RpcCallStub.Exec timeout, serial:\"{0}\", service:\"{1}\", call:\"{2}\", time:\"{3}\"", stub.Serial, stub.Service, stub.Call, stub.Time);
+                }
+
                 stub.Awaiter.SetException(new CCallerTimeoutRpcException());
             }
         }
@@ -163,6 +198,11 @@ namespace Nirge.Core
             }
 
             DelStub(stub);
+
+            if (_args.LogCall)
+            {
+                _log.InfoFormat("[Rpc]RpcCallStub.Exec ExceptionRsp, serial:\"{0}\", service:\"{1}\", call:\"{2}\", time:\"{3}\", exception:\"{4}\"", stub.Serial, stub.Service, stub.Call, stub.Time, rsp.Exception);
+            }
 
             switch ((eRpcException)rsp.Exception)
             {
