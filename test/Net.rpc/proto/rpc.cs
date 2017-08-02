@@ -27,20 +27,25 @@ namespace proto
     {
         public void f(int channel)
         {
+            Console.WriteLine("f");
         }
 
         public void g(int channel, RpcCallArgsEmpty args)
         {
+            Console.WriteLine("g,{0}", args);
         }
 
         public void h(int channel)
         {
+            Console.WriteLine("h");
         }
         public void p(int channel, RpcCallArgsEmpty args)
         {
+            Console.WriteLine("p,{0}", args);
         }
         public RpcCallArgsEmpty q(int channel, RpcCallArgsEmpty args)
         {
+            Console.WriteLine("q,{0}", args);
             return null;
         }
 
