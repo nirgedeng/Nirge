@@ -123,8 +123,7 @@ namespace Nirge.Core
 
         public void Destroy()
         {
-            _stubs.Clear();
-            _stubsDict.Clear();
+            Break();
         }
 
         public int CreateSerial()

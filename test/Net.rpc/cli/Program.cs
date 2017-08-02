@@ -25,6 +25,11 @@ namespace cli
         TcpClientCache _cache;
         CTcpClient _cli;
 
+        CRpcCommunicator _communicator;
+        CRpcStream _stream;
+        CRpcCallStubProvider _stubs;
+        CGameRpcCaller _caller;
+
         public void Init()
         {
             _log = LogManager.Exists("all");
@@ -35,6 +40,11 @@ namespace cli
 
             _cache = new TcpClientCache(new TcpClientCacheArgs(25600, 12800, 6400, 25600, 12800, 6400));
             _cli = new CTcpClient(new CTcpClientArgs(), _log, _cache);
+
+            _communicator = new CClientRpcCommunicator(_log, _cli);
+            _stream = new CRpcStream(new CRpcInputStream(), new CRpcOutputStream(new byte[1024], 0, 1024));
+            _stubs = new CRpcCallStubProvider(new CRpcCallStubArgs(true, true), _log);
+            _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromSeconds(8f), true), _log, _stream, _communicator, _stubs);
 
             _task.Exec(CCall.Create(() =>
             {
@@ -54,6 +64,7 @@ namespace cli
                 _task.Exec(CCall.Create(_timer.Exec, e));
             };
 
+            _stubs.Init();
             _task.Init();
             _timer.Init();
             _tick.Init();
@@ -63,6 +74,12 @@ namespace cli
         {
             _tick.Destroy();
             _timer.Destroy();
+
+            _task.Exec(CCall.Create(() =>
+            {
+                _stubs.Destroy();
+                _stream.Dispose();
+            }));
 
             _task.Exec(CCall.Create(() =>
             {
@@ -81,6 +98,8 @@ namespace cli
             CTcpClient cli = (CTcpClient)sender;
 
             _log.InfoFormat("OnConnect {0}:{1}:{2}", e.Arg1.Result, e.Arg1.Error, e.Arg1.SocketError);
+
+            _caller.f();
         }
 
         void OnClosed(object sender, CDataEventArgs<CTcpClientCloseArgs> e)
