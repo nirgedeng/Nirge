@@ -220,6 +220,7 @@ namespace Nirge.Core
 
         public virtual void Call(int channel, RpcCallReq req)
         {
+            _log.ErrorFormat("[Rpc]RpcCallee.Call !Call, channel:\"{0}\", req:\"{1}\"", channel, req);
         }
     }
 }
