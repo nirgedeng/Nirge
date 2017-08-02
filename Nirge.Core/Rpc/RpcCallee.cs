@@ -108,6 +108,18 @@ namespace Nirge.Core
                 }
 
                 _stream.Output.Clear();
+                var cmd = BitConverter.GetBytes((int)eRpcProto.RpcCallRsp);
+
+                try
+                {
+                    _stream.Output.Buf.Write(cmd, 0, cmd.Length);
+                }
+                catch (Exception exception)
+                {
+                    _stream.Output.Reset();
+                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, req.Serial, req.Service, req.Call, args, ret), exception);
+                    return eRpcException.CalleeRetSerialize;
+                }
 
                 try
                 {
@@ -180,14 +192,26 @@ namespace Nirge.Core
                 };
 
                 _stream.Output.Clear();
+                var cmd = BitConverter.GetBytes((int)eRpcProto.RpcCallExceptionRsp);
 
                 try
                 {
+                    _stream.Output.Buf.Write(cmd, 0, cmd.Length);
+                }
+                catch (Exception exception)
+                {
                     _stream.Output.Reset();
+                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\"", channel, req.Serial, req.Service, req.Call, args, ret, e), exception);
+                    return;
+                }
+
+                try
+                {
                     pkg.WriteTo(_stream.Output.Stream);
                 }
                 catch (Exception exception)
                 {
+                    _stream.Output.Reset();
                     _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\"", channel, req.Serial, req.Service, req.Call, args, ret, e), exception);
                     return;
                 }

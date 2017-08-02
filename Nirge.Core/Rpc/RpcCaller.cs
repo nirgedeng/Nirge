@@ -80,6 +80,18 @@ namespace Nirge.Core
             }
 
             _stream.Output.Clear();
+            var cmd = BitConverter.GetBytes((int)eRpcProto.RpcCallReq);
+
+            try
+            {
+                _stream.Output.Buf.Write(cmd, 0, cmd.Length);
+            }
+            catch (Exception exception)
+            {
+                _stream.Output.Reset();
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
+                throw new CCCallerReqSerializeRpcException();
+            }
 
             try
             {

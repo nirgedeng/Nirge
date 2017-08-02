@@ -108,6 +108,14 @@ namespace Nirge.Core
         CBufStream _buf;
         CodedOutputStream _stream;
 
+        public CBufStream Buf
+        {
+            get
+            {
+                return _buf;
+            }
+        }
+
         public CodedOutputStream Stream
         {
             get
