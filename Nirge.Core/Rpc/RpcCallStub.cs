@@ -174,6 +174,25 @@ namespace Nirge.Core
             }
         }
 
+        public void Break()
+        {
+            for (var i = _stubs.Count - 1; i >= 0; --i)
+            {
+                CRpcCallStub stub = _stubs[i];
+
+                DelStub(stub);
+
+                try
+                {
+                    stub.Awaiter.SetException(new CCallerBreakRpcException());
+                }
+                catch (Exception exception)
+                {
+                    _log.Error(string.Format("[Rpc]RpcCallStub.Break exception, serial:\"{1}\", service:\"{2}\", call:\"{3}\", time:\"{4}\"", stub.Serial, stub.Service, stub.Call, stub.Time), exception);
+                }
+            }
+        }
+
         public void Exec(RpcCallRsp rsp)
         {
             var stub = GetStub(rsp.Serial);
@@ -218,25 +237,6 @@ namespace Nirge.Core
             default:
                 stub.Awaiter.SetException(new CRpcException());
                 break;
-            }
-        }
-
-        public void Break()
-        {
-            for (var i = _stubs.Count - 1; i >= 0; --i)
-            {
-                CRpcCallStub stub = _stubs[i];
-
-                DelStub(stub);
-
-                try
-                {
-                    stub.Awaiter.SetException(new CCallerBreakRpcException());
-                }
-                catch (Exception exception)
-                {
-                    _log.Error(string.Format("[Rpc]RpcCallStub.Break exception, serial:\"{1}\", service:\"{2}\", call:\"{3}\", time:\"{4}\"", stub.Serial, stub.Service, stub.Call, stub.Time), exception);
-                }
             }
         }
     }
