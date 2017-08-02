@@ -52,6 +52,12 @@
   <ItemGroup>
     <None Include="service.proto" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Nirge.Core\Nirge.Core.csproj">
+      <Project>{9cfed86f-16b8-439e-887f-9540f1eb8b92}</Project>
+      <Name>Nirge.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

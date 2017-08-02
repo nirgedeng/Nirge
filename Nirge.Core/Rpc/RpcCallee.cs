@@ -38,7 +38,7 @@ namespace Nirge.Core
 
     public class CRpcCallee<TRpcService> where TRpcService : IRpcService
     {
-        static RpcCallArgsEmpty ArgsEmpty = new RpcCallArgsEmpty();
+        protected static RpcCallArgsEmpty ArgsEmpty = new RpcCallArgsEmpty();
 
         CRpcCalleeArgs _args;
         ILog _log;
