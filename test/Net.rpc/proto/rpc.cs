@@ -11,16 +11,16 @@ using Nirge.Core;
 using log4net;
 using System;
 
-namespace proto
+namespace Nirge.Core
 {
     public interface IGameRpcService : IRpcService
     {
         void f(int channel);
-        void g(int channel, RpcCallArgsEmpty args);
+        void g(int channel, gargs args);
 
         void h(int channel);
-        void p(int channel, RpcCallArgsEmpty args);
-        RpcCallArgsEmpty q(int channel, RpcCallArgsEmpty args);
+        void p(int channel, pargs args);
+        qret q(int channel, qargs args);
     }
 
     public class GameRpcService : IGameRpcService
@@ -30,7 +30,7 @@ namespace proto
             Console.WriteLine("f");
         }
 
-        public void g(int channel, RpcCallArgsEmpty args)
+        public void g(int channel, gargs args)
         {
             Console.WriteLine("g,{0}", args);
         }
@@ -39,14 +39,20 @@ namespace proto
         {
             Console.WriteLine("h");
         }
-        public void p(int channel, RpcCallArgsEmpty args)
+        public void p(int channel, pargs args)
         {
             Console.WriteLine("p,{0}", args);
         }
-        public RpcCallArgsEmpty q(int channel, RpcCallArgsEmpty args)
+        public qret q(int channel, qargs args)
         {
             Console.WriteLine("q,{0}", args);
-            return null;
+
+            return new qret()
+            {
+                A = args.A,
+                B = args.B,
+                C = args.C,
+            };
         }
 
     }
@@ -63,22 +69,22 @@ namespace proto
             Call<RpcCallArgsEmpty>(channel, 1, 1, ArgsEmpty);
         }
 
-        public void g(RpcCallArgsEmpty args, int channel = 0)
+        public void g(gargs args, int channel = 0)
         {
-            Call<RpcCallArgsEmpty>(channel, 1, 2, args);
+            Call<gargs>(channel, 1, 2, args);
         }
 
         public Task<RpcCallArgsEmpty> h(int channel = 0)
         {
             return CallAsync<RpcCallArgsEmpty, RpcCallArgsEmpty>(channel, 1, 3, ArgsEmpty);
         }
-        public Task<RpcCallArgsEmpty> p(RpcCallArgsEmpty args, int channel = 0)
+        public Task<RpcCallArgsEmpty> p(pargs args, int channel = 0)
         {
-            return CallAsync<RpcCallArgsEmpty, RpcCallArgsEmpty>(channel, 1, 4, args);
+            return CallAsync<pargs, RpcCallArgsEmpty>(channel, 1, 4, args);
         }
-        public Task<RpcCallArgsEmpty> q(RpcCallArgsEmpty args, int channel = 0)
+        public Task<qret> q(qargs args, int channel = 0)
         {
-            return CallAsync<RpcCallArgsEmpty, RpcCallArgsEmpty>(channel, 1, 5, args);
+            return CallAsync<qargs, qret>(channel, 1, 5, args);
         }
 
     }
@@ -102,7 +108,7 @@ namespace proto
                 });
                 break;
             case 2:
-                Call<RpcCallArgsEmpty, RpcCallArgsEmpty>(channel, req, (_1, args) =>
+                Call<gargs, RpcCallArgsEmpty>(channel, req, (_1, args) =>
                 {
                     _service.g(channel, args);
                     return ArgsEmpty;
@@ -116,14 +122,14 @@ namespace proto
                 });
                 break;
             case 4:
-                CallAsync<RpcCallArgsEmpty, RpcCallArgsEmpty>(channel, req, (_1, args) =>
+                CallAsync<pargs, RpcCallArgsEmpty>(channel, req, (_1, args) =>
                 {
                     _service.p(channel, args);
                     return ArgsEmpty;
                 });
                 break;
             case 5:
-                CallAsync<RpcCallArgsEmpty, RpcCallArgsEmpty>(channel, req, (_1, args) =>
+                CallAsync<qargs, qret>(channel, req, (_1, args) =>
                 {
                     return _service.q(channel, args);
                 });
