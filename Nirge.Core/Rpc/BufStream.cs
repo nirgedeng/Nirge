@@ -156,6 +156,9 @@ namespace Nirge.Core
 
         public override int Read(byte[] buf, int offset, int count)
         {
+            if (_pos == _r)
+                return 0;
+
             var r = _pos + count;
             if (r > _r)
             {
