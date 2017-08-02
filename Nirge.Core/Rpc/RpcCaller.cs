@@ -67,8 +67,18 @@ namespace Nirge.Core
             _stubs = stubs;
         }
 
-        void Call<TArgs>(int channel, int service, int call, TArgs args, RpcCallReq pkg) where TArgs : IMessage
+        void Call<TArgs>(int channel, int serial, int service, int call, TArgs args, RpcCallReq pkg) where TArgs : IMessage
         {
+            try
+            {
+                pkg.Args = Google.Protobuf.WellKnownTypes.Any.Pack(args);
+            }
+            catch (Exception exception)
+            {
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
+                throw new CCallerArgsSerializeRpcException();
+            }
+
             _stream.Clear();
 
             try
@@ -77,7 +87,8 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
+                _stream.Reset();
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
                 throw new CCCallerReqSerializeRpcException();
             }
 
@@ -88,7 +99,7 @@ namespace Nirge.Core
             catch (Exception exception)
             {
                 _stream.Reset();
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
                 throw new CCCallerReqSerializeRpcException();
             }
 
@@ -98,41 +109,28 @@ namespace Nirge.Core
             {
                 if (_args.LogCall)
                 {
-                    _log.InfoFormat("[Rpc]RpcCaller.Call Req, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args);
+                    _log.InfoFormat("[Rpc]RpcCaller.Call Req, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args);
                 }
             }
             else
             {
-                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args);
+                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args);
                 throw new CCallerCommunicatorRpcException();
             }
         }
 
         async Task<Google.Protobuf.WellKnownTypes.Any> CallAsync<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
         {
-            if (args == null)
-                throw new CCallerArgsNullRpcException();
-
             var pkg = new RpcCallReq()
             {
                 Service = service,
                 Call = call,
             };
 
-            try
-            {
-                pkg.Args = Google.Protobuf.WellKnownTypes.Any.Pack(args);
-            }
-            catch (Exception exception)
-            {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
-                throw new CCallerArgsSerializeRpcException();
-            }
-
             var serial = _stubs.CreateSerial();
             pkg.Serial = serial;
 
-            Call<TArgs>(channel, service, call, args, pkg);
+            Call<TArgs>(channel, serial, service, call, args, pkg);
 
             var stub = _stubs.CreateStub(serial, service, call, _args.Timeout);
 
@@ -142,12 +140,12 @@ namespace Nirge.Core
             }
             catch (CRpcException exception)
             {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
                 throw exception;
             }
             catch (Exception exception)
             {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
                 throw new CRpcException("", exception);
             }
 
@@ -165,21 +163,13 @@ namespace Nirge.Core
                 Call = call,
             };
 
-            try
-            {
-                pkg.Args = Google.Protobuf.WellKnownTypes.Any.Pack(args);
-            }
-            catch (Exception exception)
-            {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", service:\"{1}\", call:\"{2}\", args:\"{3}\"", channel, service, call, args), exception);
-                throw new CCallerArgsSerializeRpcException();
-            }
-
-            Call<TArgs>(channel, service, call, args, pkg);
+            Call<TArgs>(channel, 0, service, call, args, pkg);
         }
 
         protected Task<TRet> CallAsync<TArgs, TRet>(int channel, int service, int call, TArgs args) where TArgs : IMessage where TRet : IMessage, new()
         {
+            if (args == null)
+                throw new CCallerArgsNullRpcException();
             var task = CallAsync<TArgs>(channel, service, call, args);
             if (task == null)
                 throw new CCallerRetNullRpcException();
