@@ -201,6 +201,7 @@ namespace Nirge.Core
         CallerRetNull,
         CallerRetDeserialize,
         CallerTimeout,
+        CallerBreak,
         CalleeCommunicator,
         CalleeArgsDeserialize,
         CalleeExec,
@@ -259,6 +260,13 @@ namespace Nirge.Core
     public class CCallerTimeoutRpcException : CRpcException
     {
         public CCallerTimeoutRpcException()
+        {
+        }
+    }
+
+    public class CCallerBreakRpcException : CRpcException
+    {
+        public CCallerBreakRpcException()
         {
         }
     }
