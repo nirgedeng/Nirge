@@ -50,51 +50,36 @@ namespace Nirge.Core
 
     #region 
 
-    public class CRpcStream : IDisposable
+    public class CRpcInputStream : IDisposable
     {
-        ArraySegment<byte> _buf;
-        CBufStream _stream;
-        CodedInputStream _inputStream;
-        CodedOutputStream _outputStream;
+        CBufStream _buf;
+        CodedInputStream _stream;
 
-        public CodedInputStream InputStream
+        public CBufStream Buf
         {
             get
             {
-                return _inputStream;
+                return _buf;
             }
         }
 
-        public CodedOutputStream OutputStream
+        public CodedInputStream Stream
         {
             get
             {
-                return _outputStream;
+                return _stream;
             }
         }
 
-        private CRpcStream(byte[] buf, int offset, int count)
+        public CRpcInputStream()
         {
-            _buf = new ArraySegment<byte>(buf, offset, count);
-            _stream = new CBufStream(buf, offset, count);
-            _inputStream = new CodedInputStream(_stream, true);
-            _outputStream = new CodedOutputStream(_stream, true);
-        }
-
-        public CRpcStream(int capacity)
-            :
-            this(new byte[capacity], 0, capacity)
-        {
-        }
-
-        public ArraySegment<byte> GetOutputBuf()
-        {
-            return new ArraySegment<byte>(_stream.Array, _stream.Offset, _stream.Count);
+            _buf = new CBufStream(new byte[0], 0, 0);
+            _stream = new CodedInputStream(_buf, true);
         }
 
         public void Clear()
         {
-            _stream.Position = 0;
+            _buf.Position = 0;
         }
 
         public void Reset()
@@ -103,28 +88,102 @@ namespace Nirge.Core
 
             try
             {
-                _inputStream.Dispose();
+                _stream.Dispose();
             }
             catch
             {
             }
-            _inputStream = new CodedInputStream(_stream, true);
-
-            try
-            {
-                _outputStream.Dispose();
-            }
-            catch
-            {
-            }
-            _outputStream = new CodedOutputStream(_stream, true);
+            _stream = new CodedInputStream(_buf, true);
         }
 
         public void Dispose()
         {
-            _inputStream.Dispose();
-            _outputStream.Dispose();
             _stream.Dispose();
+            _buf.Dispose();
+        }
+    }
+
+    public class CRpcOutputStream : IDisposable
+    {
+        CBufStream _buf;
+        CodedOutputStream _stream;
+
+        public CodedOutputStream Stream
+        {
+            get
+            {
+                return _stream;
+            }
+        }
+
+        public CRpcOutputStream(byte[] buf, int offset, int count)
+        {
+            _buf = new CBufStream(buf, offset, count);
+            _stream = new CodedOutputStream(_buf, true);
+        }
+
+        public ArraySegment<byte> GetResult()
+        {
+            return new ArraySegment<byte>(_buf.Array, _buf.Offset, _buf.Count);
+        }
+
+        public void Clear()
+        {
+            _buf.Position = 0;
+        }
+
+        public void Reset()
+        {
+            Clear();
+
+            try
+            {
+                _stream.Dispose();
+            }
+            catch
+            {
+            }
+            _stream = new CodedOutputStream(_buf, true);
+        }
+
+        public void Dispose()
+        {
+            _stream.Dispose();
+            _buf.Dispose();
+        }
+    }
+
+    public class CRpcStream : IDisposable
+    {
+        CRpcInputStream _input;
+        CRpcOutputStream _output;
+
+        public CRpcInputStream Input
+        {
+            get
+            {
+                return _input;
+            }
+        }
+
+        public CRpcOutputStream Output
+        {
+            get
+            {
+                return _output;
+            }
+        }
+
+        public CRpcStream(CRpcInputStream input, CRpcOutputStream output)
+        {
+            _input = input;
+            _output = output;
+        }
+
+        public void Dispose()
+        {
+            _input.Dispose();
+            _output.Dispose();
         }
     }
 

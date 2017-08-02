@@ -79,31 +79,31 @@ namespace Nirge.Core
                 throw new CCallerArgsSerializeRpcException();
             }
 
-            _stream.Clear();
+            _stream.Output.Clear();
 
             try
             {
-                pkg.WriteTo(_stream.OutputStream);
+                pkg.WriteTo(_stream.Output.Stream);
             }
             catch (Exception exception)
             {
-                _stream.Reset();
+                _stream.Output.Reset();
                 _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
                 throw new CCCallerReqSerializeRpcException();
             }
 
             try
             {
-                _stream.OutputStream.Flush();
+                _stream.Output.Stream.Flush();
             }
             catch (Exception exception)
             {
-                _stream.Reset();
+                _stream.Output.Reset();
                 _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
                 throw new CCCallerReqSerializeRpcException();
             }
 
-            var buf = _stream.GetOutputBuf();
+            var buf = _stream.Output.GetResult();
 
             if (_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
             {

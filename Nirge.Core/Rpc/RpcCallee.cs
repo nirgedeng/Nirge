@@ -107,31 +107,31 @@ namespace Nirge.Core
                     return eRpcException.CalleeRetSerialize;
                 }
 
-                _stream.Clear();
+                _stream.Output.Clear();
 
                 try
                 {
-                    pkg.WriteTo(_stream.OutputStream);
+                    pkg.WriteTo(_stream.Output.Stream);
                 }
                 catch (Exception exception)
                 {
-                    _stream.Reset();
+                    _stream.Output.Reset();
                     _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, req.Serial, req.Service, req.Call, args, ret), exception);
                     return eRpcException.CalleeRetSerialize;
                 }
 
                 try
                 {
-                    _stream.OutputStream.Flush();
+                    _stream.Output.Stream.Flush();
                 }
                 catch (Exception exception)
                 {
-                    _stream.Reset();
+                    _stream.Output.Reset();
                     _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, req.Serial, req.Service, req.Call, args, ret), exception);
                     return eRpcException.CalleeRetSerialize;
                 }
 
-                var buf = _stream.GetOutputBuf();
+                var buf = _stream.Output.GetResult();
 
                 if (_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
                 {
@@ -179,12 +179,12 @@ namespace Nirge.Core
                     Exception = (int)e,
                 };
 
-                _stream.Clear();
+                _stream.Output.Clear();
 
                 try
                 {
-                    _stream.Reset();
-                    pkg.WriteTo(_stream.OutputStream);
+                    _stream.Output.Reset();
+                    pkg.WriteTo(_stream.Output.Stream);
                 }
                 catch (Exception exception)
                 {
@@ -194,16 +194,16 @@ namespace Nirge.Core
 
                 try
                 {
-                    _stream.OutputStream.Flush();
+                    _stream.Output.Stream.Flush();
                 }
                 catch (Exception exception)
                 {
-                    _stream.Reset();
+                    _stream.Output.Reset();
                     _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\"", channel, req.Serial, req.Service, req.Call, args, ret, e), exception);
                     return;
                 }
 
-                var buf = _stream.GetOutputBuf();
+                var buf = _stream.Output.GetResult();
 
                 if (_communicator.Send(channel, buf.Array, buf.Offset, buf.Count))
                 {
