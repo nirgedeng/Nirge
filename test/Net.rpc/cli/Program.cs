@@ -99,7 +99,8 @@ namespace cli
 
             _log.InfoFormat("OnConnect {0}:{1}:{2}", e.Arg1.Result, e.Arg1.Error, e.Arg1.SocketError);
 
-            _caller.f();
+            //_caller.f();
+            _caller.g(new gargs() { A = 1, B = 1, C = 1, });
         }
 
         void OnClosed(object sender, CDataEventArgs<CTcpClientCloseArgs> e)
