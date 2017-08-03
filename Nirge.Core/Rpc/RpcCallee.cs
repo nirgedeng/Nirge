@@ -80,6 +80,11 @@ namespace Nirge.Core
                 return eRpcException.CalleeExec;
             }
 
+            if (_args.LogCall)
+            {
+                _log.InfoFormat("[Rpc]RpcCallee.Call Req, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, req.Serial, req.Service, req.Call, args, ret);
+            }
+
             return eRpcException.None;
         }
 
@@ -233,7 +238,7 @@ namespace Nirge.Core
                 {
                     if (_args.LogCall)
                     {
-                        _log.InfoFormat("[Rpc]RpcCallee.Call Rsp, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\"", channel, req.Serial, req.Service, req.Call, args, ret, e);
+                        _log.InfoFormat("[Rpc]RpcCallee.Call ExceptionRsp, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\"", channel, req.Serial, req.Service, req.Call, args, ret, e);
                     }
                 }
                 else
