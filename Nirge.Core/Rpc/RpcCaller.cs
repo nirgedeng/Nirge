@@ -48,7 +48,7 @@ namespace Nirge.Core
 
     #endregion
 
-    public class CRpcCaller
+    public abstract class CRpcCaller
     {
         protected static RpcCallArgsEmpty ArgsEmpty = new RpcCallArgsEmpty();
 

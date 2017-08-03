@@ -36,7 +36,7 @@ namespace Nirge.Core
 
     #endregion
 
-    public class CRpcCallee<TRpcService> where TRpcService : IRpcService
+    public abstract class CRpcCallee<TRpcService> where TRpcService : IRpcService
     {
         protected static RpcCallArgsEmpty ArgsEmpty = new RpcCallArgsEmpty();
 
