@@ -141,8 +141,7 @@ namespace cli
         {
             await _caller.h();
             await _caller.p(new pargs() { A = 1, B = 2, C = 3, });
-            var qret = _caller.q(new qargs() { A = 1, B = 2, C = 3, });
-            await qret;
+            await _caller.q(new qargs() { A = 1, B = 2, C = 3, });
         }
     }
 

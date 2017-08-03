@@ -49,9 +49,9 @@ namespace Nirge.Core
 
             return new qret()
             {
-                A = args.A,
+                A = args.C,
                 B = args.B,
-                C = args.C,
+                C = args.A,
             };
         }
 
