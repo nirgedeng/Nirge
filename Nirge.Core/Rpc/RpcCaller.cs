@@ -57,17 +57,19 @@ namespace Nirge.Core
         CRpcStream _stream;
         CRpcCommunicator _communicator;
         CRpcCallStubProvider _stubs;
+        protected int _service;
 
-        public CRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
+        public CRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs, int service)
         {
             _args = args;
             _log = log;
             _stream = stream;
             _communicator = communicator;
             _stubs = stubs;
+            _service = service;
         }
 
-        void Call<TArgs>(int channel, int serial, int service, int call, TArgs args, RpcCallReq pkg) where TArgs : IMessage
+        void Call<TArgs>(int channel, int serial, int call, TArgs args, RpcCallReq pkg) where TArgs : IMessage
         {
             try
             {
@@ -75,7 +77,7 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, _service, call, args), exception);
                 throw new CCallerArgsSerializeRpcException();
             }
 
@@ -89,7 +91,7 @@ namespace Nirge.Core
             catch (Exception exception)
             {
                 _stream.Output.Reset();
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, _service, call, args), exception);
                 throw new CCCallerReqSerializeRpcException();
             }
 
@@ -100,7 +102,7 @@ namespace Nirge.Core
             catch (Exception exception)
             {
                 _stream.Output.Reset();
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, _service, call, args), exception);
                 throw new CCCallerReqSerializeRpcException();
             }
 
@@ -111,7 +113,7 @@ namespace Nirge.Core
             catch (Exception exception)
             {
                 _stream.Output.Reset();
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, _service, call, args), exception);
                 throw new CCCallerReqSerializeRpcException();
             }
 
@@ -121,21 +123,21 @@ namespace Nirge.Core
             {
                 if (_args.LogCall)
                 {
-                    _log.InfoFormat("[Rpc]RpcCaller.Call Req, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args);
+                    _log.InfoFormat("[Rpc]RpcCaller.Call Req, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, _service, call, args);
                 }
             }
             else
             {
-                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args);
+                _log.ErrorFormat("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, _service, call, args);
                 throw new CCallerCommunicatorRpcException();
             }
         }
 
-        async Task<ByteString> CallAsync<TArgs>(int channel, int serial, int service, int call, TArgs args, RpcCallReq pkg) where TArgs : IMessage
+        async Task<ByteString> CallAsync<TArgs>(int channel, int serial, int call, TArgs args, RpcCallReq pkg) where TArgs : IMessage
         {
-            Call<TArgs>(channel, serial, service, call, args, pkg);
+            Call<TArgs>(channel, serial, call, args, pkg);
 
-            var stub = _stubs.CreateStub(serial, service, call, _args.Timeout);
+            var stub = _stubs.CreateStub(serial, _service, call, _args.Timeout);
 
             try
             {
@@ -143,47 +145,47 @@ namespace Nirge.Core
             }
             catch (CRpcException exception)
             {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, _service, call, args), exception);
                 throw exception;
             }
             catch (Exception exception)
             {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, _service, call, args), exception);
                 throw new CRpcException("", exception);
             }
 
             return stub.Awaiter.Task.Result;
         }
 
-        protected void Call<TArgs>(int channel, int service, int call, TArgs args) where TArgs : IMessage
+        protected void Call<TArgs>(int channel, int call, TArgs args) where TArgs : IMessage
         {
             if (args == null)
                 throw new CCallerArgsNullRpcException();
 
             var pkg = new RpcCallReq()
             {
-                Service = service,
+                Service = _service,
                 Call = call,
             };
 
-            Call<TArgs>(channel, 0, service, call, args, pkg);
+            Call<TArgs>(channel, 0, call, args, pkg);
         }
 
-        protected Task<TRet> CallAsync<TArgs, TRet>(int channel, int service, int call, TArgs args) where TArgs : IMessage where TRet : IMessage, new()
+        protected Task<TRet> CallAsync<TArgs, TRet>(int channel, int call, TArgs args) where TArgs : IMessage where TRet : IMessage, new()
         {
             if (args == null)
                 throw new CCallerArgsNullRpcException();
 
             var pkg = new RpcCallReq()
             {
-                Service = service,
+                Service = _service,
                 Call = call,
             };
 
             var serial = _stubs.CreateSerial();
             pkg.Serial = serial;
 
-            var task = CallAsync<TArgs>(channel, serial, service, call, args, pkg);
+            var task = CallAsync<TArgs>(channel, serial, call, args, pkg);
 
             if (task == null)
                 throw new CCallerRetNullRpcException();
@@ -197,13 +199,13 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, service, call, args), exception);
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, _service, call, args), exception);
                 throw new CCallerRetDeserializeRpcException();
             }
 
             if (_args.LogCall)
             {
-                _log.InfoFormat("[Rpc]RpcCaller.Call Rsp, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, serial, service, call, args, ret);
+                _log.InfoFormat("[Rpc]RpcCaller.Call Rsp, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, serial, _service, call, args, ret);
             }
 
             return Task.FromResult(ret);

@@ -60,31 +60,31 @@ namespace Nirge.Core
     public class CGameRpcCaller : CRpcCaller
     {
         public CGameRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
-            : base(args, log, stream, communicator, stubs)
+            : base(args, log, stream, communicator, stubs, 1)
         {
         }
 
         public void f(int channel = 0)
         {
-            Call<RpcCallArgsEmpty>(channel, 1, 1, ArgsEmpty);
+            Call<RpcCallArgsEmpty>(channel, 1, ArgsEmpty);
         }
 
         public void g(gargs args, int channel = 0)
         {
-            Call<gargs>(channel, 1, 2, args);
+            Call<gargs>(channel, 2, args);
         }
 
         public Task<RpcCallArgsEmpty> h(int channel = 0)
         {
-            return CallAsync<RpcCallArgsEmpty, RpcCallArgsEmpty>(channel, 1, 3, ArgsEmpty);
+            return CallAsync<RpcCallArgsEmpty, RpcCallArgsEmpty>(channel, 3, ArgsEmpty);
         }
         public Task<RpcCallArgsEmpty> p(pargs args, int channel = 0)
         {
-            return CallAsync<pargs, RpcCallArgsEmpty>(channel, 1, 4, args);
+            return CallAsync<pargs, RpcCallArgsEmpty>(channel, 4, args);
         }
         public Task<qret> q(qargs args, int channel = 0)
         {
-            return CallAsync<qargs, qret>(channel, 1, 5, args);
+            return CallAsync<qargs, qret>(channel, 5, args);
         }
 
     }
