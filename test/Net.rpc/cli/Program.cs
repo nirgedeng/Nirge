@@ -59,6 +59,10 @@ namespace cli
                 for (var i = 0; i < 8; ++i)
                     Exec();
             }), 10);
+            _timer.Reg(CCall.Create(() =>
+            {
+                g();
+            }), 32, 128);
             _tick.Ticked += (sender, e) =>
             {
                 _task.Exec(CCall.Create(_timer.Exec, e));
@@ -142,6 +146,11 @@ namespace cli
             await _caller.h();
             await _caller.p(new pargs() { A = 1, B = 2, C = 3, });
             await _caller.q(new qargs() { A = 1, B = 2, C = 3, });
+        }
+
+        void g()
+        {
+            f();
         }
     }
 

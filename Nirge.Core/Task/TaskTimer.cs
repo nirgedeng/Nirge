@@ -20,7 +20,7 @@ namespace Nirge.Core
     {
         const int gIntervalMin = 10;
 
-        struct CTimer
+        class CTimer
         {
             public ITask _task;
             public int _interval;
