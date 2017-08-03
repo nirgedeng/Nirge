@@ -133,15 +133,14 @@ namespace Nirge.Core
             }
         }
 
-        async Task<ByteString> CallAsync<TArgs>(int channel, int serial, int call, TArgs args, RpcCallReq pkg) where TArgs : IMessage
+        async Task<TRet> CallAsync<TArgs, TRet>(int channel, int serial, int call, TArgs args, RpcCallReq pkg) where TArgs : IMessage where TRet : IMessage, new()
         {
-            Call<TArgs>(channel, serial, call, args, pkg);
-
             var stub = _stubs.CreateStub(serial, _service, call, _args.Timeout);
+            var task = stub.Awaiter.Task;
 
             try
             {
-                await stub.Awaiter.Task;
+                await task;
             }
             catch (CRpcException exception)
             {
@@ -154,7 +153,26 @@ namespace Nirge.Core
                 throw new CRpcException("", exception);
             }
 
-            return stub.Awaiter.Task.Result;
+            if (task.Result == null)
+                throw new CCallerRetNullRpcException();
+
+            var ret = new TRet();
+            try
+            {
+                ret.MergeFrom(task.Result);
+            }
+            catch (Exception exception)
+            {
+                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, _service, call, args), exception);
+                throw new CCallerRetDeserializeRpcException();
+            }
+
+            if (_args.LogCall)
+            {
+                _log.InfoFormat("[Rpc]RpcCaller.Call Rsp, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, serial, _service, call, args, ret);
+            }
+
+            return ret;
         }
 
         protected void Call<TArgs>(int channel, int call, TArgs args) where TArgs : IMessage
@@ -185,30 +203,9 @@ namespace Nirge.Core
             var serial = _stubs.CreateSerial();
             pkg.Serial = serial;
 
-            var task = CallAsync<TArgs>(channel, serial, call, args, pkg);
+            Call<TArgs>(channel, serial, call, args, pkg);
 
-            if (task == null)
-                throw new CCallerRetNullRpcException();
-            if (task.Result == null)
-                throw new CCallerRetNullRpcException();
-
-            var ret = new TRet();
-            try
-            {
-                ret.MergeFrom(task.Result);
-            }
-            catch (Exception exception)
-            {
-                _log.Error(string.Format("[Rpc]RpcCaller.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, serial, _service, call, args), exception);
-                throw new CCallerRetDeserializeRpcException();
-            }
-
-            if (_args.LogCall)
-            {
-                _log.InfoFormat("[Rpc]RpcCaller.Call Rsp, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, serial, _service, call, args, ret);
-            }
-
-            return Task.FromResult(ret);
+            return CallAsync<TArgs, TRet>(channel, serial, call, args, pkg);
         }
     }
 }
