@@ -102,7 +102,7 @@ namespace cli
 
             _caller.f();
             _caller.g(new gargs() { A = 1, B = 2, C = 3, });
-            //f();
+            f();
         }
 
         void OnClosed(object sender, CDataEventArgs<CTcpClientCloseArgs> e)
