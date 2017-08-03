@@ -43,8 +43,8 @@ namespace cli
 
             _communicator = new CClientRpcCommunicator(_log, _cli);
             _stream = new CRpcStream(new CRpcInputStream(), new CRpcOutputStream(new byte[1024], 0, 1024));
-            _stubs = new CRpcCallStubProvider(new CRpcCallStubArgs(true, true), _log);
-            _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromSeconds(8f), true), _log, _stream, _communicator, _stubs);
+            _stubs = new CRpcCallStubProvider(new CRpcCallStubArgs(false, false), _log);
+            _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromSeconds(8f), false), _log, _stream, _communicator, _stubs);
 
             _task.Exec(CCall.Create(() =>
             {
