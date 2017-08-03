@@ -101,35 +101,35 @@ namespace Nirge.Core
             switch (req.Call)
             {
             case 1:
-                Call<RpcCallArgsEmpty, RpcCallArgsEmpty>(channel, req, (_1, args) =>
+                Call<RpcCallArgsEmpty, RpcCallArgsEmpty>(channel, req, (_, args) =>
                 {
                     _service.f(channel);
                     return ArgsEmpty;
                 });
                 break;
             case 2:
-                Call<gargs, RpcCallArgsEmpty>(channel, req, (_1, args) =>
+                Call<gargs, RpcCallArgsEmpty>(channel, req, (_, args) =>
                 {
                     _service.g(channel, args);
                     return ArgsEmpty;
                 });
                 break;
             case 3:
-                CallAsync<RpcCallArgsEmpty, RpcCallArgsEmpty>(channel, req, (_1, args) =>
+                CallAsync<RpcCallArgsEmpty, RpcCallArgsEmpty>(channel, req, (_, args) =>
                 {
                     _service.h(channel);
                     return ArgsEmpty;
                 });
                 break;
             case 4:
-                CallAsync<pargs, RpcCallArgsEmpty>(channel, req, (_1, args) =>
+                CallAsync<pargs, RpcCallArgsEmpty>(channel, req, (_, args) =>
                 {
                     _service.p(channel, args);
                     return ArgsEmpty;
                 });
                 break;
             case 5:
-                CallAsync<qargs, qret>(channel, req, (_1, args) =>
+                CallAsync<qargs, qret>(channel, req, (_, args) =>
                 {
                     return _service.q(channel, args);
                 });
