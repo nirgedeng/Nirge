@@ -156,6 +156,9 @@ namespace Nirge.Core
 
         public void Exec()
         {
+            if (_stubs.Count == 0)
+                return;
+
             for (var i = _stubs.Count - 1; i >= 0; --i)
             {
                 CRpcCallStub stub = _stubs[i];
@@ -176,6 +179,9 @@ namespace Nirge.Core
 
         public void Break()
         {
+            if (_stubs.Count == 0)
+                return;
+
             for (var i = _stubs.Count - 1; i >= 0; --i)
             {
                 CRpcCallStub stub = _stubs[i];

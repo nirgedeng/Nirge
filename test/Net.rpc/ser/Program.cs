@@ -29,6 +29,8 @@ namespace ser
         CRpcStream _stream;
         CGameRpcService _service;
         CGameRpcCallee _callee;
+        CRpcCallStubProvider _stubs;
+        CGameRpcCaller _caller;
 
         public void Init()
         {
@@ -48,6 +50,8 @@ namespace ser
             _stream = new CRpcStream(new CRpcInputStream(), new CRpcOutputStream(new byte[1024], 0, 1024));
             _service = new CGameRpcService();
             _callee = new CGameRpcCallee(new CRpcCalleeArgs(false), _log, _stream, _communicator, _service);
+            _stubs = new CRpcCallStubProvider(new CRpcCallStubArgs(false, false), _log);
+            _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromSeconds(8f), false), _log, _stream, _communicator, _stubs);
 
             _task.Exec(CCall.Create(() =>
             {
@@ -56,13 +60,14 @@ namespace ser
             _timer.Reg(CCall.Create(() =>
             {
                 for (int i = 0; i < 8; ++i)
-                    _ser.Exec();
+                    Exec();
             }), 10);
             _tick.Ticked += (sender, e) =>
             {
                 _task.Exec(CCall.Create(_timer.Exec, e));
             };
 
+            _stubs.Init();
             _task.Init();
             _timer.Init();
             _tick.Init();
@@ -70,10 +75,26 @@ namespace ser
 
         public void Destroy()
         {
-            _ser.Close();
-            _tick.Destroy();
-            _timer.Destroy();
+            _task.Exec(CCall.Create(() =>
+            {
+                _stubs.Destroy();
+                _stream.Dispose();
+            }));
+
+            _task.Exec(CCall.Create(() =>
+            {
+                _ser.Close();
+            }));
+
             _task.Destroy();
+            _timer.Destroy();
+            _tick.Destroy();
+        }
+
+        void Exec()
+        {
+            _ser.Exec();
+            _stubs.Exec();
         }
 
         private void Ser_Closed(object sender, CDataEventArgs<CTcpServerCloseArgs> e)
@@ -87,9 +108,25 @@ namespace ser
             switch ((eRpcProto)cmd)
             {
             case eRpcProto.RpcCallReq:
-                _stream.Input.Buf.SetBuf(arg2, arg3 + 4, arg4 - 4);
-                var req = RpcCallReq.Parser.ParseFrom(_stream.Input.Stream);
-                _callee.Call(cli, req);
+                {
+                    _stream.Input.Buf.SetBuf(arg2, arg3 + 4, arg4 - 4);
+                    var req = RpcCallReq.Parser.ParseFrom(_stream.Input.Stream);
+                    _callee.Call(cli, req);
+                }
+                break;
+            case eRpcProto.RpcCallRsp:
+                {
+                    _stream.Input.Buf.SetBuf(arg2, arg3 + 4, arg4 - 4);
+                    var rsp = RpcCallRsp.Parser.ParseFrom(_stream.Input.Stream);
+                    _stubs.Exec(rsp);
+                }
+                break;
+            case eRpcProto.RpcCallExceptionRsp:
+                {
+                    _stream.Input.Buf.SetBuf(arg2, arg3 + 4, arg4 - 4);
+                    var rsp = RpcCallExceptionRsp.Parser.ParseFrom(_stream.Input.Stream);
+                    _stubs.Exec(rsp);
+                }
                 break;
             }
         }
@@ -106,6 +143,22 @@ namespace ser
             var cli = e.Arg1;
 
             _log.InfoFormat("OnConnected, {0}", cli);
+
+            f(cli);
+            g(cli);
+        }
+
+        void f(int cli)
+        {
+            _caller.f(cli);
+            _caller.g(new gargs() { A = 1, B = 2, C = 3, }, cli);
+        }
+
+        async void g(int cli)
+        {
+            await _caller.h(cli);
+            await _caller.p(new pargs() { A = 1, B = 2, C = 3, }, cli);
+            await _caller.q(new qargs() { A = 1, B = 2, C = 3, }, cli);
         }
     }
 

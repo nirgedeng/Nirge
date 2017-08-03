@@ -29,6 +29,8 @@ namespace cli
         CRpcStream _stream;
         CRpcCallStubProvider _stubs;
         CGameRpcCaller _caller;
+        CGameRpcService _service;
+        CGameRpcCallee _callee;
 
         public void Init()
         {
@@ -45,6 +47,8 @@ namespace cli
             _stream = new CRpcStream(new CRpcInputStream(), new CRpcOutputStream(new byte[1024], 0, 1024));
             _stubs = new CRpcCallStubProvider(new CRpcCallStubArgs(false, false), _log);
             _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromSeconds(8f), false), _log, _stream, _communicator, _stubs);
+            _service = new CGameRpcService();
+            _callee = new CGameRpcCallee(new CRpcCalleeArgs(false), _log, _stream, _communicator, _service);
 
             _task.Exec(CCall.Create(() =>
             {
@@ -61,7 +65,7 @@ namespace cli
             }), 10);
             _timer.Reg(CCall.Create(() =>
             {
-                g();
+                //h();
             }), 32, 128);
             _tick.Ticked += (sender, e) =>
             {
@@ -76,9 +80,6 @@ namespace cli
 
         public void Destroy()
         {
-            _tick.Destroy();
-            _timer.Destroy();
-
             _task.Exec(CCall.Create(() =>
             {
                 _stubs.Destroy();
@@ -89,7 +90,10 @@ namespace cli
             {
                 _cli.Close();
             }));
+
             _task.Destroy();
+            _timer.Destroy();
+            _tick.Destroy();
         }
 
         void Exec()
@@ -104,9 +108,8 @@ namespace cli
 
             _log.InfoFormat("OnConnect {0}:{1}:{2}", e.Arg1.Result, e.Arg1.Error, e.Arg1.SocketError);
 
-            _caller.f();
-            _caller.g(new gargs() { A = 1, B = 2, C = 3, });
             f();
+            g();
         }
 
         void OnClosed(object sender, CDataEventArgs<CTcpClientCloseArgs> e)
@@ -138,19 +141,32 @@ namespace cli
                     _stubs.Exec(rsp);
                 }
                 break;
+            case eRpcProto.RpcCallReq:
+                {
+                    _stream.Input.Buf.SetBuf(arg1, arg2 + 4, arg3 - 4);
+                    var req = RpcCallReq.Parser.ParseFrom(_stream.Input.Stream);
+                    _callee.Call(0, req);
+                }
+                break;
             }
         }
 
-        async void f()
+        void f()
+        {
+            _caller.f();
+            _caller.g(new gargs() { A = 1, B = 2, C = 3, });
+        }
+
+        async void g()
         {
             await _caller.h();
             await _caller.p(new pargs() { A = 1, B = 2, C = 3, });
             await _caller.q(new qargs() { A = 1, B = 2, C = 3, });
         }
 
-        void g()
+        void h()
         {
-            f();
+            g();
         }
     }
 
