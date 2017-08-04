@@ -124,7 +124,7 @@ namespace Nirge.Core
         Success,
     }
 
-    public struct CTcpServerOpenArgs
+    public class CTcpServerOpenArgs
     {
         public eTcpServerOpenResult Result
         {
