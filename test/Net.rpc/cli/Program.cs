@@ -66,7 +66,7 @@ namespace cli
             _timer.Reg(CCall.Create(() =>
             {
                 h();
-            }), 32/*, 128*/);
+            }), 16/*, 128*/);
             _tick.Ticked += (sender, e) =>
             {
                 _task.Exec(CCall.Create(_timer.Exec, e));
