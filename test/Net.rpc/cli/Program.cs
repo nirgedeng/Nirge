@@ -163,6 +163,7 @@ namespace cli
             await _caller.p(new pargs() { A = 4, B = 5, C = 6, });
             var qret = _caller.q(new qargs() { A = 7, B = 8, C = 9, });
             await qret;
+            Console.WriteLine(qret.Result);
         }
 
         void h()

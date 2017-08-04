@@ -160,6 +160,7 @@ namespace ser
             await _caller.p(new pargs() { A = 4, B = 5, C = 6, }, cli);
             var qret = _caller.q(new qargs() { A = 7, B = 8, C = 9, }, cli);
             await qret;
+            Console.WriteLine(qret.Result);
         }
 
         void h(int cli)
