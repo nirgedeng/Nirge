@@ -25,14 +25,6 @@ namespace Nirge.Core
 
     #region 
 
-    public interface IRpcService
-    {
-    }
-
-    #endregion
-
-    #region 
-
     public enum eRpcProto
     {
         None,
@@ -43,6 +35,66 @@ namespace Nirge.Core
         RpcCallExceptionRsp,
 
         Total,
+    }
+
+    #endregion
+
+    #region 
+
+    public interface IRpcService
+    {
+    }
+
+    #endregion
+
+    #region 
+
+    [AttributeUsage(AttributeTargets.Class)]
+    public class CRpcServiceAttribute : Attribute
+    {
+        int _uid;
+
+        public int Uid
+        {
+            get
+            {
+                return _uid;
+            }
+        }
+
+        public CRpcServiceAttribute(int uid)
+        {
+            _uid = uid;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public class CRpcServiceCallAttribute : Attribute
+    {
+        int _uid;
+        bool _isOneWay;
+
+        public int Uid
+        {
+            get
+            {
+                return _uid;
+            }
+        }
+
+        public bool IsOneWay
+        {
+            get
+            {
+                return _isOneWay;
+            }
+        }
+
+        public CRpcServiceCallAttribute(int uid, bool isOneWay)
+        {
+            _uid = uid;
+            _isOneWay = isOneWay;
+        }
     }
 
     #endregion
