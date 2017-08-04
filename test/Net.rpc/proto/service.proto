@@ -4,6 +4,10 @@ syntax = "proto3";
 
 //----------------------------------------------------------------------------------------
 
+import "RpcProto.proto";
+
+//----------------------------------------------------------------------------------------
+
 option csharp_namespace = "Nirge.Core";
 
 //----------------------------------------------------------------------------------------
@@ -34,6 +38,37 @@ message qret
     int32 a = 1;
     int32 b = 2;
     int32 c = 3;
+}
+
+service game
+{
+    option (RpcService).Uid = 1;
+
+    rpc f (RpcCallArgsEmpty) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 1;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+    rpc g (gargs) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 2;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+    rpc h (RpcCallArgsEmpty) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 3;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+    rpc p (pargs) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 4;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+    rpc q (qargs) returns (qret)
+    {
+        option (RpcServiceCall).Uid = 5;
+        option (RpcServiceCall).IsOneWay = false;
+    }
 }
 
 //----------------------------------------------------------------------------------------

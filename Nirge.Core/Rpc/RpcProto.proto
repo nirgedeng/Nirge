@@ -4,9 +4,34 @@ syntax = "proto3";
 
 //----------------------------------------------------------------------------------------
 
+import "google/protobuf/descriptor.proto";
+
 import "Proto.proto";
 
 option csharp_namespace = "Nirge.Core";
+
+//----------------------------------------------------------------------------------------
+
+message RpcServiceOption
+{
+    int32 Uid = 1;
+}
+
+message RpcServiceCallOption
+{
+    int32 Uid = 1;
+    bool IsOneWay = 2;
+}
+
+extend google.protobuf.ServiceOptions
+{
+  RpcServiceOption RpcService = 60001;
+}
+
+extend google.protobuf.MethodOptions
+{
+  RpcServiceCallOption RpcServiceCall = 60002;
+}
 
 //----------------------------------------------------------------------------------------
 

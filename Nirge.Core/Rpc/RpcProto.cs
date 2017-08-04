@@ -22,16 +22,25 @@ namespace Nirge.Core {
     static RpcProtoReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg5ScGNQcm90by5wcm90bxoLUHJvdG8ucHJvdG8iEgoQUnBjQ2FsbEFyZ3NF",
-            "bXB0eSJJCgpScGNDYWxsUmVxEg4KBlNlcmlhbBgBIAEoBRIPCgdTZXJ2aWNl",
-            "GAIgASgFEgwKBENhbGwYAyABKAUSDAoEQXJncxgEIAEoDCJICgpScGNDYWxs",
-            "UnNwEg4KBlNlcmlhbBgBIAEoBRIPCgdTZXJ2aWNlGAIgASgFEgwKBENhbGwY",
-            "AyABKAUSCwoDUmV0GAQgASgMIlcKE1JwY0NhbGxFeGNlcHRpb25Sc3ASDgoG",
-            "U2VyaWFsGAEgASgFEg8KB1NlcnZpY2UYAiABKAUSDAoEQ2FsbBgDIAEoBRIR",
-            "CglFeGNlcHRpb24YBCABKAVCDaoCCk5pcmdlLkNvcmViBnByb3RvMw=="));
+            "Cg5ScGNQcm90by5wcm90bxogZ29vZ2xlL3Byb3RvYnVmL2Rlc2NyaXB0b3Iu",
+            "cHJvdG8aC1Byb3RvLnByb3RvIh8KEFJwY1NlcnZpY2VPcHRpb24SCwoDVWlk",
+            "GAEgASgFIjUKFFJwY1NlcnZpY2VDYWxsT3B0aW9uEgsKA1VpZBgBIAEoBRIQ",
+            "CghJc09uZVdheRgCIAEoCCISChBScGNDYWxsQXJnc0VtcHR5IkkKClJwY0Nh",
+            "bGxSZXESDgoGU2VyaWFsGAEgASgFEg8KB1NlcnZpY2UYAiABKAUSDAoEQ2Fs",
+            "bBgDIAEoBRIMCgRBcmdzGAQgASgMIkgKClJwY0NhbGxSc3ASDgoGU2VyaWFs",
+            "GAEgASgFEg8KB1NlcnZpY2UYAiABKAUSDAoEQ2FsbBgDIAEoBRILCgNSZXQY",
+            "BCABKAwiVwoTUnBjQ2FsbEV4Y2VwdGlvblJzcBIOCgZTZXJpYWwYASABKAUS",
+            "DwoHU2VydmljZRgCIAEoBRIMCgRDYWxsGAMgASgFEhEKCUV4Y2VwdGlvbhgE",
+            "IAEoBTpICgpScGNTZXJ2aWNlEh8uZ29vZ2xlLnByb3RvYnVmLlNlcnZpY2VP",
+            "cHRpb25zGOHUAyABKAsyES5ScGNTZXJ2aWNlT3B0aW9uOk8KDlJwY1NlcnZp",
+            "Y2VDYWxsEh4uZ29vZ2xlLnByb3RvYnVmLk1ldGhvZE9wdGlvbnMY4tQDIAEo",
+            "CzIVLlJwY1NlcnZpY2VDYWxsT3B0aW9uQg2qAgpOaXJnZS5Db3JlYgZwcm90",
+            "bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Nirge.Core.ProtoReflection.Descriptor, },
+          new pbr::FileDescriptor[] { pbr::FileDescriptor.DescriptorProtoFileDescriptor, global::Nirge.Core.ProtoReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcServiceOption), global::Nirge.Core.RpcServiceOption.Parser, new[]{ "Uid" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcServiceCallOption), global::Nirge.Core.RpcServiceCallOption.Parser, new[]{ "Uid", "IsOneWay" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallArgsEmpty), global::Nirge.Core.RpcCallArgsEmpty.Parser, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallReq), global::Nirge.Core.RpcCallReq.Parser, new[]{ "Serial", "Service", "Call", "Args" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.RpcCallRsp), global::Nirge.Core.RpcCallRsp.Parser, new[]{ "Serial", "Service", "Call", "Ret" }, null, null, null),
@@ -42,6 +51,268 @@ namespace Nirge.Core {
 
   }
   #region Messages
+  public sealed partial class RpcServiceOption : pb::IMessage<RpcServiceOption> {
+    private static readonly pb::MessageParser<RpcServiceOption> _parser = new pb::MessageParser<RpcServiceOption>(() => new RpcServiceOption());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<RpcServiceOption> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[0]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcServiceOption() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcServiceOption(RpcServiceOption other) : this() {
+      uid_ = other.uid_;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcServiceOption Clone() {
+      return new RpcServiceOption(this);
+    }
+
+    /// <summary>Field number for the "Uid" field.</summary>
+    public const int UidFieldNumber = 1;
+    private int uid_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Uid {
+      get { return uid_; }
+      set {
+        uid_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as RpcServiceOption);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(RpcServiceOption other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Uid != other.Uid) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Uid != 0) hash ^= Uid.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Uid != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Uid);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Uid != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Uid);
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(RpcServiceOption other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Uid != 0) {
+        Uid = other.Uid;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Uid = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class RpcServiceCallOption : pb::IMessage<RpcServiceCallOption> {
+    private static readonly pb::MessageParser<RpcServiceCallOption> _parser = new pb::MessageParser<RpcServiceCallOption>(() => new RpcServiceCallOption());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<RpcServiceCallOption> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[1]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcServiceCallOption() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcServiceCallOption(RpcServiceCallOption other) : this() {
+      uid_ = other.uid_;
+      isOneWay_ = other.isOneWay_;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcServiceCallOption Clone() {
+      return new RpcServiceCallOption(this);
+    }
+
+    /// <summary>Field number for the "Uid" field.</summary>
+    public const int UidFieldNumber = 1;
+    private int uid_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Uid {
+      get { return uid_; }
+      set {
+        uid_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "IsOneWay" field.</summary>
+    public const int IsOneWayFieldNumber = 2;
+    private bool isOneWay_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool IsOneWay {
+      get { return isOneWay_; }
+      set {
+        isOneWay_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as RpcServiceCallOption);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(RpcServiceCallOption other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Uid != other.Uid) return false;
+      if (IsOneWay != other.IsOneWay) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Uid != 0) hash ^= Uid.GetHashCode();
+      if (IsOneWay != false) hash ^= IsOneWay.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Uid != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Uid);
+      }
+      if (IsOneWay != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(IsOneWay);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Uid != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Uid);
+      }
+      if (IsOneWay != false) {
+        size += 1 + 1;
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(RpcServiceCallOption other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Uid != 0) {
+        Uid = other.Uid;
+      }
+      if (other.IsOneWay != false) {
+        IsOneWay = other.IsOneWay;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Uid = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            IsOneWay = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class RpcCallArgsEmpty : pb::IMessage<RpcCallArgsEmpty> {
     private static readonly pb::MessageParser<RpcCallArgsEmpty> _parser = new pb::MessageParser<RpcCallArgsEmpty>(() => new RpcCallArgsEmpty());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -49,7 +320,7 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -138,7 +409,7 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -339,7 +610,7 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -540,7 +811,7 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Nirge.Core.RpcProtoReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
