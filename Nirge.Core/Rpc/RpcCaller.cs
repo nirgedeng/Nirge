@@ -4,6 +4,7 @@
 ------------------------------------------------------------------*/
 
 using System.Collections.Generic;
+using Google.Protobuf.Reflection;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Threading;
@@ -57,15 +58,17 @@ namespace Nirge.Core
         CRpcStream _stream;
         CRpcCommunicator _communicator;
         CRpcCallStubProvider _stubs;
+        ServiceDescriptor _descriptor;
         protected int _service;
 
-        public CRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs, int service)
+        public CRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs, ServiceDescriptor descriptor, int service)
         {
             _args = args;
             _log = log;
             _stream = stream;
             _communicator = communicator;
             _stubs = stubs;
+            _descriptor = descriptor;
             _service = service;
         }
 

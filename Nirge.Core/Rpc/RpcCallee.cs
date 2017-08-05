@@ -3,6 +3,7 @@
     Author      : 邓晓峰
 ------------------------------------------------------------------*/
 
+using Google.Protobuf.Reflection;
 using System.Reflection;
 using System.Threading;
 using Google.Protobuf;
@@ -44,14 +45,16 @@ namespace Nirge.Core
         ILog _log;
         CRpcStream _stream;
         CRpcCommunicator _communicator;
+        ServiceDescriptor _descriptor;
         protected TRpcService _service;
 
-        public CRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, TRpcService service)
+        public CRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, ServiceDescriptor descriptor, TRpcService service)
         {
             _args = args;
             _log = log;
             _stream = stream;
             _communicator = communicator;
+            _descriptor = descriptor;
             _service = service;
         }
 

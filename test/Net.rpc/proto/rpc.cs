@@ -60,7 +60,7 @@ namespace Nirge.Core
     public class CGameRpcCaller : CRpcCaller
     {
         public CGameRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
-            : base(args, log, stream, communicator, stubs, 1)
+            : base(args, log, stream, communicator, stubs, null, 1)
         {
         }
 
@@ -93,7 +93,7 @@ namespace Nirge.Core
     public class CGameRpcCallee : CRpcCallee<IGameRpcService>
     {
         public CGameRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, IGameRpcService service)
-            : base(args, log, stream, communicator, service)
+            : base(args, log, stream, communicator, null, service)
         {
         }
 
