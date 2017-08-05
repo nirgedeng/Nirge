@@ -138,7 +138,7 @@ namespace Nirge.Core
 
         async Task<TRet> CallAsync<TArgs, TRet>(int channel, int serial, int call, TArgs args, RpcCallReq pkg) where TArgs : IMessage where TRet : IMessage, new()
         {
-            var stub = _stubs.CreateStub(serial, _service, call, _args.Timeout);
+            var stub = _stubs.CreateStub(serial, _descriptor, _service, call, _args.Timeout);
             var task = stub.Awaiter.Task;
 
             try
