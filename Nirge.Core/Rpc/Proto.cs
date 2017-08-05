@@ -22,7 +22,8 @@ namespace Nirge.Core {
     static ProtoReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgtQcm90by5wcm90b0INqgIKTmlyZ2UuQ29yZWIGcHJvdG8z"));
+            "CgtQcm90by5wcm90bxIKTmlyZ2UuQ29yZUINqgIKTmlyZ2UuQ29yZWIGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null));
