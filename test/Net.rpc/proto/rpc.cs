@@ -130,10 +130,7 @@ namespace Nirge.Core
                 });
                 break;
             case 5:
-                CallAsync<qargs, qret>(channel, req, (_, args) =>
-                {
-                    return _service.q(channel, args);
-                });
+                CallAsync<qargs, qret>(channel, req, _service.q);
                 break;
             default:
                 base.Call(channel, req);
