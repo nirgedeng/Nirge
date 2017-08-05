@@ -394,7 +394,12 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\", connectArgs:\"{2},{3},{4}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, e.Result, e.Error, e.SocketError), exception);
+                    _log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\", connectArgs:\"{2},{3},{4}\""
+                        , _cli.Client.LocalEndPoint
+                        , _cli.Client.RemoteEndPoint
+                        , e.Result
+                        , e.Error
+                        , e.SocketError), exception);
                 }
 
                 _recving = true;
@@ -956,7 +961,11 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0}\", connectArgs:\"{1},{2},{3}\"", "", e.Result, e.Error, e.SocketError), exception);
+                        _log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0}\", connectArgs:\"{1},{2},{3}\""
+                            , ""
+                            , e.Result
+                            , e.Error
+                            , e.SocketError), exception);
                     }
                     break;
                 case eTcpClientConnectResult.Success:
@@ -969,7 +978,12 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\", connectArgs:\"{2},{3},{4}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, _connectTag.Result, _connectTag.Error, _connectTag.SocketError), exception);
+                        _log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\", connectArgs:\"{2},{3},{4}\""
+                            , _cli.Client.LocalEndPoint
+                            , _cli.Client.RemoteEndPoint
+                            , _connectTag.Result
+                            , _connectTag.Error
+                            , _connectTag.SocketError), exception);
                     }
 
                     _connectTag.Error = eTcpError.None;
@@ -1014,7 +1028,10 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _log.Error(string.Format("[TcpClient]Recved exception, addr:\"{0},{1}\", pkg:\"{2}\"", _cli.Client.LocalEndPoint, _cli.Client.RemoteEndPoint, pkg.Count), exception);
+                            _log.Error(string.Format("[TcpClient]Recved exception, addr:\"{0},{1}\", pkg:\"{2}\""
+                                , _cli.Client.LocalEndPoint
+                                , _cli.Client.RemoteEndPoint
+                                , pkg.Count), exception);
                         }
 
                         _cache.BackRecvBuf(pkg.Array);
@@ -1088,7 +1105,12 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _log.Error(string.Format("[TcpClient]OnClosed exception, addr:\"{0},{1}\", closeArgs:\"{2},{3},{4}\"", "", "", e.Reason, e.Error, e.SocketError), exception);
+                            _log.Error(string.Format("[TcpClient]OnClosed exception, addr:\"{0},{1}\", closeArgs:\"{2},{3},{4}\""
+                                , ""
+                                , ""
+                                , e.Reason
+                                , e.Error
+                                , e.SocketError), exception);
                         }
                     }
                 break;

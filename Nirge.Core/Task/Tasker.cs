@@ -182,7 +182,8 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[Task]Exec exception, type:\"{0}\"", task.GetType()), exception);
+                                _log.Error(string.Format("[Task]Exec exception, type:\"{0}\""
+                                    , task.GetType()), exception);
                             }
                         }
 

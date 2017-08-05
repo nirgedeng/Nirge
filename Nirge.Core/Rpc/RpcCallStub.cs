@@ -181,7 +181,11 @@ namespace Nirge.Core
 
                 if (_args.LogTimeout)
                 {
-                    _log.InfoFormat("[Rpc]RpcCallStub.Exec timeout, serial:\"{0}\", service:\"{1}\", call:\"{2}\", time:\"{3}\"", stub.Serial, stub.Descriptor.FullName, stub.Descriptor.GetRpcServiceCall(stub.Call).Name, stub.Time);
+                    _log.InfoFormat("[Rpc]RpcCallStub.Exec timeout, serial:\"{0}\", service:\"{1}\", call:\"{2}\", time:\"{3}\""
+                        , stub.Serial
+                        , stub.Descriptor.FullName
+                        , stub.Descriptor.GetRpcServiceCall(stub.Call).Name
+                        , stub.Time);
                 }
 
                 stub.Awaiter.SetException(new CCallerTimeoutRpcException());
@@ -205,7 +209,11 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _log.Error(string.Format("[Rpc]RpcCallStub.Break exception, serial:\"{1}\", service:\"{2}\", call:\"{3}\", time:\"{4}\"", stub.Serial, stub.Descriptor.FullName, stub.Descriptor.GetRpcServiceCall(stub.Call).Name, stub.Time), exception);
+                    _log.Error(string.Format("[Rpc]RpcCallStub.Break exception, serial:\"{1}\", service:\"{2}\", call:\"{3}\", time:\"{4}\""
+                        , stub.Serial
+                        , stub.Descriptor.FullName
+                        , stub.Descriptor.GetRpcServiceCall(stub.Call).Name
+                        , stub.Time), exception);
                 }
             }
         }
@@ -215,7 +223,11 @@ namespace Nirge.Core
             var stub = GetStub(rsp.Serial);
             if (stub == null)
             {
-                _log.InfoFormat("[Rpc]RpcCallStub.Exec !stub, serial:\"{0}\", service:\"{1}\", call:\"{2}\", ret:\"{3}\"", rsp.Serial, rsp.Service, rsp.Call, rsp.Ret);
+                _log.InfoFormat("[Rpc]RpcCallStub.Exec !stub, serial:\"{0}\", service:\"{1}\", call:\"{2}\", ret:\"{3}\""
+                    , rsp.Serial
+                    , rsp.Service
+                    , rsp.Call
+                    , rsp.Ret);
                 return;
             }
 
@@ -229,7 +241,11 @@ namespace Nirge.Core
             var stub = GetStub(rsp.Serial);
             if (stub == null)
             {
-                _log.InfoFormat("[Rpc]RpcCallStub.Exec !stub, serial:\"{0}\", service:\"{1}\", call:\"{2}\", exception:\"{3}\"", rsp.Serial, rsp.Service, rsp.Call, rsp.Exception);
+                _log.InfoFormat("[Rpc]RpcCallStub.Exec !stub, serial:\"{0}\", service:\"{1}\", call:\"{2}\", exception:\"{3}\""
+                    , rsp.Serial
+                    , rsp.Service
+                    , rsp.Call
+                    , rsp.Exception);
                 return;
             }
 
@@ -237,7 +253,12 @@ namespace Nirge.Core
 
             if (_args.LogCall)
             {
-                _log.InfoFormat("[Rpc]RpcCallStub.Exec ExceptionRsp, serial:\"{0}\", service:\"{1}\", call:\"{2}\", time:\"{3}\", exception:\"{4}\"", stub.Serial, stub.Descriptor.FullName, stub.Descriptor.GetRpcServiceCall(stub.Call).Name, stub.Time, rsp.Exception);
+                _log.InfoFormat("[Rpc]RpcCallStub.Exec ExceptionRsp, serial:\"{0}\", service:\"{1}\", call:\"{2}\", time:\"{3}\", exception:\"{4}\""
+                    , stub.Serial
+                    , stub.Descriptor.FullName
+                    , stub.Descriptor.GetRpcServiceCall(stub.Call).Name
+                    , stub.Time
+                    , rsp.Exception);
             }
 
             switch ((eRpcException)rsp.Exception)

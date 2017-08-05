@@ -124,7 +124,9 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                _log.Error(string.Format("[Timer]Exec exception, timer:\"{0}\", task:\"{1}\"", timerId, timer._task.GetType()), exception);
+                _log.Error(string.Format("[Timer]Exec exception, timer:\"{0}\", task:\"{1}\""
+                    , timerId
+                    , timer._task.GetType()), exception);
             }
 
             if (timer._count == 0)

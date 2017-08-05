@@ -35,7 +35,11 @@ namespace Nirge.Core
             case eTcpError.None:
                 return true;
             default:
-                _log.ErrorFormat("[Rpc]ClientRpcCommunicator.Send err, code:\"{0}\", channel:\"{1}\", buf:\"{2},{3}\"", ret, channel, offset, count);
+                _log.ErrorFormat("[Rpc]ClientRpcCommunicator.Send err, code:\"{0}\", channel:\"{1}\", buf:\"{2},{3}\""
+                    , ret
+                    , channel
+                    , offset
+                    , count);
                 return false;
             }
         }
@@ -65,7 +69,11 @@ namespace Nirge.Core
             case eTcpError.None:
                 return true;
             default:
-                _log.ErrorFormat("[Rpc]ServerRpcCommunicator.Send err, code:\"{0}\", channel:\"{1}\", buf:\"{2},{3}\"", ret, channel, offset, count);
+                _log.ErrorFormat("[Rpc]ServerRpcCommunicator.Send err, code:\"{0}\", channel:\"{1}\", buf:\"{2},{3}\""
+                    , ret
+                    , channel
+                    , offset
+                    , count);
                 return false;
             }
         }

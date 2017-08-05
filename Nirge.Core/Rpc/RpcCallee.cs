@@ -69,7 +69,11 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name), exception);
+                _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\""
+                    , channel
+                    , req.Serial
+                    , _descriptor.FullName
+                    , _descriptor.GetRpcServiceCall(req.Call).Name), exception);
                 return eRpcException.CalleeArgsDeserialize;
             }
 
@@ -79,13 +83,24 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args), exception);
+                _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\""
+                    , channel
+                    , req.Serial
+                    , _descriptor.FullName
+                    , _descriptor.GetRpcServiceCall(req.Call).Name
+                    , args), exception);
                 return eRpcException.CalleeExec;
             }
 
             if (_args.LogCall)
             {
-                _log.InfoFormat("[Rpc]RpcCallee.Call Req, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args, ret);
+                _log.InfoFormat("[Rpc]RpcCallee.Call Req, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\""
+                    , channel
+                    , req.Serial
+                    , _descriptor.FullName
+                    , _descriptor.GetRpcServiceCall(req.Call).Name
+                    , args
+                    , ret);
             }
 
             return eRpcException.None;
@@ -111,7 +126,13 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args, ret), exception);
+                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\""
+                        , channel
+                        , req.Serial
+                        , _descriptor.FullName
+                        , _descriptor.GetRpcServiceCall(req.Call).Name
+                        , args
+                        , ret), exception);
                     return eRpcException.CalleeRetSerialize;
                 }
 
@@ -125,7 +146,11 @@ namespace Nirge.Core
                 catch (Exception exception)
                 {
                     _stream.Output.Reset();
-                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args, ret), exception);
+                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\""
+                        , channel
+                        , req.Serial
+                        , _descriptor.FullName
+                        , _descriptor.GetRpcServiceCall(req.Call).Name, args, ret), exception);
                     return eRpcException.CalleeRetSerialize;
                 }
 
@@ -136,7 +161,11 @@ namespace Nirge.Core
                 catch (Exception exception)
                 {
                     _stream.Output.Reset();
-                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args, ret), exception);
+                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\""
+                        , channel
+                        , req.Serial
+                        , _descriptor.FullName
+                        , _descriptor.GetRpcServiceCall(req.Call).Name, args, ret), exception);
                     return eRpcException.CalleeRetSerialize;
                 }
 
@@ -147,7 +176,13 @@ namespace Nirge.Core
                 catch (Exception exception)
                 {
                     _stream.Output.Reset();
-                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args, ret), exception);
+                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\""
+                        , channel
+                        , req.Serial
+                        , _descriptor.FullName
+                        , _descriptor.GetRpcServiceCall(req.Call).Name
+                        , args
+                        , ret), exception);
                     return eRpcException.CalleeRetSerialize;
                 }
 
@@ -157,12 +192,24 @@ namespace Nirge.Core
                 {
                     if (_args.LogCall)
                     {
-                        _log.InfoFormat("[Rpc]RpcCallee.Call Rsp, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args, ret);
+                        _log.InfoFormat("[Rpc]RpcCallee.Call Rsp, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\""
+                            , channel
+                            , req.Serial
+                            , _descriptor.FullName
+                            , _descriptor.GetRpcServiceCall(req.Call).Name
+                            , args
+                            , ret);
                     }
                 }
                 else
                 {
-                    _log.ErrorFormat("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args, ret);
+                    _log.ErrorFormat("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\""
+                        , channel
+                        , req.Serial
+                        , _descriptor.FullName
+                        , _descriptor.GetRpcServiceCall(req.Call).Name
+                        , args
+                        , ret);
                     return eRpcException.CalleeCommunicator;
                 }
 
@@ -209,7 +256,14 @@ namespace Nirge.Core
                 catch (Exception exception)
                 {
                     _stream.Output.Reset();
-                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args, ret, e), exception);
+                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\""
+                        , channel
+                        , req.Serial
+                        , _descriptor.FullName
+                        , _descriptor.GetRpcServiceCall(req.Call).Name
+                        , args
+                        , ret
+                        , e), exception);
                     return;
                 }
 
@@ -220,7 +274,14 @@ namespace Nirge.Core
                 catch (Exception exception)
                 {
                     _stream.Output.Reset();
-                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args, ret, e), exception);
+                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\""
+                        , channel
+                        , req.Serial
+                        , _descriptor.FullName
+                        , _descriptor.GetRpcServiceCall(req.Call).Name
+                        , args
+                        , ret
+                        , e), exception);
                     return;
                 }
 
@@ -231,7 +292,14 @@ namespace Nirge.Core
                 catch (Exception exception)
                 {
                     _stream.Output.Reset();
-                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args, ret, e), exception);
+                    _log.Error(string.Format("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\""
+                        , channel
+                        , req.Serial
+                        , _descriptor.FullName
+                        , _descriptor.GetRpcServiceCall(req.Call).Name
+                        , args
+                        , ret
+                        , e), exception);
                     return;
                 }
 
@@ -241,12 +309,26 @@ namespace Nirge.Core
                 {
                     if (_args.LogCall)
                     {
-                        _log.InfoFormat("[Rpc]RpcCallee.Call ExceptionRsp, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args, ret, e);
+                        _log.InfoFormat("[Rpc]RpcCallee.Call ExceptionRsp, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\""
+                            , channel
+                            , req.Serial
+                            , _descriptor.FullName
+                            , _descriptor.GetRpcServiceCall(req.Call).Name
+                            , args
+                            , ret
+                            , e);
                     }
                 }
                 else
                 {
-                    _log.ErrorFormat("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, args, ret, e);
+                    _log.ErrorFormat("[Rpc]RpcCallee.Call exception, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", args:\"{4}\", ret:\"{5}\", exception:\"{6}\""
+                        , channel
+                        , req.Serial
+                        , _descriptor.FullName
+                        , _descriptor.GetRpcServiceCall(req.Call).Name
+                        , args
+                        , ret
+                        , e);
                 }
                 break;
             }
@@ -254,7 +336,12 @@ namespace Nirge.Core
 
         public virtual void Call(int channel, RpcCallReq req)
         {
-            _log.ErrorFormat("[Rpc]RpcCallee.Call !Call, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", req:\"{4}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, req);
+            _log.ErrorFormat("[Rpc]RpcCallee.Call !Call, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", req:\"{4}\""
+                , channel
+                , req.Serial
+                , _descriptor.FullName
+                , _descriptor.GetRpcServiceCall(req.Call).Name
+                , req);
         }
     }
 }

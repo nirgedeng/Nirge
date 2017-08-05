@@ -621,7 +621,11 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[TcpServer]OnCliConnected exception, cli:\"{0}\", connectArgs:\"{1},{2},{3}\"", cliId, e.Arg1.Error, e.Arg1.Error, e.Arg1.SocketError), exception);
+                                _log.Error(string.Format("[TcpServer]OnCliConnected exception, cli:\"{0}\", connectArgs:\"{1},{2},{3}\""
+                                    , cliId
+                                    , e.Arg1.Error
+                                    , e.Arg1.Error
+                                    , e.Arg1.SocketError), exception);
                             }
                         };
                         cbCliClosed = (sender, e) =>
@@ -641,7 +645,11 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[TcpServer]OnCliClosed exception, cli:\"{0}\", closeArgs:\"{1},{2},{3}\"", cliId, e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError), exception);
+                                _log.Error(string.Format("[TcpServer]OnCliClosed exception, cli:\"{0}\", closeArgs:\"{1},{2},{3}\""
+                                    , cliId
+                                    , e.Arg1.Reason
+                                    , e.Arg1.Error
+                                    , e.Arg1.SocketError), exception);
                             }
                         };
                         cbCliRecved = (sender, buf, offset, count) =>
@@ -653,7 +661,9 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[TcpServer]CliRecved exception, cli:\"{0}\", pkg:\"{1}\"", cliId, count), exception);
+                                _log.Error(string.Format("[TcpServer]CliRecved exception, cli:\"{0}\", pkg:\"{1}\""
+                                    , cliId
+                                    , count), exception);
                             }
                         };
 
@@ -718,7 +728,11 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _log.Error(string.Format("[TcpServer]OnClosed exception, addr:\"{0}\", closeArgs:\"{1},{2},{3}\"", "", e.Reason, e.Error, e.SocketError), exception);
+                            _log.Error(string.Format("[TcpServer]OnClosed exception, addr:\"{0}\", closeArgs:\"{1},{2},{3}\""
+                                , ""
+                                , e.Reason
+                                , e.Error
+                                , e.SocketError), exception);
                         }
                     }
                 }
