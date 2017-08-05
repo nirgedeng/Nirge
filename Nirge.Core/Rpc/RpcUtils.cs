@@ -3,6 +3,7 @@
     Author      : 邓晓峰
 ------------------------------------------------------------------*/
 
+using Google.Protobuf.Reflection;
 using System.Reflection;
 using System.Threading;
 using Google.Protobuf;
@@ -355,6 +356,25 @@ namespace Nirge.Core
     {
         public CCalleeRetSerializeRpcException()
         {
+        }
+    }
+
+    #endregion
+
+    #region 
+
+    public static class CRpcUtils
+    {
+        public static MethodDescriptor GetRpcServiceCall(this ServiceDescriptor descriptor, int call)
+        {
+            return descriptor.Methods.FirstOrDefault(e =>
+            {
+                RpcServiceCallOption option;
+                if (e.CustomOptions.TryGetMessage<RpcServiceCallOption>(60002, out option))
+                    if (call == option.Uid)
+                        return true;
+                return false;
+            });
         }
     }
 
