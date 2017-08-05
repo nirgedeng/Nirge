@@ -254,7 +254,7 @@ namespace Nirge.Core
 
         public virtual void Call(int channel, RpcCallReq req)
         {
-            _log.ErrorFormat("[Rpc]RpcCallee.Call !Call, channel:\"{0}\", req:\"{1}\"", channel, req);
+            _log.ErrorFormat("[Rpc]RpcCallee.Call !Call, channel:\"{0}\", serial:\"{1}\", service:\"{2}\", call:\"{3}\", req:\"{4}\"", channel, req.Serial, _descriptor.FullName, _descriptor.GetRpcServiceCall(req.Call).Name, req);
         }
     }
 }
