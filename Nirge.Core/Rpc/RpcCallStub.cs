@@ -181,9 +181,11 @@ namespace Nirge.Core
 
                 if (_args.LogTimeout)
                 {
-                    _log.InfoFormat("[Rpc]RpcCallStub.Exec timeout, serial:\"{0}\", service:\"{1}\", call:\"{2}\", time:\"{3}\""
+                    _log.InfoFormat("[Rpc]RpcCallStub.Exec timeout, serial:\"{0}\", service:\"{1},{2}\", call:\"{3},{4}\", time:\"{5}\""
                         , stub.Serial
+                        , stub.Service
                         , stub.Descriptor.FullName
+                        , stub.Call
                         , stub.Descriptor.GetRpcServiceCall(stub.Call).Name
                         , stub.Time);
                 }
@@ -209,9 +211,11 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _log.Error(string.Format("[Rpc]RpcCallStub.Break exception, serial:\"{1}\", service:\"{2}\", call:\"{3}\", time:\"{4}\""
+                    _log.Error(string.Format("[Rpc]RpcCallStub.Break exception, serial:\"{1}\", service:\"{2},{3}\", call:\"{4},{5}\", time:\"{6}\""
                         , stub.Serial
+                        , stub.Service
                         , stub.Descriptor.FullName
+                        , stub.Call
                         , stub.Descriptor.GetRpcServiceCall(stub.Call).Name
                         , stub.Time), exception);
                 }
@@ -253,9 +257,11 @@ namespace Nirge.Core
 
             if (_args.LogCall)
             {
-                _log.InfoFormat("[Rpc]RpcCallStub.Exec ExceptionRsp, serial:\"{0}\", service:\"{1}\", call:\"{2}\", time:\"{3}\", exception:\"{4}\""
+                _log.InfoFormat("[Rpc]RpcCallStub.Exec ExceptionRsp, serial:\"{0}\", service:\"{1},{2}\", call:\"{3},{4}\", time:\"{5}\", exception:\"{6}\""
                     , stub.Serial
+                    , stub.Service
                     , stub.Descriptor.FullName
+                    , stub.Call
                     , stub.Descriptor.GetRpcServiceCall(stub.Call).Name
                     , stub.Time
                     , rsp.Exception);
