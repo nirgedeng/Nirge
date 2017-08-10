@@ -49,6 +49,7 @@
     <Compile Include="rpc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service.cs" />
+    <Compile Include="Service.rpc.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="service.proto" />

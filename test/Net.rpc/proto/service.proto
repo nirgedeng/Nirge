@@ -41,7 +41,7 @@ message qret
     int32 c = 3;
 }
 
-service game
+service Game
 {
     option (RpcService).Uid = 1;
 
