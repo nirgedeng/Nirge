@@ -15,41 +15,41 @@ namespace Nirge.Core
 
     public class CDataEventArgs : EventArgs, IObjCtor, IObjDtor
     {
-        public static CDataEventArgs<TArg1> Create<TArg1>(TArg1 arg1)
+        public static CDataEventArgs<TArg1> Create<TArg1> (TArg1 arg1)
         {
-            return new CDataEventArgs<TArg1>(arg1);
+            return new CDataEventArgs<TArg1> (arg1);
         }
-        public static CDataEventArgs<TArg1, TArg2> Create<TArg1, TArg2>(TArg1 arg1, TArg2 arg2)
+        public static CDataEventArgs<TArg1, TArg2> Create<TArg1, TArg2> (TArg1 arg1, TArg2 arg2)
         {
-            return new CDataEventArgs<TArg1, TArg2>(arg1, arg2);
+            return new CDataEventArgs<TArg1, TArg2> (arg1, arg2);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3> Create<TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3)
+        public static CDataEventArgs<TArg1, TArg2, TArg3> Create<TArg1, TArg2, TArg3> (TArg1 arg1, TArg2 arg2, TArg3 arg3)
         {
-            return new CDataEventArgs<TArg1, TArg2, TArg3>(arg1, arg2, arg3);
+            return new CDataEventArgs<TArg1, TArg2, TArg3> (arg1, arg2, arg3);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4> Create<TArg1, TArg2, TArg3, TArg4>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4> Create<TArg1, TArg2, TArg3, TArg4> (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
         {
-            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4>(arg1, arg2, arg3, arg4);
+            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4> (arg1, arg2, arg3, arg4);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5> Create<TArg1, TArg2, TArg3, TArg4, TArg5>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5> Create<TArg1, TArg2, TArg3, TArg4, TArg5> (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
         {
-            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5>(arg1, arg2, arg3, arg4, arg5);
+            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5> (arg1, arg2, arg3, arg4, arg5);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
         {
-            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(arg1, arg2, arg3, arg4, arg5, arg6);
+            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> (arg1, arg2, arg3, arg4, arg5, arg6);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
         {
-            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> (arg1, arg2, arg3, arg4, arg5, arg6, arg7);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
         {
-            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
         {
-            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+            return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         }
 
         public CDataEventArgs()
@@ -77,18 +77,18 @@ namespace Nirge.Core
             set;
         }
 
-        public CDataEventArgs(TArg1 arg1)
+        public CDataEventArgs (TArg1 arg1)
         {
-            Init(arg1);
+            Init (arg1);
         }
 
-        public void Init(TArg1 arg1)
+        public void Init (TArg1 arg1)
         {
             Arg1 = arg1;
         }
         public void Destroy()
         {
-            Arg1 = default(TArg1);
+            Arg1 = default (TArg1);
         }
     }
 
@@ -105,20 +105,20 @@ namespace Nirge.Core
             set;
         }
 
-        public CDataEventArgs(TArg1 arg1, TArg2 arg2)
+        public CDataEventArgs (TArg1 arg1, TArg2 arg2)
         {
-            Init(arg1, arg2);
+            Init (arg1, arg2);
         }
 
-        public void Init(TArg1 arg1, TArg2 arg2)
+        public void Init (TArg1 arg1, TArg2 arg2)
         {
             Arg1 = arg1;
             Arg2 = arg2;
         }
         public void Destroy()
         {
-            Arg1 = default(TArg1);
-            Arg2 = default(TArg2);
+            Arg1 = default (TArg1);
+            Arg2 = default (TArg2);
         }
     }
 
@@ -140,12 +140,12 @@ namespace Nirge.Core
             set;
         }
 
-        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3)
+        public CDataEventArgs (TArg1 arg1, TArg2 arg2, TArg3 arg3)
         {
-            Init(arg1, arg2, arg3);
+            Init (arg1, arg2, arg3);
         }
 
-        public void Init(TArg1 arg1, TArg2 arg2, TArg3 arg3)
+        public void Init (TArg1 arg1, TArg2 arg2, TArg3 arg3)
         {
             Arg1 = arg1;
             Arg2 = arg2;
@@ -153,9 +153,9 @@ namespace Nirge.Core
         }
         public void Destroy()
         {
-            Arg1 = default(TArg1);
-            Arg2 = default(TArg2);
-            Arg3 = default(TArg3);
+            Arg1 = default (TArg1);
+            Arg2 = default (TArg2);
+            Arg3 = default (TArg3);
         }
     }
 
@@ -182,12 +182,12 @@ namespace Nirge.Core
             set;
         }
 
-        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
+        public CDataEventArgs (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
         {
-            Init(arg1, arg2, arg3, arg4);
+            Init (arg1, arg2, arg3, arg4);
         }
 
-        public void Init(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
+        public void Init (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
         {
             Arg1 = arg1;
             Arg2 = arg2;
@@ -196,10 +196,10 @@ namespace Nirge.Core
         }
         public void Destroy()
         {
-            Arg1 = default(TArg1);
-            Arg2 = default(TArg2);
-            Arg3 = default(TArg3);
-            Arg4 = default(TArg4);
+            Arg1 = default (TArg1);
+            Arg2 = default (TArg2);
+            Arg3 = default (TArg3);
+            Arg4 = default (TArg4);
         }
     }
 
@@ -231,12 +231,12 @@ namespace Nirge.Core
             set;
         }
 
-        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
+        public CDataEventArgs (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
         {
-            Init(arg1, arg2, arg3, arg4, arg5);
+            Init (arg1, arg2, arg3, arg4, arg5);
         }
 
-        public void Init(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
+        public void Init (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
         {
             Arg1 = arg1;
             Arg2 = arg2;
@@ -246,11 +246,11 @@ namespace Nirge.Core
         }
         public void Destroy()
         {
-            Arg1 = default(TArg1);
-            Arg2 = default(TArg2);
-            Arg3 = default(TArg3);
-            Arg4 = default(TArg4);
-            Arg5 = default(TArg5);
+            Arg1 = default (TArg1);
+            Arg2 = default (TArg2);
+            Arg3 = default (TArg3);
+            Arg4 = default (TArg4);
+            Arg5 = default (TArg5);
         }
     }
 
@@ -287,12 +287,12 @@ namespace Nirge.Core
             set;
         }
 
-        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
+        public CDataEventArgs (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
         {
-            Init(arg1, arg2, arg3, arg4, arg5, arg6);
+            Init (arg1, arg2, arg3, arg4, arg5, arg6);
         }
 
-        public void Init(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
+        public void Init (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
         {
             Arg1 = arg1;
             Arg2 = arg2;
@@ -303,12 +303,12 @@ namespace Nirge.Core
         }
         public void Destroy()
         {
-            Arg1 = default(TArg1);
-            Arg2 = default(TArg2);
-            Arg3 = default(TArg3);
-            Arg4 = default(TArg4);
-            Arg5 = default(TArg5);
-            Arg6 = default(TArg6);
+            Arg1 = default (TArg1);
+            Arg2 = default (TArg2);
+            Arg3 = default (TArg3);
+            Arg4 = default (TArg4);
+            Arg5 = default (TArg5);
+            Arg6 = default (TArg6);
         }
     }
 
@@ -350,12 +350,12 @@ namespace Nirge.Core
             set;
         }
 
-        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
+        public CDataEventArgs (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
         {
-            Init(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+            Init (arg1, arg2, arg3, arg4, arg5, arg6, arg7);
         }
 
-        public void Init(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
+        public void Init (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
         {
             Arg1 = arg1;
             Arg2 = arg2;
@@ -367,13 +367,13 @@ namespace Nirge.Core
         }
         public void Destroy()
         {
-            Arg1 = default(TArg1);
-            Arg2 = default(TArg2);
-            Arg3 = default(TArg3);
-            Arg4 = default(TArg4);
-            Arg5 = default(TArg5);
-            Arg6 = default(TArg6);
-            Arg7 = default(TArg7);
+            Arg1 = default (TArg1);
+            Arg2 = default (TArg2);
+            Arg3 = default (TArg3);
+            Arg4 = default (TArg4);
+            Arg5 = default (TArg5);
+            Arg6 = default (TArg6);
+            Arg7 = default (TArg7);
         }
     }
 
@@ -420,12 +420,12 @@ namespace Nirge.Core
             set;
         }
 
-        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
+        public CDataEventArgs (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
         {
-            Init(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+            Init (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
         }
 
-        public void Init(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
+        public void Init (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
         {
             Arg1 = arg1;
             Arg2 = arg2;
@@ -438,14 +438,14 @@ namespace Nirge.Core
         }
         public void Destroy()
         {
-            Arg1 = default(TArg1);
-            Arg2 = default(TArg2);
-            Arg3 = default(TArg3);
-            Arg4 = default(TArg4);
-            Arg5 = default(TArg5);
-            Arg6 = default(TArg6);
-            Arg7 = default(TArg7);
-            Arg8 = default(TArg8);
+            Arg1 = default (TArg1);
+            Arg2 = default (TArg2);
+            Arg3 = default (TArg3);
+            Arg4 = default (TArg4);
+            Arg5 = default (TArg5);
+            Arg6 = default (TArg6);
+            Arg7 = default (TArg7);
+            Arg8 = default (TArg8);
         }
     }
 
@@ -497,12 +497,12 @@ namespace Nirge.Core
             set;
         }
 
-        public CDataEventArgs(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
+        public CDataEventArgs (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
         {
-            Init(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+            Init (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         }
 
-        public void Init(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
+        public void Init (TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
         {
             Arg1 = arg1;
             Arg2 = arg2;
@@ -516,15 +516,15 @@ namespace Nirge.Core
         }
         public void Destroy()
         {
-            Arg1 = default(TArg1);
-            Arg2 = default(TArg2);
-            Arg3 = default(TArg3);
-            Arg4 = default(TArg4);
-            Arg5 = default(TArg5);
-            Arg6 = default(TArg6);
-            Arg7 = default(TArg7);
-            Arg8 = default(TArg8);
-            Arg9 = default(TArg9);
+            Arg1 = default (TArg1);
+            Arg2 = default (TArg2);
+            Arg3 = default (TArg3);
+            Arg4 = default (TArg4);
+            Arg5 = default (TArg5);
+            Arg6 = default (TArg6);
+            Arg7 = default (TArg7);
+            Arg8 = default (TArg8);
+            Arg9 = default (TArg9);
         }
     }
 
