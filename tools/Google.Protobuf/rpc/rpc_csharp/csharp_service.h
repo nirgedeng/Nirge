@@ -20,10 +20,9 @@ namespace google
                     class CMethod
                     {
                     public:
-                        CMethod(const MethodDescriptor* descriptor, const Options& options, std::string* error);
+                        CMethod(const MethodDescriptor* descriptor, const csharp::Options& options, std::string* error);
                         ~CMethod();
 
-                    public:
                         bool Init();
                         void Destroy();
 
@@ -55,7 +54,7 @@ namespace google
 
                     private:
                         const MethodDescriptor* _descriptor;
-                        const Options& _options;
+                        const csharp::Options& _options;
                         std::string* _error;
 
                         int _uid;
@@ -67,16 +66,16 @@ namespace google
 
                     const char* gCls = "C";
                     const char* gInterface = "I";
+                    const char* gvoid = "void";
                     const char* gRpcService = "RpcService";
                     const char* gRpcCaller = "RpcCaller";
                     const char* gRpcCallee = "RpcCallee";
                     const char* gArgsEmpty = "ArgsEmpty";
 
                 public:
-                    CServiceGenerator(const ServiceDescriptor* descriptor, const Options& options, std::string* error);
+                    CServiceGenerator(const ServiceDescriptor* descriptor, const csharp::Options& options, std::string* error);
                     ~CServiceGenerator();
 
-                public:
                     bool Init();
                     void Destroy();
 
@@ -89,13 +88,15 @@ namespace google
 
                 private:
                     const ServiceDescriptor* _descriptor;
-                    const Options& _options;
+                    const csharp::Options& _options;
                     std::string* _error;
 
                     int _uid;
                     std::string _interfaceName;
+                    std::string _serviceName;
                     std::string _callerName;
                     std::string _calleeName;
+                    std::string _descriptor_accessor;
                     std::vector<CMethod*> _methods;
 
                 };

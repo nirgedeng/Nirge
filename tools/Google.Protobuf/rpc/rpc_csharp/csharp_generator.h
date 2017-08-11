@@ -17,11 +17,7 @@ namespace google
                 class CGenerator : public google::protobuf::compiler::CodeGenerator
                 {
                 public:
-                    virtual bool Generate(
-                        const FileDescriptor* file,
-                        const string& parameter,
-                        GeneratorContext* generator_context,
-                        string* error) const;
+                    virtual bool Generate(const FileDescriptor* file, const std::string& parameter, GeneratorContext* generator_context, std::string* error) const;
 
                 };
             }

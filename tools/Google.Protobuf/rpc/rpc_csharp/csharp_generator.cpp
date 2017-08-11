@@ -6,7 +6,6 @@
 #include <sstream>
 #include <vector>
 
-#include <google/protobuf/compiler/code_generator.h>
 #include <google/protobuf/compiler/plugin.h>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/descriptor.pb.h>
@@ -16,13 +15,11 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/io/printer.h>
 #include <google/protobuf/io/zero_copy_stream_impl_lite.h>
-
 #include <google/protobuf/compiler/csharp/csharp_generator.h>
 #include <google/protobuf/compiler/csharp/csharp_helpers.h>
 #include <google/protobuf/compiler/csharp/csharp_names.h>
 #include <google/protobuf/compiler/csharp/csharp_options.h>
 #include <google/protobuf/compiler/csharp/csharp_reflection_class.h>
-
 using google::protobuf::internal::scoped_ptr;
 
 //------------------------------------------------------------------
@@ -35,11 +32,7 @@ namespace google
         {
             namespace csharp
             {
-                bool CGenerator::Generate(
-                    const FileDescriptor* file,
-                    const string& parameter,
-                    GeneratorContext* context,
-                    string* error) const
+                bool CGenerator::Generate(const FileDescriptor* file, const std::string& parameter, GeneratorContext* context, std::string* error) const
                 {
                     if (file->syntax() != FileDescriptor::SYNTAX_PROTO3 && !IsDescriptorProto(file))
                     {
@@ -47,21 +40,21 @@ namespace google
                         return false;
                     }
 
-                    std::vector<std::pair<string, string> > options;
-                    Options opts;
-                    ParseGeneratorParameter(parameter, &options);
+                    std::vector<std::pair<string, string>> args;
+                    ParseGeneratorParameter(parameter, &args);
+                    csharp::Options opts;
 
-                    for (int i = 0; i < options.size(); i++)
+                    for (int i = 0; i < args.size(); i++)
                     {
-                        if (options[i].first == "")
+                        if (args[i].first == "")
                         {
                         }
-                        else if (options[i].first == "")
+                        else if (args[i].first == "")
                         {
                         }
                         else
                         {
-                            *error = "Unknown generator option: " + options[i].first;
+                            *error = "Unknown generator option: " + args[i].first;
                             return false;
                         }
                     }
@@ -78,7 +71,15 @@ namespace google
                         e->Init();
                     }
 
+                    std::string csfile;
+                    if (!ServicesFilename(file, &csfile))
+                    {
+                        *error = "ServicesFilename error";
+                        return false;
+                    }
+
                     std::string s;
+
                     {
                         io::StringOutputStream stream(&s);
                         io::Printer printer(&stream, '$');
@@ -114,21 +115,15 @@ for (auto& i : services)
                         }
 
                         printer.Outdent();
-                        printer.Print("}\n");
-                        printer.Print("\n");
+                        printer.Print("}\n\n");
                         printer.Print("#endregion\n");
                     }
 
-                    std::string csfile;
-                    if (!ServicesFilename(file, &csfile))
                     {
-                        *error = "ServicesFilename error";
-                        return false;
+                        std::unique_ptr<google::protobuf::io::ZeroCopyOutputStream> stream(context->Open(csfile));
+                        google::protobuf::io::CodedOutputStream code(stream.get());
+                        code.WriteRaw(s.data(), s.size());
                     }
-
-                    std::unique_ptr<google::protobuf::io::ZeroCopyOutputStream> stream(context->Open(csfile));
-                    google::protobuf::io::CodedOutputStream code(stream.get());
-                    code.WriteRaw(s.data(), s.size());
 
                     return true;
                 }

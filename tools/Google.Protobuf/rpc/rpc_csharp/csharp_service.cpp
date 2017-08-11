@@ -42,13 +42,13 @@ namespace google
             {
                 //------------------------------------------------------------------
 
-                CServiceGenerator::CMethod::CMethod(const MethodDescriptor* descriptor, const Options& options, std::string* error)
+                CServiceGenerator::CMethod::CMethod(const MethodDescriptor* descriptor, const csharp::Options& options, std::string* error)
                     : _descriptor(descriptor)
                     , _options(options)
                     , _error(error)
                 {
                 }
-                
+
                 CServiceGenerator::CMethod::~CMethod()
                 {
                 }
@@ -60,12 +60,12 @@ namespace google
                     , 11
                     , false>
                     args(60002, Nirge::Core::RpcServiceCallOption());
-                    auto opt = _descriptor->options().GetExtension(args);
-                    _uid = opt.uid();
-                    _isOneWay = opt.isoneway();
+                    Nirge::Core::RpcServiceCallOption option = _descriptor->options().GetExtension(args);
+                    _uid = option.uid();
+                    _isOneWay = option.isoneway();
 
                     _callName = _descriptor->name();
-                    _containsArgs = _descriptor->input_type()->full_name() != Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name();
+                    _containsArgs = !(_descriptor->input_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name());
 
                     return true;
                 }
@@ -76,7 +76,7 @@ namespace google
 
                 //------------------------------------------------------------------
 
-                CServiceGenerator::CServiceGenerator(const ServiceDescriptor* descriptor, const Options& options, std::string* error)
+                CServiceGenerator::CServiceGenerator(const ServiceDescriptor* descriptor, const csharp::Options& options, std::string* error)
                     : _descriptor(descriptor)
                     , _options(options)
                     , _error(error)
@@ -87,8 +87,6 @@ namespace google
                 {
                 }
 
-                //------------------------------------------------------------------
-
                 bool CServiceGenerator::Init()
                 {
                     google::protobuf::internal::ExtensionIdentifier<::google::protobuf::ServiceOptions
@@ -96,12 +94,14 @@ namespace google
                     , 11
                     , false>
                     args(60001, Nirge::Core::RpcServiceOption());
-                    auto opt = _descriptor->options().GetExtension(args);
-                    _uid = opt.uid();
+                    Nirge::Core::RpcServiceOption option = _descriptor->options().GetExtension(args);
+                    _uid = option.uid();
 
                     _interfaceName = gInterface + _descriptor->name() + gRpcService;
+                    _serviceName = gCls + _descriptor->name() + gRpcService;
                     _callerName = gCls + _descriptor->name() + gRpcCaller;
                     _calleeName = gCls + _descriptor->name() + gRpcCallee;
+                    _descriptor_accessor = boost::str(boost::format("%1%.Descriptor.Services[%2%]") % GetReflectionClassName(_descriptor->file()) % _descriptor->index());
 
                     for (int i = 0; i < _descriptor->method_count(); ++i)
                     {
@@ -126,25 +126,29 @@ for (auto& i : _methods)
 
                 void CServiceGenerator::Generate(io::Printer* printer)
                 {
+                    printer->Print("#region $serviceName$\n", "serviceName", _serviceName);
                     GenerateInterface(printer);
                     GenerateCaller(printer);
                     GenerateCallee(printer);
+                    printer->Print("#endregion\n");
                 }
 
                 void CServiceGenerator::GenerateInterface(io::Printer* printer)
                 {
                     printer->Print("public interface $interfaceName$ : IRpcService {\n", "interfaceName", _interfaceName);
                     printer->Indent();
+
 for (const auto& i : _methods)
                     {
                         printer->Print("$ret$ $call$(int channel"
-                                       , "ret", i->IsOneWay() ? "void" : (i->Descriptor()->output_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? "void" : i->Descriptor()->output_type()->full_name())
+                                       , "ret", i->IsOneWay() ? gvoid : (i->Descriptor()->output_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gvoid : i->Descriptor()->output_type()->full_name())
                                        , "call", i->CallName());
                         if (i->ContainsArgs())
                             printer->Print(", $args$ args", "args", i->Descriptor()->input_type()->full_name());
                         printer->Print(");\n");
 
                     }
+
                     printer->Outdent();
                     printer->Print("}\n");
                 }
@@ -153,13 +157,15 @@ for (const auto& i : _methods)
                 {
                     printer->Print("public class $callerName$ : CRpcCaller {\n", "callerName", _callerName);
                     printer->Indent();
-                    printer->Print("public $callerName$(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs) : base(args, log, stream, communicator, stubs, null, $uid$) {}\n"
+                    printer->Print("public $callerName$(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)\n\t: base(args, log, stream, communicator, stubs, $descriptor_accessor$, $uid$) {}\n"
                                    , "callerName", _callerName
+                                   , "descriptor_accessor", _descriptor_accessor
                                    , "uid", boost::lexical_cast<std::string>(_uid));
+
 for (const auto& i : _methods)
                     {
                         printer->Print("public $ret$ $call$("
-                                       , "ret", i->IsOneWay() ? "void" : boost::str(boost::format("Task<%1%>") % i->Descriptor()->output_type()->full_name())
+                                       , "ret", i->IsOneWay() ? gvoid : boost::str(boost::format("Task<%1%>") % i->Descriptor()->output_type()->full_name())
                                        , "call", i->CallName());
                         if (i->ContainsArgs())
                             printer->Print("$args$ args, ", "args", i->Descriptor()->input_type()->full_name());
@@ -167,22 +173,23 @@ for (const auto& i : _methods)
                         printer->Indent();
                         if (i->IsOneWay())
                         {
-                            printer->Print("Call<$argstype$>(channel, $uid$, $args$);\n"
-                                           , "argstype", i->Descriptor()->input_type()->full_name()
+                            printer->Print("Call<$targs$>(channel, $uid$, $args$);\n"
+                                           , "targs", i->Descriptor()->input_type()->full_name()
                                            , "uid", boost::lexical_cast<std::string>(i->Uid())
                                            , "args", i->Descriptor()->input_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gArgsEmpty : "args");
                         }
                         else
                         {
-                            printer->Print("return CallAsync<$argstype$, $rettype$>(channel, $uid$, $args$);\n"
-                                           , "argstype", i->Descriptor()->input_type()->full_name()
-                                           , "rettype", i->Descriptor()->output_type()->full_name()
+                            printer->Print("return CallAsync<$targs$, $tret$>(channel, $uid$, $args$);\n"
+                                           , "targs", i->Descriptor()->input_type()->full_name()
+                                           , "tret", i->Descriptor()->output_type()->full_name()
                                            , "uid", boost::lexical_cast<std::string>(i->Uid())
                                            , "args", i->Descriptor()->input_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gArgsEmpty : "args");
                         }
                         printer->Outdent();
                         printer->Print("}\n");
                     }
+
                     printer->Outdent();
                     printer->Print("}\n");
                 }
@@ -193,9 +200,10 @@ for (const auto& i : _methods)
                                    , "calleeName", _calleeName
                                    , "interfaceName", _interfaceName);
                     printer->Indent();
-                    printer->Print("public $calleeName$(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, $interfaceName$ service) : base(args, log, stream, communicator, null, service) {}\n"
+                    printer->Print("public $calleeName$(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, $interfaceName$ service)\n\t: base(args, log, stream, communicator, $descriptor_accessor$, service) {}\n"
                                    , "calleeName", _calleeName
-                                   , "interfaceName", _interfaceName);
+                                   , "interfaceName", _interfaceName
+                                   , "descriptor_accessor", _descriptor_accessor);
                     printer->Print("public override void Call(int channel, $req$ req) {\n", "req", Nirge::Core::RpcCallReq::descriptor()->full_name());
                     printer->Indent();
                     printer->Print("switch (req.Call) {\n");
@@ -204,18 +212,19 @@ for (const auto& i : _methods)
                     {
                         printer->Print("case $uid$:\n", "uid", boost::lexical_cast<std::string>(i->Uid()));
                         printer->Indent();
-                        printer->Print("$call$<$argstype$, $rettype$>(channel, req, (_, args) => {\n"
+                        printer->Print("$call$<$targs$, $tret$>(channel, req, (_, args) => {\n"
                                        , "call", i->IsOneWay() ? "Call" : "CallAsync"
-                                       , "argstype", i->Descriptor()->input_type()->full_name()
-                                       , "rettype", i->Descriptor()->output_type()->full_name());
+                                       , "targs", i->Descriptor()->input_type()->full_name()
+                                       , "tret", i->IsOneWay() ? Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() : i->Descriptor()->output_type()->full_name());
                         printer->Indent();
-                        if (i->Descriptor()->output_type()->full_name() != Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name())
-                            printer->Print("return ");
+                        if (!i->IsOneWay())
+                            if (i->Descriptor()->output_type()->full_name() != Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name())
+                                printer->Print("return ");
                         printer->Print("_service.$call$(channel", "call", i->CallName());
                         if (i->ContainsArgs())
                             printer->Print(", args");
                         printer->Print(");\n");
-                        if (i->Descriptor()->output_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name())
+                        if (i->IsOneWay() || i->Descriptor()->output_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name())
                             printer->Print("return ArgsEmpty;\n");
                         printer->Outdent();
                         printer->Print("});\n");
