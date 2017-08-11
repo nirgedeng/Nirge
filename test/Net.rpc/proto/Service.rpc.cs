@@ -14,15 +14,18 @@ using log4net;
 using System;
 
 namespace Nirge.Core {
+  #region CGameRpcService
   public interface IGameRpcService : IRpcService {
     void f(int channel);
     void g(int channel, Nirge.Core.gargs args);
     void h(int channel);
     void p(int channel, Nirge.Core.pargs args);
     Nirge.Core.qret q(int channel, Nirge.Core.qargs args);
+    void m(int channel, Nirge.Core.margs args);
   }
   public class CGameRpcCaller : CRpcCaller {
-    public CGameRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs) : base(args, log, stream, communicator, stubs, null, 1) {}
+    public CGameRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
+    	: base(args, log, stream, communicator, stubs, null, 1) {}
     public void f(int channel = 0){
       Call<Nirge.Core.RpcCallArgsEmpty>(channel, 1, ArgsEmpty);
     }
@@ -38,9 +41,13 @@ namespace Nirge.Core {
     public Task<Nirge.Core.qret> q(Nirge.Core.qargs args, int channel = 0){
       return CallAsync<Nirge.Core.qargs, Nirge.Core.qret>(channel, 5, args);
     }
+    public void m(Nirge.Core.margs args, int channel = 0){
+      Call<Nirge.Core.margs>(channel, 6, args);
+    }
   }
   public class CGameRpcCallee : CRpcCallee<IGameRpcService> {
-    public CGameRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, IGameRpcService service) : base(args, log, stream, communicator, null, service) {}
+    public CGameRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, IGameRpcService service)
+    	: base(args, log, stream, communicator, null, service) {}
     public override void Call(int channel, Nirge.Core.RpcCallReq req) {
       switch (req.Call) {
       case 1:
@@ -72,11 +79,19 @@ namespace Nirge.Core {
           return _service.q(channel, args);
         });
         break;
+      case 6:
+        Call<Nirge.Core.margs, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
+          _service.m(channel, args);
+          return ArgsEmpty;
+        });
+        break;
       default:
         base.Call(channel, req);
         break;
       }
     }
   }
+  #endregion
 }
+
 #endregion

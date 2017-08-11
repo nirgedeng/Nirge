@@ -41,6 +41,20 @@ message qret
     int32 c = 3;
 }
 
+message margs
+{
+    int32 a = 1;
+    int32 b = 2;
+    int32 c = 3;
+}
+
+message mret
+{
+    int32 a = 1;
+    int32 b = 2;
+    int32 c = 3;
+}
+
 service Game
 {
     option (RpcService).Uid = 1;
@@ -69,6 +83,11 @@ service Game
     {
         option (RpcServiceCall).Uid = 5;
         option (RpcServiceCall).IsOneWay = false;
+    }
+    rpc m (margs) returns (mret)
+    {
+        option (RpcServiceCall).Uid = 6;
+        option (RpcServiceCall).IsOneWay = true;
     }
 }
 

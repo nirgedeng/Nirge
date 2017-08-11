@@ -44,6 +44,10 @@ namespace Nirge.Core
                 C = args.A,
             };
         }
+        public void m(int channel, margs args)
+        {
+            Console.WriteLine("p,{0}", args);
+        }
 
     }
 }
