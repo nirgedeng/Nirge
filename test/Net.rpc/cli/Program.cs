@@ -46,7 +46,7 @@ namespace cli
             _communicator = new CClientRpcCommunicator(_log, _cli);
             _stream = new CRpcStream(new CRpcInputStream(), new CRpcOutputStream(new byte[1024], 0, 1024));
             _stubs = new CRpcCallStubProvider(new CRpcCallStubArgs(true, true), _log);
-            _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromSeconds(8f), true), _log, _stream, _communicator, _stubs);
+            _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromMinutes(8f), true), _log, _stream, _communicator, _stubs);
             _service = new CGameRpcService();
             _callee = new CGameRpcCallee(new CRpcCalleeArgs(true), _log, _stream, _communicator, _service);
 

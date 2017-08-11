@@ -51,7 +51,7 @@ namespace ser
             _service = new CGameRpcService();
             _callee = new CGameRpcCallee(new CRpcCalleeArgs(true), _log, _stream, _communicator, _service);
             _stubs = new CRpcCallStubProvider(new CRpcCallStubArgs(true, true), _log);
-            _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromSeconds(8f), true), _log, _stream, _communicator, _stubs);
+            _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromMinutes(8f), true), _log, _stream, _communicator, _stubs);
 
             _task.Exec(CCall.Create(() =>
             {
