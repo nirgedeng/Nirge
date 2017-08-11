@@ -67,6 +67,7 @@ namespace google
                     const char* gCls = "C";
                     const char* gInterface = "I";
                     const char* gvoid = "void";
+                    const char* gargs = "args";
                     const char* gRpcService = "RpcService";
                     const char* gRpcCaller = "RpcCaller";
                     const char* gRpcCallee = "RpcCallee";

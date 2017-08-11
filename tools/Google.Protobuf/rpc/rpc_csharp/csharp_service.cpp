@@ -176,7 +176,7 @@ for (const auto& i : _methods)
                             printer->Print("Call<$targs$>(channel, $uid$, $args$);\n"
                                            , "targs", i->Descriptor()->input_type()->full_name()
                                            , "uid", boost::lexical_cast<std::string>(i->Uid())
-                                           , "args", i->Descriptor()->input_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gArgsEmpty : "args");
+                                           , "args", i->Descriptor()->input_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gArgsEmpty : gargs);
                         }
                         else
                         {
@@ -184,7 +184,7 @@ for (const auto& i : _methods)
                                            , "targs", i->Descriptor()->input_type()->full_name()
                                            , "tret", i->Descriptor()->output_type()->full_name()
                                            , "uid", boost::lexical_cast<std::string>(i->Uid())
-                                           , "args", i->Descriptor()->input_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gArgsEmpty : "args");
+                                           , "args", i->Descriptor()->input_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gArgsEmpty : gargs);
                         }
                         printer->Outdent();
                         printer->Print("}\n");
