@@ -155,7 +155,6 @@ for (const auto& i : _methods)
 
                 void CServiceGenerator::GenerateCaller(io::Printer* printer)
                 {
-                    printer->Print("[CRpcService($uid$)]\n", "uid", boost::lexical_cast<std::string>(_uid));
                     printer->Print("public class $callerName$ : CRpcCaller {\n", "callerName", _callerName);
                     printer->Indent();
                     printer->Print("public $callerName$(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)\n\t: base(args, log, stream, communicator, stubs, $descriptor_accessor$, $uid$) {}\n"
@@ -197,6 +196,7 @@ for (const auto& i : _methods)
 
                 void CServiceGenerator::GenerateCallee(io::Printer* printer)
                 {
+                    printer->Print("[CRpcService($uid$)]\n", "uid", boost::lexical_cast<std::string>(_uid));
                     printer->Print("public class $calleeName$ : CRpcCallee<$interfaceName$> {\n"
                                    , "calleeName", _calleeName
                                    , "interfaceName", _interfaceName);
