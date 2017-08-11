@@ -91,4 +91,40 @@ service Game
     }
 }
 
+service Web
+{
+    option (RpcService).Uid = 2;
+
+    rpc f (RpcCallArgsEmpty) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 1;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+    rpc g (gargs) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 2;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+    rpc h (RpcCallArgsEmpty) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 3;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+    rpc p (pargs) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 4;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+    rpc q (qargs) returns (qret)
+    {
+        option (RpcServiceCall).Uid = 5;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+    rpc m (margs) returns (mret)
+    {
+        option (RpcServiceCall).Uid = 6;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+}
+
 //----------------------------------------------------------------------------------------

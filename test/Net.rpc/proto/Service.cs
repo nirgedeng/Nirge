@@ -37,8 +37,17 @@ namespace Nirge.Core {
             "ZS5Db3JlLnBhcmdzGhwuTmlyZ2UuQ29yZS5ScGNDYWxsQXJnc0VtcHR5IgyS",
             "ph0CCASSph0CEAASNgoBcRIRLk5pcmdlLkNvcmUucWFyZ3MaEC5OaXJnZS5D",
             "b3JlLnFyZXQiDJKmHQIIBZKmHQIQABI2CgFtEhEuTmlyZ2UuQ29yZS5tYXJn",
-            "cxoQLk5pcmdlLkNvcmUubXJldCIMkqYdAggGkqYdAhABGgaKph0CCAFCDaoC",
-            "Ck5pcmdlLkNvcmViBnByb3RvMw=="));
+            "cxoQLk5pcmdlLkNvcmUubXJldCIMkqYdAggGkqYdAhABGgaKph0CCAEyowMK",
+            "A1dlYhJNCgFmEhwuTmlyZ2UuQ29yZS5ScGNDYWxsQXJnc0VtcHR5GhwuTmly",
+            "Z2UuQ29yZS5ScGNDYWxsQXJnc0VtcHR5IgySph0CCAGSph0CEAESQgoBZxIR",
+            "Lk5pcmdlLkNvcmUuZ2FyZ3MaHC5OaXJnZS5Db3JlLlJwY0NhbGxBcmdzRW1w",
+            "dHkiDJKmHQIIApKmHQIQARJNCgFoEhwuTmlyZ2UuQ29yZS5ScGNDYWxsQXJn",
+            "c0VtcHR5GhwuTmlyZ2UuQ29yZS5ScGNDYWxsQXJnc0VtcHR5IgySph0CCAOS",
+            "ph0CEAASQgoBcBIRLk5pcmdlLkNvcmUucGFyZ3MaHC5OaXJnZS5Db3JlLlJw",
+            "Y0NhbGxBcmdzRW1wdHkiDJKmHQIIBJKmHQIQABI2CgFxEhEuTmlyZ2UuQ29y",
+            "ZS5xYXJncxoQLk5pcmdlLkNvcmUucXJldCIMkqYdAggFkqYdAhAAEjYKAW0S",
+            "ES5OaXJnZS5Db3JlLm1hcmdzGhAuTmlyZ2UuQ29yZS5tcmV0IgySph0CCAaS",
+            "ph0CEAEaBoqmHQIIAkINqgIKTmlyZ2UuQ29yZWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Nirge.Core.RpcProtoReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
