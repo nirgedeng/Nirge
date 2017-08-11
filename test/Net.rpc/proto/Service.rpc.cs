@@ -23,6 +23,7 @@ namespace Nirge.Core {
     Nirge.Core.qret q(int channel, Nirge.Core.qargs args);
     void m(int channel, Nirge.Core.margs args);
   }
+  [CRpcService(1)]
   public class CGameRpcCaller : CRpcCaller {
     public CGameRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
     	: base(args, log, stream, communicator, stubs, global::Nirge.Core.ServiceReflection.Descriptor.Services[0], 1) {}
@@ -101,6 +102,7 @@ namespace Nirge.Core {
     Nirge.Core.qret q(int channel, Nirge.Core.qargs args);
     void m(int channel, Nirge.Core.margs args);
   }
+  [CRpcService(2)]
   public class CWebRpcCaller : CRpcCaller {
     public CWebRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
     	: base(args, log, stream, communicator, stubs, global::Nirge.Core.ServiceReflection.Descriptor.Services[1], 2) {}
