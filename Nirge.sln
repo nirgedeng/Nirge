@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nirge.Core", "Nirge.Core\Nirge.Core.csproj", "{9CFED86F-16B8-439E-887F-9540F1EB8B92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nirge.Core", "Nirge.Core\Nirge.Core.csproj", "{6224653A-AED6-48ED-90DE-D53FC1F88686}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9CFED86F-16B8-439E-887F-9540F1EB8B92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9CFED86F-16B8-439E-887F-9540F1EB8B92}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9CFED86F-16B8-439E-887F-9540F1EB8B92}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9CFED86F-16B8-439E-887F-9540F1EB8B92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6224653A-AED6-48ED-90DE-D53FC1F88686}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6224653A-AED6-48ED-90DE-D53FC1F88686}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6224653A-AED6-48ED-90DE-D53FC1F88686}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6224653A-AED6-48ED-90DE-D53FC1F88686}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4FA5F590-0FEF-43B3-BF3C-7FD53E5A2223}
 	EndGlobalSection
 EndGlobal
