@@ -1,0 +1,67 @@
+//----------------------------------------------------------------------------------------
+
+syntax = "proto3";
+
+//----------------------------------------------------------------------------------------
+
+import "google/protobuf/descriptor.proto";
+
+import "Proto.proto";
+
+package Nirge.Core;
+option csharp_namespace = "Nirge.Core";
+
+//----------------------------------------------------------------------------------------
+
+message RpcServiceOption
+{
+    int32 Uid = 1;
+}
+
+message RpcServiceCallOption
+{
+    int32 Uid = 1;
+    bool IsOneWay = 2;
+}
+
+extend google.protobuf.ServiceOptions
+{
+  RpcServiceOption RpcService = 60001;
+}
+
+extend google.protobuf.MethodOptions
+{
+  RpcServiceCallOption RpcServiceCall = 60002;
+}
+
+//----------------------------------------------------------------------------------------
+
+message RpcCallArgsEmpty
+{
+}
+
+message RpcCallReq
+{
+    int32 Serial = 1;
+    int32 Service = 2;
+    int32 Call = 3;
+    bytes Args = 4;
+}
+
+message RpcCallRsp
+{
+    int32 Serial = 1;
+    int32 Service = 2;
+    int32 Call = 3;
+    bytes Ret = 4;
+}
+
+message RpcCallExceptionRsp
+{
+    int32 Serial = 1;
+    int32 Service = 2;
+    int32 Call = 3;
+    int32 Exception = 4;
+}
+
+//----------------------------------------------------------------------------------------
