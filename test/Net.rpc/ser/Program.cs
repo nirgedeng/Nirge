@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.Threading;
 using Google.Protobuf;
+using log4net.Config;
 using System.Linq;
 using System.Text;
 using Nirge.Core;
 using System.Net;
+using System.IO;
 using log4net;
 using System;
 
@@ -35,7 +37,7 @@ namespace ser
 
         public void Init()
         {
-            _log = LogManager.Exists(Assembly.GetExecutingAssembly(), "all");
+            _log = LogManager.Exists("ser", "all");
 
             _task = new CTasker(_log);
             _timer = new CTaskTimer(_task, _log);
@@ -174,6 +176,8 @@ namespace ser
     {
         static void Main(string[] args)
         {
+            XmlConfigurator.Configure(LogManager.CreateRepository("ser"), new FileInfo("../../Net.rpc.log.ser.xml"));
+
             var ser = new CSer();
             ser.Init();
             Console.ReadKey();

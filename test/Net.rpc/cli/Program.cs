@@ -7,10 +7,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Threading;
+using log4net.Config;
 using System.Linq;
 using System.Text;
 using Nirge.Core;
 using System.Net;
+using System.IO;
 using log4net;
 using System;
 
@@ -35,7 +37,7 @@ namespace cli
 
         public void Init()
         {
-            _log = LogManager.Exists(Assembly.GetExecutingAssembly(), "all");
+            _log = LogManager.Exists("cli", "all");
 
             _task = new CTasker(_log);
             _timer = new CTaskTimer(_task, _log);
@@ -177,6 +179,8 @@ namespace cli
     {
         static void Main(string[] args)
         {
+            XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.rpc.log.cli.xml"));
+
             var cli = new CCli();
             cli.Init();
             Console.ReadKey();
