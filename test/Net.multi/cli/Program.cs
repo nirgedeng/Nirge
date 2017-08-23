@@ -44,7 +44,7 @@ namespace cli
                 _qargs = qargs;
                 _cli = new CTcpClient(new CTcpClientArgs(), log, cache);
                 _communicator = new CClientRpcCommunicator(log, _cli);
-                _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromMinutes(16f), false), log, stream, _communicator, stubs);
+                _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromMinutes(1024f), false), log, stream, _communicator, stubs);
             }
 
             public void Init()
@@ -52,7 +52,7 @@ namespace cli
                 _cli.Connected += OnConnected;
                 _cli.Closed += OnClosed;
                 _cli.Recved += OnRecvd;
-                _cli.Connect(new IPEndPoint(IPAddress.Parse("10.12.236.197"), 9527));
+                _cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
             }
 
             public void Destroy()
@@ -89,6 +89,9 @@ namespace cli
                 CTcpClient cli = (CTcpClient)sender;
 
                 _log.InfoFormat("OnConnect {0}:{1}:{2}", e.Arg1.Result, e.Arg1.Error, e.Arg1.SocketError);
+
+                f();
+                g();
             }
 
             void OnClosed(object sender, CDataEventArgs<CTcpClientCloseArgs> e)
@@ -159,7 +162,7 @@ namespace cli
             _qargs = new qargs() { A = 7, B = 8, C = 9, };
             _qargs.D.AddRange(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
 
-            for (int i = 0; i < 1024; ++i)
+            for (int i = 0; i < 128; ++i)
                 _clis.Add(new CClient(_log, _cache, _stream, _stubs, _gargs, _pargs, _qargs));
 
             _task.Exec(CCall.Create(() =>
