@@ -29,16 +29,22 @@ namespace cli
             CRpcCommunicator _communicator;
             CGameRpcCaller _caller;
             CTcpClient _cli;
+            gargs _gargs;
+            pargs _pargs;
+            qargs _qargs;
 
-            public CClient(ILog log, TcpClientCache cache, CRpcStream stream, CRpcCallStubProvider stubs)
+            public CClient(ILog log, TcpClientCache cache, CRpcStream stream, CRpcCallStubProvider stubs, gargs gargs, pargs pargs, qargs qargs)
             {
                 _log = log;
                 _cache = cache;
                 _stream = stream;
                 _stubs = stubs;
+                _gargs = gargs;
+                _pargs = pargs;
+                _qargs = qargs;
                 _cli = new CTcpClient(new CTcpClientArgs(), log, cache);
                 _communicator = new CClientRpcCommunicator(log, _cli);
-                _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromMinutes(8f), false), log, stream, _communicator, stubs);
+                _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromMinutes(16f), false), log, stream, _communicator, stubs);
             }
 
             public void Init()
@@ -68,20 +74,14 @@ namespace cli
             void f()
             {
                 _caller.f();
-                var gargs = new gargs() { A = 1, B = 2, C = 3, };
-                gargs.D.AddRange(new int[] { 1, 2, 3, 4, });
-                _caller.g(gargs);
+                _caller.g(_gargs);
             }
 
             async void g()
             {
                 await _caller.h();
-                var pargs = new pargs() { A = 4, B = 5, C = 6, };
-                pargs.D.AddRange(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, });
-                await _caller.p(pargs);
-                var qargs = new qargs() { A = 7, B = 8, C = 9, };
-                qargs.D.AddRange(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-                await _caller.q(qargs);
+                await _caller.p(_pargs);
+                await _caller.q(_qargs);
             }
 
             void OnConnected(object sender, CDataEventArgs<CTcpClientConnectArgs> e)
@@ -134,6 +134,9 @@ namespace cli
 
         CRpcStream _stream;
         CRpcCallStubProvider _stubs;
+        gargs _gargs;
+        pargs _pargs;
+        qargs _qargs;
 
         public void Init()
         {
@@ -149,8 +152,15 @@ namespace cli
             _stream = new CRpcStream(new CRpcInputStream(), new CRpcOutputStream(new byte[1024], 0, 1024));
             _stubs = new CRpcCallStubProvider(new CRpcCallStubArgs(false, false), _log);
 
+            _gargs = new gargs() { A = 1, B = 2, C = 3, };
+            _gargs.D.AddRange(new int[] { 1, 2, 3, 4, });
+            _pargs = new pargs() { A = 4, B = 5, C = 6, };
+            _pargs.D.AddRange(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, });
+            _qargs = new qargs() { A = 7, B = 8, C = 9, };
+            _qargs.D.AddRange(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
+
             for (int i = 0; i < 1024; ++i)
-                _clis.Add(new CClient(_log, _cache, _stream, _stubs));
+                _clis.Add(new CClient(_log, _cache, _stream, _stubs, _gargs, _pargs, _qargs));
 
             _task.Exec(CCall.Create(() =>
             {
