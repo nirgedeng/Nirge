@@ -52,7 +52,7 @@ namespace cli
                 _cli.Connected += OnConnected;
                 _cli.Closed += OnClosed;
                 _cli.Recved += OnRecvd;
-                _cli.Connect(new IPEndPoint(IPAddress.Parse(/*"10.12.236.197"*/"127.0.0.1"), 9527));
+                _cli.Connect(new IPEndPoint(IPAddress.Parse("10.12.236.197"/*"127.0.0.1"*/), 9527));
             }
 
             public void Destroy()
@@ -172,9 +172,9 @@ namespace cli
             }));
             _timer.Reg(CCall.Create(() =>
             {
-                for (var i = 0; i < 2; ++i)
+                for (var i = 0; i < 1; ++i)
                     Exec();
-            }), 10);
+            }), 50);
             _timer.Reg(CCall.Create(() =>
             {
                 foreach (var i in _clis)
