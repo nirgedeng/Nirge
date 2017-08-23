@@ -58,7 +58,7 @@ namespace ser
             }));
             _timer.Reg(CCall.Create(() =>
             {
-                for (int i = 0; i < 8; ++i)
+                for (int i = 0; i < 2; ++i)
                     Exec();
             }), 10);
             _tick.Ticked += (sender, e) =>

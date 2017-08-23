@@ -18,6 +18,7 @@ message gargs
     int32 a = 1;
     int32 b = 2;
     int32 c = 3;
+    repeated int32 d = 4;
 }
 
 message pargs
@@ -25,6 +26,7 @@ message pargs
     int32 a = 1;
     int32 b = 2;
     int32 c = 3;
+    repeated int32 d = 4;
 }
 
 message qargs
@@ -32,6 +34,7 @@ message qargs
     int32 a = 1;
     int32 b = 2;
     int32 c = 3;
+    repeated int32 d = 4;
 }
 
 message qret
@@ -39,20 +42,7 @@ message qret
     int32 a = 1;
     int32 b = 2;
     int32 c = 3;
-}
-
-message margs
-{
-    int32 a = 1;
-    int32 b = 2;
-    int32 c = 3;
-}
-
-message mret
-{
-    int32 a = 1;
-    int32 b = 2;
-    int32 c = 3;
+    repeated int32 d = 4;
 }
 
 service Game
@@ -83,47 +73,6 @@ service Game
     {
         option (RpcServiceCall).Uid = 5;
         option (RpcServiceCall).IsOneWay = false;
-    }
-    rpc m (margs) returns (mret)
-    {
-        option (RpcServiceCall).Uid = 6;
-        option (RpcServiceCall).IsOneWay = true;
-    }
-}
-
-service Web
-{
-    option (RpcService).Uid = 2;
-
-    rpc f (RpcCallArgsEmpty) returns (RpcCallArgsEmpty)
-    {
-        option (RpcServiceCall).Uid = 1;
-        option (RpcServiceCall).IsOneWay = true;
-    }
-    rpc g (gargs) returns (RpcCallArgsEmpty)
-    {
-        option (RpcServiceCall).Uid = 2;
-        option (RpcServiceCall).IsOneWay = true;
-    }
-    rpc h (RpcCallArgsEmpty) returns (RpcCallArgsEmpty)
-    {
-        option (RpcServiceCall).Uid = 3;
-        option (RpcServiceCall).IsOneWay = false;
-    }
-    rpc p (pargs) returns (RpcCallArgsEmpty)
-    {
-        option (RpcServiceCall).Uid = 4;
-        option (RpcServiceCall).IsOneWay = false;
-    }
-    rpc q (qargs) returns (qret)
-    {
-        option (RpcServiceCall).Uid = 5;
-        option (RpcServiceCall).IsOneWay = false;
-    }
-    rpc m (margs) returns (mret)
-    {
-        option (RpcServiceCall).Uid = 6;
-        option (RpcServiceCall).IsOneWay = true;
     }
 }
 

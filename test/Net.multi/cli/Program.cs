@@ -75,8 +75,7 @@ namespace cli
             {
                 await _caller.h();
                 await _caller.p(new pargs() { A = 4, B = 5, C = 6, });
-                var qret = _caller.q(new qargs() { A = 7, B = 8, C = 9, });
-                await qret;
+                await _caller.q(new qargs() { A = 7, B = 8, C = 9, });
             }
 
             void OnConnected(object sender, CDataEventArgs<CTcpClientConnectArgs> e)
@@ -84,9 +83,6 @@ namespace cli
                 CTcpClient cli = (CTcpClient)sender;
 
                 _log.InfoFormat("OnConnect {0}:{1}:{2}", e.Arg1.Result, e.Arg1.Error, e.Arg1.SocketError);
-
-                f();
-                g();
             }
 
             void OnClosed(object sender, CDataEventArgs<CTcpClientCloseArgs> e)
@@ -147,7 +143,7 @@ namespace cli
             _stream = new CRpcStream(new CRpcInputStream(), new CRpcOutputStream(new byte[1024], 0, 1024));
             _stubs = new CRpcCallStubProvider(new CRpcCallStubArgs(false, false), _log);
 
-            for (int i = 0; i < 1024; ++i)
+            for (int i = 0; i < 8192; ++i)
                 _clis.Add(new CClient(_log, _cache, _stream, _stubs));
 
             _task.Exec(CCall.Create(() =>
@@ -157,14 +153,14 @@ namespace cli
             }));
             _timer.Reg(CCall.Create(() =>
             {
-                for (var i = 0; i < 8; ++i)
+                for (var i = 0; i < 2; ++i)
                     Exec();
             }), 10);
             _timer.Reg(CCall.Create(() =>
             {
                 foreach (var i in _clis)
                     i.Call();
-            }), 16/*, 128*/);
+            }), 100/*, 128*/);
             _tick.Ticked += (sender, e) =>
             {
                 _task.Exec(CCall.Create(_timer.Exec, e));
