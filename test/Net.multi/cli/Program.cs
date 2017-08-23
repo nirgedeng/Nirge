@@ -26,12 +26,12 @@ namespace cli
             TcpClientCache _cache;
             CRpcStream _stream;
             CRpcCallStubProvider _stubs;
-            CRpcCommunicator _communicator;
-            CGameRpcCaller _caller;
-            CTcpClient _cli;
             gargs _gargs;
             pargs _pargs;
             qargs _qargs;
+            CTcpClient _cli;
+            CRpcCommunicator _communicator;
+            CGameRpcCaller _caller;
 
             public CClient(ILog log, TcpClientCache cache, CRpcStream stream, CRpcCallStubProvider stubs, gargs gargs, pargs pargs, qargs qargs)
             {
@@ -42,8 +42,8 @@ namespace cli
                 _gargs = gargs;
                 _pargs = pargs;
                 _qargs = qargs;
-                _cli = new CTcpClient(new CTcpClientArgs(), log, cache);
-                _communicator = new CClientRpcCommunicator(log, _cli);
+                _cli = new CTcpClient(new CTcpClientArgs(), _log, _cache);
+                _communicator = new CClientRpcCommunicator(_log, _cli);
                 _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromMinutes(1024f), false), log, stream, _communicator, stubs);
             }
 
