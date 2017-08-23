@@ -31,12 +31,14 @@ namespace Nirge.Core
         }
         public qret q(int channel, qargs args)
         {
-            return new qret()
+            var qret = new qret()
             {
                 A = args.C,
                 B = args.B,
                 C = args.A,
             };
+            qret.D.AddRange(args.D);
+            return qret;
         }
 
     }

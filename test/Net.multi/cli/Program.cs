@@ -68,14 +68,20 @@ namespace cli
             void f()
             {
                 _caller.f();
-                _caller.g(new gargs() { A = 1, B = 2, C = 3, });
+                var gargs = new gargs() { A = 1, B = 2, C = 3, };
+                gargs.D.AddRange(new int[] { 1, 2, 3, 4, });
+                _caller.g(gargs);
             }
 
             async void g()
             {
                 await _caller.h();
-                await _caller.p(new pargs() { A = 4, B = 5, C = 6, });
-                await _caller.q(new qargs() { A = 7, B = 8, C = 9, });
+                var pargs = new pargs() { A = 4, B = 5, C = 6, };
+                pargs.D.AddRange(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, });
+                await _caller.p(pargs);
+                var qargs = new qargs() { A = 7, B = 8, C = 9, };
+                qargs.D.AddRange(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
+                await _caller.q(qargs);
             }
 
             void OnConnected(object sender, CDataEventArgs<CTcpClientConnectArgs> e)
@@ -143,7 +149,7 @@ namespace cli
             _stream = new CRpcStream(new CRpcInputStream(), new CRpcOutputStream(new byte[1024], 0, 1024));
             _stubs = new CRpcCallStubProvider(new CRpcCallStubArgs(false, false), _log);
 
-            for (int i = 0; i < 8192; ++i)
+            for (int i = 0; i < 1024; ++i)
                 _clis.Add(new CClient(_log, _cache, _stream, _stubs));
 
             _task.Exec(CCall.Create(() =>
@@ -160,7 +166,7 @@ namespace cli
             {
                 foreach (var i in _clis)
                     i.Call();
-            }), 100/*, 128*/);
+            }), 200/*, 128*/);
             _tick.Ticked += (sender, e) =>
             {
                 _task.Exec(CCall.Create(_timer.Exec, e));
