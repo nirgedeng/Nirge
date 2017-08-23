@@ -44,7 +44,7 @@ namespace cli
                 _qargs = qargs;
                 _cli = new CTcpClient(new CTcpClientArgs(), _log, _cache);
                 _communicator = new CClientRpcCommunicator(_log, _cli);
-                _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromMinutes(1024f), false), log, stream, _communicator, stubs);
+                _caller = new CGameRpcCaller(new CRpcCallerArgs(TimeSpan.FromMinutes(8f), false), log, stream, _communicator, stubs);
             }
 
             public void Init()
@@ -112,14 +112,14 @@ namespace cli
                 case eRpcProto.RpcCallRsp:
                     {
                         _stream.Input.Buf.SetBuf(arg1, arg2 + 4, arg3 - 4);
-                        var rsp = RpcCallRsp.Parser.ParseFrom(_stream.Input.Stream);
+                        var rsp = RpcCallRsp.Parser.ParseFrom(_stream.Input.Buf);
                         _stubs.Exec(rsp);
                     }
                     break;
                 case eRpcProto.RpcCallExceptionRsp:
                     {
                         _stream.Input.Buf.SetBuf(arg1, arg2 + 4, arg3 - 4);
-                        var rsp = RpcCallExceptionRsp.Parser.ParseFrom(_stream.Input.Stream);
+                        var rsp = RpcCallExceptionRsp.Parser.ParseFrom(_stream.Input.Buf);
                         _stubs.Exec(rsp);
                     }
                     break;

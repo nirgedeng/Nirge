@@ -106,7 +106,7 @@ namespace ser
             case eRpcProto.RpcCallReq:
                 {
                     _stream.Input.Buf.SetBuf(arg2, arg3 + 4, arg4 - 4);
-                    var req = RpcCallReq.Parser.ParseFrom(_stream.Input.Stream);
+                    var req = RpcCallReq.Parser.ParseFrom(_stream.Input.Buf);
                     _callee.Call(cli, req);
                 }
                 break;
