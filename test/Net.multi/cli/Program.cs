@@ -162,7 +162,7 @@ namespace cli
             _qargs = new qargs() { A = 7, B = 8, C = 9, };
             _qargs.D.AddRange(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
 
-            for (int i = 0; i < 128; ++i)
+            for (int i = 0; i < 512; ++i)
                 _clis.Add(new CClient(_log, _cache, _stream, _stubs, _gargs, _pargs, _qargs));
 
             _task.Exec(CCall.Create(() =>
