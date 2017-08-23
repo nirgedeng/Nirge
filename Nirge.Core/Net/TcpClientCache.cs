@@ -17,7 +17,7 @@ namespace Nirge.Core
 {
     #region 
 
-    public class TcpClientCacheArgs
+    public class CTcpClientCacheArgs
     {
         int _2kSendCapacity;
         int _4kSendCapacity;
@@ -74,7 +74,7 @@ namespace Nirge.Core
             }
         }
 
-        public TcpClientCacheArgs(int k2SendCapacity = 0, int k4SendCapacity = 0, int k8SendCapacity = 0, int k2RecvCapacity = 0, int k4RecvCapacity = 0, int k8RecvCapacity = 0)
+        public CTcpClientCacheArgs(int k2SendCapacity = 0, int k4SendCapacity = 0, int k8SendCapacity = 0, int k2RecvCapacity = 0, int k4RecvCapacity = 0, int k8RecvCapacity = 0)
         {
             _2kSendCapacity = k2SendCapacity;
             _4kSendCapacity = k4SendCapacity;
@@ -125,13 +125,43 @@ namespace Nirge.Core
 
     #endregion
 
-    public class TcpClientCache : ITcpClientCache
+    public class CTcpClientCacheEmpty : ITcpClientCache
+    {
+        CTcpClientCacheArgs _args;
+
+        public CTcpClientCacheEmpty(CTcpClientCacheArgs args)
+        {
+            _args = args;
+        }
+
+        public void Clear()
+        {
+        }
+
+        public byte[] FetchSendBuf(int count)
+        {
+            return new byte[count];
+        }
+        public void BackSendBuf(byte[] buf)
+        {
+        }
+
+        public byte[] FetchRecvBuf(int count)
+        {
+            return new byte[count];
+        }
+        public void BackRecvBuf(byte[] buf)
+        {
+        }
+    }
+
+    public class CTcpClientCache : ITcpClientCache
     {
         const int g2k = 2048;
         const int g4k = 4096;
         const int g8k = 8192;
 
-        TcpClientCacheArgs _args;
+        CTcpClientCacheArgs _args;
 
         ConcurrentQueue<byte[]> _2kSends;
         ConcurrentQueue<byte[]> _4kSends;
@@ -141,7 +171,7 @@ namespace Nirge.Core
         ConcurrentQueue<byte[]> _4kRecvs;
         ConcurrentQueue<byte[]> _8kRecvs;
 
-        public TcpClientCache(TcpClientCacheArgs args)
+        public CTcpClientCache(CTcpClientCacheArgs args)
         {
             _args = args;
 

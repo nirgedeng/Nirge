@@ -208,7 +208,7 @@ namespace Nirge.Core
 
         public CTcpClient(ILog log)
             :
-            this(new CTcpClientArgs(), log, new TcpClientCache(new TcpClientCacheArgs()))
+            this(new CTcpClientArgs(), log, new CTcpClientCacheEmpty(new CTcpClientCacheArgs()))
         {
         }
 

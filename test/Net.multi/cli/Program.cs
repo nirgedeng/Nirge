@@ -23,7 +23,7 @@ namespace cli
         class CClient
         {
             ILog _log;
-            TcpClientCache _cache;
+            ITcpClientCache _cache;
             CRpcStream _stream;
             CRpcCallStubProvider _stubs;
             gargs _gargs;
@@ -33,7 +33,7 @@ namespace cli
             CRpcCommunicator _communicator;
             CGameRpcCaller _caller;
 
-            public CClient(ILog log, TcpClientCache cache, CRpcStream stream, CRpcCallStubProvider stubs, gargs gargs, pargs pargs, qargs qargs)
+            public CClient(ILog log, ITcpClientCache cache, CRpcStream stream, CRpcCallStubProvider stubs, gargs gargs, pargs pargs, qargs qargs)
             {
                 _log = log;
                 _cache = cache;
@@ -132,7 +132,7 @@ namespace cli
         CTaskTimer _timer;
         CTicker _tick;
 
-        TcpClientCache _cache;
+        ITcpClientCache _cache;
         List<CClient> _clis;
 
         CRpcStream _stream;
@@ -149,7 +149,7 @@ namespace cli
             _timer = new CTaskTimer(_task, _log);
             _tick = new CTicker();
 
-            _cache = new TcpClientCache(new TcpClientCacheArgs(25600, 12800, 6400, 25600, 12800, 6400));
+            _cache = new CTcpClientCacheEmpty(new CTcpClientCacheArgs(25600, 12800, 6400, 25600, 12800, 6400));
             _clis = new List<CClient>();
 
             _stream = new CRpcStream(new CRpcInputStream(), new CRpcOutputStream(new byte[1024], 0, 1024));
