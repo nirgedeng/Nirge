@@ -138,21 +138,31 @@ namespace Nirge.Core
         {
         }
 
+        #region 
+
         public byte[] FetchSendBuf(int count)
         {
             return new byte[count];
         }
+
         public void BackSendBuf(byte[] buf)
         {
         }
+
+        #endregion
+
+        #region 
 
         public byte[] FetchRecvBuf(int count)
         {
             return new byte[count];
         }
+
         public void BackRecvBuf(byte[] buf)
         {
         }
+
+        #endregion
     }
 
     public class CTcpClientCache : ITcpClientCache
