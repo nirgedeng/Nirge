@@ -517,9 +517,7 @@ namespace Nirge.Core
         {
             try
             {
-                using (_cli)
-                {
-                }
+                _cli.Close();
             }
             catch
             {
