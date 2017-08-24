@@ -4,12 +4,8 @@
 ------------------------------------------------------------------*/
 
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.Threading;
 using log4net.Config;
 using System.Linq;
-using System.Text;
 using Nirge.Core;
 using System.Net;
 using System.IO;
@@ -154,6 +150,7 @@ namespace cli
         CTasker _task;
         CTaskTimer _timer;
         CTicker _tick;
+        int _call;
 
         ITcpClientCache _cache;
         List<CClient> _clis;
@@ -198,7 +195,7 @@ namespace cli
                 for (var i = 0; i < 1; ++i)
                     Exec();
             }), 50);
-            _timer.Reg(CCall.Create(() =>
+            _call = _timer.Reg(CCall.Create(() =>
             {
                 foreach (var i in _clis)
                     i.Call();
@@ -209,29 +206,35 @@ namespace cli
             };
 
             _stubs.Init();
-            _timer.Init();
             _task.Init();
             _tick.Init();
+            _timer.Init();
         }
 
         public void Destroy()
         {
-            _timer.Destroy();
+            _task.Exec(CCall.Create(() =>
+            {
+                _stubs.Destroy();
+                _timer.Unreg(_call);
+                _stream.Dispose();
+            }));
 
             _task.Exec(CCall.Create(() =>
             {
                 foreach (var i in _clis)
                     i.Destroy();
             }));
-            while (_clis.All(e => e.Cli.State == eTcpClientState.Closed))
-                break;
+            for (; ; )
+            {
+                if (_clis.All(e => e.Cli.State == eTcpClientState.Closed))
+                    break;
+            }
 
             _task.Exec(CCall.Create(() =>
             {
-                _stubs.Destroy();
-                _stream.Dispose();
+                _timer.Destroy();
             }));
-
             _tick.Destroy();
             _task.Destroy();
         }
