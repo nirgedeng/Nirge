@@ -73,6 +73,8 @@ namespace ser
 
         public void Destroy()
         {
+            _timer.Destroy();
+
             _task.Exec(CCall.Create(() =>
             {
                 _ser.Close();
@@ -83,7 +85,6 @@ namespace ser
             _stream.Dispose();
             _tick.Destroy();
             _task.Destroy();
-            _timer.Destroy();
         }
 
         void Exec()

@@ -84,9 +84,27 @@ namespace cli
 
             async void g()
             {
-                await _caller.h();
-                await _caller.p(_pargs);
-                await _caller.q(_qargs);
+                try
+                {
+                    await _caller.h();
+                }
+                catch
+                {
+                }
+                try
+                {
+                    await _caller.p(_pargs);
+                }
+                catch
+                {
+                }
+                try
+                {
+                    await _caller.q(_qargs);
+                }
+                catch
+                {
+                }
             }
 
             void OnConnected(object sender, CDataEventArgs<CTcpClientConnectArgs> e)
@@ -198,6 +216,8 @@ namespace cli
 
         public void Destroy()
         {
+            _timer.Destroy();
+
             _task.Exec(CCall.Create(() =>
             {
                 foreach (var i in _clis)
@@ -214,7 +234,6 @@ namespace cli
 
             _tick.Destroy();
             _task.Destroy();
-            _timer.Destroy();
         }
 
         void Exec()
