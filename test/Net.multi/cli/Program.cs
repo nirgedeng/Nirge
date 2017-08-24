@@ -33,6 +33,11 @@ namespace cli
             CRpcCommunicator _communicator;
             CGameRpcCaller _caller;
 
+            public CTcpClient Cli
+            {
+                get => _cli;
+            }
+
             public CClient(ILog log, ITcpClientCache cache, CRpcStream stream, CRpcCallStubProvider stubs, gargs gargs, pargs pargs, qargs qargs)
             {
                 _log = log;
@@ -162,7 +167,7 @@ namespace cli
             _qargs = new qargs() { A = 7, B = 8, C = 9, };
             _qargs.D.AddRange(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
 
-            for (int i = 0; i < 512; ++i)
+            for (int i = 0; i < 1024; ++i)
                 _clis.Add(new CClient(_log, _cache, _stream, _stubs, _gargs, _pargs, _qargs));
 
             _task.Exec(CCall.Create(() =>
@@ -186,8 +191,8 @@ namespace cli
             };
 
             _stubs.Init();
-            _task.Init();
             _timer.Init();
+            _task.Init();
             _tick.Init();
         }
 
@@ -195,19 +200,21 @@ namespace cli
         {
             _task.Exec(CCall.Create(() =>
             {
+                foreach (var i in _clis)
+                    i.Destroy();
+            }));
+            while (_clis.All(e => e.Cli.State == eTcpClientState.Closed))
+                break;
+
+            _task.Exec(CCall.Create(() =>
+            {
                 _stubs.Destroy();
                 _stream.Dispose();
             }));
 
-            _task.Exec(CCall.Create(() =>
-            {
-                foreach (var i in _clis)
-                    i.Destroy();
-            }));
-
+            _tick.Destroy();
             _task.Destroy();
             _timer.Destroy();
-            _tick.Destroy();
         }
 
         void Exec()

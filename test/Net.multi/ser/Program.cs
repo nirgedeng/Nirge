@@ -66,8 +66,8 @@ namespace ser
                 _task.Exec(CCall.Create(_timer.Exec, e));
             };
 
-            _task.Init();
             _timer.Init();
+            _task.Init();
             _tick.Init();
         }
 
@@ -75,17 +75,15 @@ namespace ser
         {
             _task.Exec(CCall.Create(() =>
             {
-                _stream.Dispose();
-            }));
-
-            _task.Exec(CCall.Create(() =>
-            {
                 _ser.Close();
             }));
+            while (_ser.State == eTcpServerState.Closed)
+                break;
 
+            _stream.Dispose();
+            _tick.Destroy();
             _task.Destroy();
             _timer.Destroy();
-            _tick.Destroy();
         }
 
         void Exec()
