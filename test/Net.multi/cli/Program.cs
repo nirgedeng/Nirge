@@ -194,7 +194,7 @@ namespace cli
             {
                 for (var i = 0; i < 1; ++i)
                     Exec();
-            }), 50);
+            }), 40);
             _call = _timer.Reg(CCall.Create(() =>
             {
                 foreach (var i in _clis)

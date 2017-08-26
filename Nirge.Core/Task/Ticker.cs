@@ -15,21 +15,23 @@ namespace Nirge.Core
 {
     public class CTicker
     {
+        public const int gInterval = 20;
+
         Thread _tick;
         int _interval;
         bool _quit;
 
         public event Action<object, int> Ticked;
 
-        public CTicker(int interval = 0)
+        CTicker(int interval = 0)
         {
             _interval = interval;
             if (_interval == 0)
-                _interval = 10;
+                _interval = 20;
             else if (_interval < 0)
-                _interval = 10;
-            else if (_interval > 10)
-                _interval = 10;
+                _interval = 20;
+            else if (_interval > 20)
+                _interval = 20;
 
             _tick = new Thread(() =>
             {
@@ -43,6 +45,12 @@ namespace Nirge.Core
             _tick.IsBackground = true;
 
             _quit = false;
+        }
+
+        public CTicker()
+            :
+            this(gInterval)
+        {
         }
 
         public void Init()

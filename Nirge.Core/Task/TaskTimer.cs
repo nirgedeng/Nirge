@@ -18,8 +18,6 @@ namespace Nirge.Core
 {
     public class CTaskTimer
     {
-        const int gIntervalMin = 10;
-
         class CTimer
         {
             public ITask _task;
@@ -58,8 +56,7 @@ namespace Nirge.Core
             if (task == null)
                 return -1;
 
-            if (interval < gIntervalMin)
-                interval = gIntervalMin;
+            Trace.Assert(interval / CTicker.gInterval > 0 && interval % CTicker.gInterval == 0);
 
             var timerId = ++_timerId;
             _timers.Add(timerId, new CTimer()
@@ -87,7 +84,6 @@ namespace Nirge.Core
 
         public void Exec(int tick)
         {
-            Trace.Assert(tick > 0 && tick <= gIntervalMin, string.Format("{0} > 0 && {0} <= gIntervalMin", tick));
             eExec(tick);
         }
 

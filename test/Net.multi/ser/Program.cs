@@ -60,7 +60,7 @@ namespace ser
             {
                 for (var i = 0; i < 1; ++i)
                     Exec();
-            }), 50);
+            }), 40);
             _tick.Ticked += (sender, e) =>
             {
                 _task.Exec(CCall.Create(_timer.Exec, e));
