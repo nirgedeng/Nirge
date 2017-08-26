@@ -65,11 +65,11 @@ namespace cli
             {
                 for (var i = 0; i < 8; ++i)
                     Exec();
-            }), 10);
+            }), 40);
             _timer.Reg(CCall.Create(() =>
             {
                 h();
-            }), 16/*, 128*/);
+            }), 20/*, 128*/);
             _tick.Ticked += (sender, e) =>
             {
                 _task.Exec(CCall.Create(_timer.Exec, e));
