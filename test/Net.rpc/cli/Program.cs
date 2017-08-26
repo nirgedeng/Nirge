@@ -25,7 +25,7 @@ namespace cli
         CTaskTimer _timer;
         CTicker _tick;
 
-        TcpClientCache _cache;
+        ITcpClientCache _cache;
         CTcpClient _cli;
 
         CRpcCommunicator _communicator;
@@ -43,7 +43,7 @@ namespace cli
             _timer = new CTaskTimer(_task, _log);
             _tick = new CTicker();
 
-            _cache = new TcpClientCache(new TcpClientCacheArgs(25600, 12800, 6400, 25600, 12800, 6400));
+            _cache = new CTcpClientCacheEmpty(new CTcpClientCacheArgs(25600, 12800, 6400, 25600, 12800, 6400));
             _cli = new CTcpClient(new CTcpClientArgs(), _log, _cache);
 
             _communicator = new CClientRpcCommunicator(_log, _cli);
