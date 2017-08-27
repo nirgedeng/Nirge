@@ -150,7 +150,7 @@ namespace Nirge.Core
         public byte[] ToArray()
         {
             var e = new byte[Count];
-            Buffer.BlockCopy(_buf, _l, e, 0, Count);
+            ArrayUtils.Copy(_buf, _l, e, 0, Count);
             return e;
         }
 
@@ -166,7 +166,7 @@ namespace Nirge.Core
                 r = _r;
             }
 
-            Buffer.BlockCopy(_buf, _pos, buf, offset, count);
+            ArrayUtils.Copy(_buf, _pos, buf, offset, count);
             _pos = r;
             return count;
         }
@@ -192,7 +192,7 @@ namespace Nirge.Core
             }
             else
             {
-                Buffer.BlockCopy(buf, offset, _buf, _pos, len);
+                ArrayUtils.Copy(buf, offset, _buf, _pos, len);
                 _pos = r;
             }
         }

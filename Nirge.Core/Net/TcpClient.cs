@@ -543,8 +543,8 @@ namespace Nirge.Core
             case eTcpClientState.Connected:
                 var pkg = _cache.FetchSendBuf(pkgLen);
                 var len = BitConverter.GetBytes(count);
-                Buffer.BlockCopy(len, 0, pkg, 0, _pkgLen.Length);
-                Buffer.BlockCopy(buf, offset, pkg, _pkgLen.Length, count);
+                ArrayUtils.Copy(len, 0, pkg, 0, _pkgLen.Length);
+                ArrayUtils.Copy(buf, offset, pkg, _pkgLen.Length, count);
 
                 if (_sending)
                 {

@@ -76,7 +76,7 @@ namespace Nirge.Core
 
             if (_head < _tail)
             {
-                Buffer.BlockCopy(buf, offset, _buf, _head, count);
+                ArrayUtils.Copy(buf, offset, _buf, _head, count);
                 _head += count;
             }
             else
@@ -85,13 +85,13 @@ namespace Nirge.Core
                 if (p < count)
                 {
                     var q = count - p;
-                    Buffer.BlockCopy(buf, offset, _buf, _head, p);
-                    Buffer.BlockCopy(buf, offset + p, _buf, 0, q);
+                    ArrayUtils.Copy(buf, offset, _buf, _head, p);
+                    ArrayUtils.Copy(buf, offset + p, _buf, 0, q);
                     _head = q;
                 }
                 else
                 {
-                    Buffer.BlockCopy(buf, offset, _buf, _head, count);
+                    ArrayUtils.Copy(buf, offset, _buf, _head, count);
                     _head += count;
                 }
             }
@@ -135,7 +135,7 @@ namespace Nirge.Core
         {
             if (_head > tail)
             {
-                Buffer.BlockCopy(_buf, tail, buf, offset, count);
+                ArrayUtils.Copy(_buf, tail, buf, offset, count);
                 tail += count;
             }
             else
@@ -144,13 +144,13 @@ namespace Nirge.Core
                 if (p < count)
                 {
                     var q = count - p;
-                    Buffer.BlockCopy(_buf, tail, buf, offset, p);
-                    Buffer.BlockCopy(_buf, 0, buf, offset + p, q);
+                    ArrayUtils.Copy(_buf, tail, buf, offset, p);
+                    ArrayUtils.Copy(_buf, 0, buf, offset + p, q);
                     tail = q;
                 }
                 else
                 {
-                    Buffer.BlockCopy(_buf, tail, buf, offset, count);
+                    ArrayUtils.Copy(_buf, tail, buf, offset, count);
                     tail += count;
                 }
             }
