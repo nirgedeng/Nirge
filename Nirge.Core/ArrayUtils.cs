@@ -15,8 +15,6 @@ namespace Nirge.Core
     {
         public static void Copy(byte[] src, int srcOffset, byte[] dst, int dstOffset, int count)
         {
-            if (count == 0)
-                return;
             if (src == null)
                 throw new ArgumentNullException();
             if (srcOffset < 0)
@@ -25,8 +23,12 @@ namespace Nirge.Core
                 throw new ArgumentNullException();
             if (dstOffset < 0)
                 throw new ArgumentOutOfRangeException();
+            if (count < 0)
+                throw new ArgumentOutOfRangeException();
 
-            if (count > 12)
+            if (count == 0)
+                return;
+            else if (count > 12)
                 Buffer.BlockCopy(src, srcOffset, dst, dstOffset, count);
             else
             {
