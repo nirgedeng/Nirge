@@ -65,10 +65,7 @@ namespace Nirge.Core
 
         public int TasksCount
         {
-            get
-            {
-                return _tasks.Count;
-            }
+            get => _tasks.Count;
         }
 
         CTasker(CTaskerArgs args, ILog log)
@@ -137,31 +134,28 @@ namespace Nirge.Core
         }
         void Exec()
         {
-            lock (_tasks)
+            while (true)
             {
-                while (true)
+                if (_tasks.TryDequeue(out var task))
                 {
-                    if (_tasks.TryDequeue(out var task))
+                    try
                     {
-                        try
-                        {
-                            task.Exec();
-                        }
-                        catch (Exception exception)
-                        {
-                            _log.Error(string.Format("[Task]Exec exception, type:\"{0}\""
-                                , task.GetType()), exception);
-                        }
+                        task.Exec();
                     }
-                    else
+                    catch (Exception exception)
                     {
-                        if (_tasks.Count == 0)
-                        {
-                            if (_quit)
-                                break;
-                            else
-                                Thread.Sleep(1);
-                        }
+                        _log.Error(string.Format("[Task]Exec exception, type:\"{0}\""
+                            , task.GetType()), exception);
+                    }
+                }
+                else
+                {
+                    if (_tasks.Count == 0)
+                    {
+                        if (_quit)
+                            break;
+                        else
+                            Thread.Sleep(1);
                     }
                 }
             }
