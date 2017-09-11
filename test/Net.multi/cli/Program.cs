@@ -3,7 +3,10 @@
     Author      : 邓晓峰
 ------------------------------------------------------------------*/
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
+using System.Reflection;
 using log4net.Config;
 using System.Linq;
 using Nirge.Core;
@@ -18,6 +21,7 @@ namespace cli
     {
         class CClient
         {
+            IConfigurationRoot _cfg;
             ILog _log;
             ITcpClientCache _cache;
             CRpcStream _stream;
@@ -34,8 +38,9 @@ namespace cli
                 get => _cli;
             }
 
-            public CClient(ILog log, ITcpClientCache cache, CRpcStream stream, CRpcCallStubProvider stubs, gargs gargs, pargs pargs, qargs qargs)
+            public CClient(IConfigurationRoot cfg, ILog log, ITcpClientCache cache, CRpcStream stream, CRpcCallStubProvider stubs, gargs gargs, pargs pargs, qargs qargs)
             {
+                _cfg = cfg;
                 _log = log;
                 _cache = cache;
                 _stream = stream;
@@ -53,7 +58,7 @@ namespace cli
                 _cli.Connected += OnConnected;
                 _cli.Closed += OnClosed;
                 _cli.Recved += OnRecvd;
-                _cli.Connect(new IPEndPoint(IPAddress.Parse(/*"10.12.236.197"*/"127.0.0.1"), 9527));
+                _cli.Connect(new IPEndPoint(IPAddress.Parse(_cfg.GetValue<string>("Addr", "127.0.0.1")), 9527));
             }
 
             public void Destroy()
@@ -146,6 +151,7 @@ namespace cli
             }
         }
 
+        IConfigurationRoot _cfg;
         ILog _log;
         CTasker _task;
         CTaskTimer _timer;
@@ -161,8 +167,9 @@ namespace cli
         pargs _pargs;
         qargs _qargs;
 
-        public void Init()
+        public void Init(IConfigurationRoot cfg)
         {
+            _cfg = cfg;
             _log = LogManager.Exists("cli", "all");
 
             _task = new CTasker(_log);
@@ -183,7 +190,7 @@ namespace cli
             _qargs.D.AddRange(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
 
             for (int i = 0; i < 1024; ++i)
-                _clis.Add(new CClient(_log, _cache, _stream, _stubs, _gargs, _pargs, _qargs));
+                _clis.Add(new CClient(_cfg, _log, _cache, _stream, _stubs, _gargs, _pargs, _qargs));
 
             _task.Exec(CCall.Create(() =>
             {
@@ -254,7 +261,7 @@ namespace cli
             XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.multi.log.cli.xml"));
 
             var cli = new CCli();
-            cli.Init();
+            cli.Init(new ConfigurationBuilder().AddXmlFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "../../Net.multi.cfg.cli.xml")).Build());
             Console.ReadKey();
             cli.Destroy();
         }
