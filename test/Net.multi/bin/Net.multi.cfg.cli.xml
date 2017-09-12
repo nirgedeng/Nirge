@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+    <Clis>512</Clis>
     <!--<Addr>10.12.236.197</Addr>-->
     <Addr>127.0.0.1</Addr>
 </configuration>
