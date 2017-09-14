@@ -5,14 +5,15 @@
 
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using Google.Protobuf.Reflection;
 using System.Reflection;
 using Google.Protobuf;
 using OfficeOpenXml;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System;
 using log4net;
+using System;
 
 namespace Nirge.Core
 {
@@ -72,11 +73,13 @@ namespace Nirge.Core
         }
 
         ILog _log;
+        MessageDescriptor _descriptor;
         Dictionary<int, T> _datas;
 
-        public CDataAsset(ILog log)
+        public CDataAsset(ILog log, MessageDescriptor descriptor)
         {
             _log = log;
+            _descriptor = descriptor;
             _datas = new Dictionary<int, T>(128);
         }
 
@@ -115,6 +118,48 @@ namespace Nirge.Core
                 cols.Add(new CDataColumn(i, name));
             }
 
+            var a = cols.Select(x =>
+            {
+                var v = x.Name.IndexOf('.');
+                if (v == -1)
+                    return x.Name;
+                else
+                {
+                    return x.Name.Substring(0, x.Name.Length - v);
+                }
+            }).Distinct().ToArray();
+
+            if (!CheckFields(a, _descriptor.Fields.InFieldNumberOrder()))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        bool CheckFields(string[] cols, IList<FieldDescriptor> fields)
+        {
+            foreach (var i in fields.Where(x => cols.FirstOrDefault(y => string.Compare(y, x.Name, true) == 0) != null))
+            {
+                if (i.IsMap)
+                    return false;
+
+                switch (i.FieldType)
+                {
+                case FieldType.Message:
+                    if (!CheckFields(cols, i.MessageType.Fields.InFieldNumberOrder()))
+                        return false;
+                    break;
+                case FieldType.Bool:
+                case FieldType.Int32:
+                case FieldType.Float:
+                case FieldType.Int64:
+                case FieldType.String:
+                    break;
+                default:
+                    return false;
+                }
+            }
             return true;
         }
     }
