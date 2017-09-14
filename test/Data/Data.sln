@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data.csproj", "{B4023BD0-8DA3-4203-8945-B09B1035B004}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nirge.Core", "..\..\Nirge.Core\Nirge.Core.csproj", "{87B47077-6C7B-4EF4-A298-C5C13BDF7D97}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4023BD0-8DA3-4203-8945-B09B1035B004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4023BD0-8DA3-4203-8945-B09B1035B004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4023BD0-8DA3-4203-8945-B09B1035B004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4023BD0-8DA3-4203-8945-B09B1035B004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87B47077-6C7B-4EF4-A298-C5C13BDF7D97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87B47077-6C7B-4EF4-A298-C5C13BDF7D97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87B47077-6C7B-4EF4-A298-C5C13BDF7D97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87B47077-6C7B-4EF4-A298-C5C13BDF7D97}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9179748F-4C2F-4B3F-8D9F-71E6F8F98CD6}
+	EndGlobalSection
+EndGlobal

@@ -3,10 +3,7 @@
     Author      : 邓晓峰
 ------------------------------------------------------------------*/
 
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System;
 
 namespace Nirge.Core

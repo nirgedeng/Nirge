@@ -4,12 +4,9 @@
 ------------------------------------------------------------------*/
 
 using Google.Protobuf.Reflection;
-using System.Reflection;
 using System.Threading;
 using Google.Protobuf;
 using System.Linq;
-using System.Text;
-using System.IO;
 using log4net;
 using System;
 

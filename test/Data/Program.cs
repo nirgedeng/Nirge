@@ -3,10 +3,15 @@
     Author      : 邓晓峰
 ------------------------------------------------------------------*/
 
-using System.Threading;
-using log4net;
 using System;
+using Nirge.Core;
 
-namespace Nirge.Core
+namespace Data
 {
+    class Program
+    {
+        static void Main(string[] args)
+        {
+        }
+    }
 }

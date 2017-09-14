@@ -8,6 +8,8 @@ import "google/protobuf/descriptor.proto";
 
 import "Proto.proto";
 
+//----------------------------------------------------------------------------------------
+
 package Nirge.Core;
 option csharp_namespace = "Nirge.Core";
 
