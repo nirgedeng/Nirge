@@ -86,6 +86,7 @@ namespace Nirge.Core
 
             if (sheet.Dimension.Rows < (int)eDataRow.Pre)
             {
+                _log.ErrorFormat("[Data]CDataAsset.Load err, rows:\"{0}\", cols:\"{0}\"", sheet.Dimension.Rows, sheet.Dimension.Columns);
                 return false;
             }
 
@@ -108,54 +109,13 @@ namespace Nirge.Core
 
                 if (string.IsNullOrEmpty(name))
                 {
+                    _log.ErrorFormat("[Data]CDataAsset.Load !name, col:\"{0}\"", i);
                     continue;
                 }
 
                 cols.Add(new CDataColumn(i, name));
             }
 
-            var a = cols.Select(x =>
-            {
-                var v = x.Name.IndexOf('.');
-                if (v == -1)
-                    return x.Name;
-                else
-                {
-                    return x.Name.Substring(0, x.Name.Length - v);
-                }
-            }).Distinct().ToArray();
-
-            if (!CheckFields(a, _descriptor.Fields.InFieldNumberOrder()))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        bool CheckFields(string[] cols, IList<FieldDescriptor> fields)
-        {
-            foreach (var i in fields.Where(x => cols.FirstOrDefault(y => string.Compare(y, x.Name, true) == 0) != null))
-            {
-                if (i.IsMap)
-                    return false;
-
-                switch (i.FieldType)
-                {
-                case FieldType.Message:
-                    if (!CheckFields(cols, i.MessageType.Fields.InFieldNumberOrder()))
-                        return false;
-                    break;
-                case FieldType.Bool:
-                case FieldType.Int32:
-                case FieldType.Float:
-                case FieldType.Int64:
-                case FieldType.String:
-                    break;
-                default:
-                    return false;
-                }
-            }
             return true;
         }
     }
