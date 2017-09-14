@@ -95,7 +95,7 @@ namespace Nirge.Core
                 return true;
 
             var cols = new List<CDataColumn>(sheet.Dimension.Columns);
-            for (int i = 1; i <= sheet.Dimension.Columns; ++i)
+            for (int i = 1, len = sheet.Dimension.Columns; i <= len; ++i)
             {
                 var name = "";
 
