@@ -13,15 +13,25 @@ option csharp_namespace = "Nirge.Core";
 
 //----------------------------------------------------------------------------------------
 
+message DataOption
+{
+    int32 Open = 1;
+}
+
 message DataIdOption
 {
     int32 Order = 1;
     int32 Bits = 2;
 }
 
+extend google.protobuf.MessageOptions 
+{
+    DataOption Data = 60101;
+}
+
 extend google.protobuf.FieldOptions 
 {
-    DataIdOption DataId = 60101;
+    DataIdOption DataId = 60102;
 }
 
 //----------------------------------------------------------------------------------------

@@ -23,13 +23,16 @@ namespace Nirge.Core {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg9EYXRhUHJvdG8ucHJvdG8SCk5pcmdlLkNvcmUaIGdvb2dsZS9wcm90b2J1",
-            "Zi9kZXNjcmlwdG9yLnByb3RvIisKDERhdGFJZE9wdGlvbhINCgVPcmRlchgB",
-            "IAEoBRIMCgRCaXRzGAIgASgFOkkKBkRhdGFJZBIdLmdvb2dsZS5wcm90b2J1",
-            "Zi5GaWVsZE9wdGlvbnMYxdUDIAEoCzIYLk5pcmdlLkNvcmUuRGF0YUlkT3B0",
-            "aW9uQg2qAgpOaXJnZS5Db3JlYgZwcm90bzM="));
+            "Zi9kZXNjcmlwdG9yLnByb3RvIhoKCkRhdGFPcHRpb24SDAoET3BlbhgBIAEo",
+            "BSIrCgxEYXRhSWRPcHRpb24SDQoFT3JkZXIYASABKAUSDAoEQml0cxgCIAEo",
+            "BTpHCgREYXRhEh8uZ29vZ2xlLnByb3RvYnVmLk1lc3NhZ2VPcHRpb25zGMXV",
+            "AyABKAsyFi5OaXJnZS5Db3JlLkRhdGFPcHRpb246SQoGRGF0YUlkEh0uZ29v",
+            "Z2xlLnByb3RvYnVmLkZpZWxkT3B0aW9ucxjG1QMgASgLMhguTmlyZ2UuQ29y",
+            "ZS5EYXRhSWRPcHRpb25CDaoCCk5pcmdlLkNvcmViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { pbr::FileDescriptor.DescriptorProtoFileDescriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.DataOption), global::Nirge.Core.DataOption.Parser, new[]{ "Open" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.DataIdOption), global::Nirge.Core.DataIdOption.Parser, new[]{ "Order", "Bits" }, null, null, null)
           }));
     }
@@ -37,6 +40,123 @@ namespace Nirge.Core {
 
   }
   #region Messages
+  public sealed partial class DataOption : pb::IMessage<DataOption> {
+    private static readonly pb::MessageParser<DataOption> _parser = new pb::MessageParser<DataOption>(() => new DataOption());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<DataOption> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Nirge.Core.DataProtoReflection.Descriptor.MessageTypes[0]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DataOption() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DataOption(DataOption other) : this() {
+      open_ = other.open_;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public DataOption Clone() {
+      return new DataOption(this);
+    }
+
+    /// <summary>Field number for the "Open" field.</summary>
+    public const int OpenFieldNumber = 1;
+    private int open_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Open {
+      get { return open_; }
+      set {
+        open_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as DataOption);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(DataOption other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Open != other.Open) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Open != 0) hash ^= Open.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Open != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Open);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Open != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Open);
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(DataOption other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Open != 0) {
+        Open = other.Open;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Open = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class DataIdOption : pb::IMessage<DataIdOption> {
     private static readonly pb::MessageParser<DataIdOption> _parser = new pb::MessageParser<DataIdOption>(() => new DataIdOption());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -44,7 +164,7 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.DataProtoReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Nirge.Core.DataProtoReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

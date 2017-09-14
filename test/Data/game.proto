@@ -24,6 +24,7 @@ message b
 
 message a
 {
+    option (Data).Open = 1;
     int32 f = 1 [(DataId).Order = 1, (DataId).Bits = 16];
     int32 g = 2 [(DataId).Order = 2, (DataId).Bits = 16];
     int64 h = 3;
