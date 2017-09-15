@@ -23,7 +23,9 @@ namespace Data
             using (var xls = new ExcelPackage(File.OpenRead(@"../../a.xlsx")))
             {
                 var ds = new CDataAsset<a>(LogManager.Exists("data", "all"), a.Descriptor);
-                ds.Load(xls.Workbook.Worksheets[1]);
+                Console.WriteLine(ds.Count);
+                foreach (var i in ds)
+                    Console.WriteLine(i);
             }
         }
     }

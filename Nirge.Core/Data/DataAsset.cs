@@ -14,31 +14,18 @@ using System;
 
 namespace Nirge.Core
 {
-    public class CData
+    public abstract class CData
     {
-        protected int _uid;
+        #region 
 
-        public int Uid
-        {
-            get => _uid;
-        }
-
-        public virtual string Uname
-        {
-            get => "";
-        }
-    }
-
-    public class CDataAsset<T> : IEnumerable<T>, IEnumerable where T : CData, IMessage, new()
-    {
-        enum eDataRow
+        public enum eRow
         {
             Name = 1,
             Pre = 1,
             Data = 2,
         }
 
-        class CXlsCol
+        public class CXlsCol
         {
             int _col;
             string _name;
@@ -60,7 +47,7 @@ namespace Nirge.Core
             }
         }
 
-        class CPrimitiveCol
+        public class CPrimitiveCol
         {
             FieldDescriptor _cls;
             CXlsCol _xls;
@@ -82,25 +69,76 @@ namespace Nirge.Core
             }
         }
 
+        #endregion
+
+        protected int _uid;
+
+        public int Uid
+        {
+            get => _uid;
+            internal set => _uid = value;
+        }
+
+        public virtual string Uname
+        {
+            get => "";
+        }
+
+        public abstract int CombineUid();
+
+        T Read<T>(ILog log, MessageDescriptor descriptor, ExcelWorksheet sheet, int row, CPrimitiveCol col)
+        {
+            try
+            {
+                return sheet.Cells[row, col.Xls.Col].GetValue<T>();
+            }
+            catch (Exception exception)
+            {
+                log.Error(string.Format("[Data]CData.Read !, cls:\"{0}\", xls:\"{1}\", row:\"{2}\", col:\"{3},{4},{5}\""
+                    , descriptor.Name
+                    , sheet.Name
+                    , row
+                    , col.Cls.Name
+                    , col.Xls.Col
+                    , col.Xls.Name), exception);
+                return default(T);
+            }
+        }
+
+        protected T ReadPrimitive<T>(ILog log, MessageDescriptor descriptor, ExcelWorksheet sheet, int row, int col, Dictionary<int, CPrimitiveCol> cols)
+        {
+            if (cols.TryGetValue(col, out var e))
+                return Read<T>(log, descriptor, sheet, row, e);
+            else
+                return default(T);
+        }
+
+        public virtual void ReadPrimitive(ILog log, MessageDescriptor descriptor, ExcelWorksheet sheet, int row, Dictionary<int, CPrimitiveCol> cols)
+        {
+        }
+    }
+
+    public class CDataAsset<T> : IEnumerable<T>, IEnumerable where T : CData, IMessage, new()
+    {
         ILog _log;
         MessageDescriptor _descriptor;
-        Dictionary<int, T> _datas;
+        Dictionary<int, T> _vals;
 
         public int Count
         {
-            get => _datas.Count;
+            get => _vals.Count;
         }
 
         public CDataAsset(ILog log, MessageDescriptor descriptor)
         {
             _log = log;
             _descriptor = descriptor;
-            _datas = new Dictionary<int, T>(128);
+            _vals = new Dictionary<int, T>(128);
         }
 
         public T Get(int id)
         {
-            _datas.TryGetValue(id, out var e);
+            _vals.TryGetValue(id, out var e);
             return e;
         }
 
@@ -109,7 +147,7 @@ namespace Nirge.Core
             if (sheet == null)
                 return false;
 
-            if (sheet.Dimension.Rows < (int)eDataRow.Pre)
+            if (sheet.Dimension.Rows < (int)CData.eRow.Pre)
             {
                 _log.ErrorFormat("[Data]CDataAsset.Load !rows, cls:\"{0}\", xls:\"{1}\", rows:\"{2}\", cols:\"{3}\""
                     , _descriptor.Name
@@ -119,19 +157,19 @@ namespace Nirge.Core
                 return false;
             }
 
-            var rows = sheet.Dimension.Rows - (int)eDataRow.Pre;
+            var rows = sheet.Dimension.Rows - (int)CData.eRow.Pre;
             if (rows == 0)
                 return true;
 
             var clsCols = _descriptor.Fields.InFieldNumberOrder();
-            var xlsCols = new List<CXlsCol>();
+            var xlsCols = new List<CData.CXlsCol>();
             for (int i = 1, len = sheet.Dimension.Columns; i <= len; ++i)
             {
                 var name = "";
 
                 try
                 {
-                    name = sheet.Cells[(int)eDataRow.Name, i].GetValue<string>();
+                    name = sheet.Cells[(int)CData.eRow.Name, i].GetValue<string>();
                 }
                 catch
                 {
@@ -146,7 +184,7 @@ namespace Nirge.Core
                     continue;
                 }
 
-                xlsCols.Add(new CXlsCol(i, name));
+                xlsCols.Add(new CData.CXlsCol(i, name));
             }
 
             if (xlsCols.Count < 1)
@@ -187,18 +225,36 @@ namespace Nirge.Core
                 }
             }
 
-            var xlsPrimitiveCols = new Dictionary<int, CPrimitiveCol>();
+            var xlsPrimitiveCols = new Dictionary<int, CData.CPrimitiveCol>();
             foreach (var i in clsPrimitiveCols)
             {
                 var p = xlsCols.FindIndex(e => string.Compare(e.Name, i.Name) == 0);
                 if (p == -1)
                     continue;
-                xlsPrimitiveCols.Add(i.FieldNumber, new CPrimitiveCol(i, xlsCols[p]));
+                xlsPrimitiveCols.Add(i.FieldNumber, new CData.CPrimitiveCol(i, xlsCols[p]));
                 xlsCols.RemoveAt(p);
+            }
+
+            for (int i = (int)CData.eRow.Data, len = (int)CData.eRow.Data + rows; i < len; ++i)
+            {
+                var e = new T();
+                e.ReadPrimitive(_log, _descriptor, sheet, i, xlsPrimitiveCols);
+                e.Uid = e.CombineUid();
+                if (_vals.ContainsKey(e.Uid))
+                {
+                    _log.ErrorFormat("[Data]CDataAsset.Load !row, cls:\"{0}\", xls:\"{1}\", row:\"{2}\", id:\"{3}\""
+                        , _descriptor.Name
+                        , sheet.Name
+                        , i
+                        , e.Uid);
+                    continue;
+                }
+                _vals.Add(e.Uid, e);
             }
 
             return true;
         }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -206,7 +262,7 @@ namespace Nirge.Core
 
         public IEnumerator<T> GetEnumerator()
         {
-            return _datas.Values as IEnumerator<T>;
+            return _vals.Values.GetEnumerator();
         }
     }
 }
