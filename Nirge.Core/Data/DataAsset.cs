@@ -3,6 +3,7 @@
     Author      : 邓晓峰
 ------------------------------------------------------------------*/
 
+using Google.Protobuf.Collections;
 using System.Collections.Generic;
 using Google.Protobuf.Reflection;
 using System.Collections;
@@ -69,6 +70,28 @@ namespace Nirge.Core
             }
         }
 
+        public class CPrimitivesCol
+        {
+            FieldDescriptor _cls;
+            IList<CXlsCol> _xls;
+
+            public FieldDescriptor Cls
+            {
+                get => _cls;
+            }
+
+            public IList<CXlsCol> Xls
+            {
+                get => _xls;
+            }
+
+            public CPrimitivesCol(FieldDescriptor cls, IList<CXlsCol> xls)
+            {
+                _cls = cls;
+                _xls = xls;
+            }
+        }
+
         #endregion
 
         int _uid;
@@ -86,11 +109,11 @@ namespace Nirge.Core
 
         internal protected abstract int CombineUid();
 
-        T Read<T>(ILog log, MessageDescriptor descriptor, ExcelWorksheet sheet, int row, CPrimitiveCol col)
+        T Read<T>(ILog log, MessageDescriptor descriptor, ExcelWorksheet sheet, int row, FieldDescriptor clsCol, CXlsCol xlsCol)
         {
             try
             {
-                return sheet.Cells[row, col.Xls.Col].GetValue<T>();
+                return sheet.Cells[row, xlsCol.Col].GetValue<T>();
             }
             catch (Exception exception)
             {
@@ -98,9 +121,9 @@ namespace Nirge.Core
                     , descriptor.Name
                     , sheet.Name
                     , row
-                    , col.Cls.Name
-                    , col.Xls.Col
-                    , col.Xls.Name), exception);
+                    , clsCol.Name
+                    , xlsCol.Col
+                    , xlsCol.Name), exception);
                 return default(T);
             }
         }
@@ -108,12 +131,30 @@ namespace Nirge.Core
         protected T ReadPrimitive<T>(ILog log, MessageDescriptor descriptor, ExcelWorksheet sheet, int row, int col, Dictionary<int, CPrimitiveCol> cols)
         {
             if (cols.TryGetValue(col, out var e))
-                return Read<T>(log, descriptor, sheet, row, e);
+                return Read<T>(log, descriptor, sheet, row, e.Cls, e.Xls);
             else
                 return default(T);
         }
 
         internal protected virtual void ReadPrimitive(ILog log, MessageDescriptor descriptor, ExcelWorksheet sheet, int row, Dictionary<int, CPrimitiveCol> cols)
+        {
+        }
+
+        protected void ReadPrimitives<T>(ILog log, MessageDescriptor descriptor, ExcelWorksheet sheet, int row, int col, Dictionary<int, CPrimitivesCol> cols, RepeatedField<T> primitives)
+        {
+            if (cols.TryGetValue(col, out var e))
+            {
+                foreach (var i in e.Xls)
+                {
+                    if (i == null)
+                        primitives.Add(default(T));
+                    else
+                        primitives.Add(Read<T>(log, descriptor, sheet, row, e.Cls, i));
+                }
+            }
+        }
+
+        internal protected virtual void ReadPrimitives(ILog log, MessageDescriptor descriptor, ExcelWorksheet sheet, int row, Dictionary<int, CPrimitivesCol> cols)
         {
         }
     }
@@ -264,6 +305,43 @@ namespace Nirge.Core
                 xlsCols.RemoveAt(p);
             }
 
+            var xlsPrimitivesCols = new Dictionary<int, CData.CPrimitivesCol>();
+            foreach (var i in clsPrimitivesCols)
+            {
+                var x = new List<Tuple<int, CData.CXlsCol>>();
+                for (var j = xlsCols.Count - 1; j >= 0; --j)
+                {
+                    var col = xlsCols[j];
+                    var pre = $"{i.Name}.";
+                    if (col.Name.StartsWith(pre))
+                    {
+                        if (int.TryParse(col.Name.Substring(pre.Length), out var slot))
+                        {
+                            x.Add(Tuple.Create(slot, col));
+                            xlsCols.RemoveAt(j);
+                        }
+                        else
+                        {
+                            _log.ErrorFormat("[Data]CDataAsset.Load !Col, cls:\"{0}\", xls:\"{1}\", col:\"{2},{3}\""
+                                , _descriptor.Name
+                                , sheet.Name
+                                , i.Name
+                                , col.Name);
+                        }
+                    }
+                }
+                var y = new List<CData.CXlsCol>();
+                var p = 1;
+                foreach (var j in x.OrderBy(e => e.Item1))
+                {
+                    for (int q = p, len = j.Item1; q < len; ++q)
+                        y.Add(null);
+                    y.Add(j.Item2);
+                    p = j.Item1 + 1;
+                }
+                xlsPrimitivesCols.Add(i.FieldNumber, new CData.CPrimitivesCol(i, y));
+            }
+
             for (int i = (int)CData.eXlsRow.Data, len = (int)CData.eXlsRow.Data + rows; i < len; ++i)
             {
                 var e = new T();
@@ -278,6 +356,7 @@ namespace Nirge.Core
                         , e.Uid);
                     continue;
                 }
+                e.ReadPrimitives(_log, _descriptor, sheet, i, xlsPrimitivesCols);
                 _vals.Add(e.Uid, e);
             }
 

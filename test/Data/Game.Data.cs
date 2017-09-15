@@ -27,6 +27,11 @@ namespace Nirge.Core
             H = ReadPrimitive<long>(log, descriptor, sheet, row, 3, cols);
             P = ReadPrimitive<string>(log, descriptor, sheet, row, 4, cols);
         }
+
+        protected override void ReadPrimitives(ILog log, pbr.MessageDescriptor descriptor, ExcelWorksheet sheet, int row, scg.Dictionary<int, CPrimitivesCol> cols)
+        {
+            ReadPrimitives<int>(log, descriptor, sheet, row, 5, cols, Q);
+        }
     }
 
 }
