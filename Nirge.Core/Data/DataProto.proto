@@ -24,6 +24,11 @@ message DataIdOption
     int32 Bits = 2;
 }
 
+message DataNameOption
+{
+    int32 Open = 1;
+}
+
 extend google.protobuf.MessageOptions 
 {
     DataOption Data = 60101;
@@ -32,6 +37,7 @@ extend google.protobuf.MessageOptions
 extend google.protobuf.FieldOptions 
 {
     DataIdOption DataId = 60102;
+    DataNameOption DataName = 60103;
 }
 
 //----------------------------------------------------------------------------------------

@@ -28,7 +28,7 @@ message a
     int32 f = 1 [(DataId).Order = 1, (DataId).Bits = 16];
     int32 g = 2 [(DataId).Order = 2, (DataId).Bits = 16];
     int64 h = 3;
-    string p = 4;
+    string p = 4 [(DataName).Open = 1];
     repeated int32 q = 5;
     b m = 6;
     repeated b n = 7;

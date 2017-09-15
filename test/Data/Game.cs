@@ -24,11 +24,11 @@ namespace Nirge.Core {
           string.Concat(
             "CgpnYW1lLnByb3RvEgpOaXJnZS5Db3JlGg9EYXRhUHJvdG8ucHJvdG8iOgoB",
             "YhIJCgFmGAEgASgIEgkKAWcYAiABKAUSCQoBaBgDIAEoAhIJCgFwGAQgASgD",
-            "EgkKAXEYBSABKAkikgEKAWESFwoBZhgBIAEoBUIMsqwdAggBsqwdAhAQEhcK",
-            "AWcYAiABKAVCDLKsHQIIArKsHQIQEBIJCgFoGAMgASgDEgkKAXAYBCABKAkS",
-            "CQoBcRgFIAMoBRIYCgFtGAYgASgLMg0uTmlyZ2UuQ29yZS5iEhgKAW4YByAD",
-            "KAsyDS5OaXJnZS5Db3JlLmI6BqqsHQIIAUINqgIKTmlyZ2UuQ29yZWIGcHJv",
-            "dG8z"));
+            "EgkKAXEYBSABKAkimgEKAWESFwoBZhgBIAEoBUIMsqwdAggBsqwdAhAQEhcK",
+            "AWcYAiABKAVCDLKsHQIIArKsHQIQEBIJCgFoGAMgASgDEhEKAXAYBCABKAlC",
+            "BrqsHQIIARIJCgFxGAUgAygFEhgKAW0YBiABKAsyDS5OaXJnZS5Db3JlLmIS",
+            "GAoBbhgHIAMoCzINLk5pcmdlLkNvcmUuYjoGqqwdAggBQg2qAgpOaXJnZS5D",
+            "b3JlYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Nirge.Core.DataProtoReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {

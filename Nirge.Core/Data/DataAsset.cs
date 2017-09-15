@@ -86,7 +86,11 @@ namespace Nirge.Core
 
             if (sheet.Dimension.Rows < (int)eDataRow.Pre)
             {
-                _log.ErrorFormat("[Data]CDataAsset.Load err, rows:\"{0}\", cols:\"{0}\"", sheet.Dimension.Rows, sheet.Dimension.Columns);
+                _log.ErrorFormat("[Data]CDataAsset.Load err, cls:\"{0}\", sheet:\"{1}\", rows:\"{2}\", cols:\"{3}\""
+                    , _descriptor.Name
+                    , sheet.Name
+                    , sheet.Dimension.Rows
+                    , sheet.Dimension.Columns);
                 return false;
             }
 
@@ -94,7 +98,8 @@ namespace Nirge.Core
             if (rows == 0)
                 return true;
 
-            var cols = new List<CDataColumn>(sheet.Dimension.Columns);
+            var clsCols = _descriptor.Fields.InFieldNumberOrder();
+            var xlsCols = new List<CDataColumn>();
             for (int i = 1, len = sheet.Dimension.Columns; i <= len; ++i)
             {
                 var name = "";
@@ -109,11 +114,74 @@ namespace Nirge.Core
 
                 if (string.IsNullOrEmpty(name))
                 {
-                    _log.ErrorFormat("[Data]CDataAsset.Load !name, col:\"{0}\"", i);
+                    _log.ErrorFormat("[Data]CDataAsset.Load !name, cls:\"{0}\", sheet:\"{1}\", col:\"{2}\""
+                        , _descriptor.Name
+                        , sheet.Name
+                        , i);
                     continue;
                 }
 
-                cols.Add(new CDataColumn(i, name));
+                xlsCols.Add(new CDataColumn(i, name));
+            }
+
+            if (xlsCols.Count < 1)
+            {
+                _log.ErrorFormat("[Data]CDataAsset.Load err, cls:\"{0}\", sheet:\"{1}\", cols:\"{2}\""
+                    , _descriptor.Name
+                    , sheet.Name
+                    , xlsCols.Count);
+                return false;
+            }
+
+            var clsPrimitiveCols = new List<FieldDescriptor>();
+            var clsPrimitivesCols = new List<FieldDescriptor>();
+            var clsObjCols = new List<FieldDescriptor>();
+            var clsObjsCols = new List<FieldDescriptor>();
+            foreach (var i in clsCols)
+            {
+                if (i.IsMap)
+                    continue;
+                switch (i.FieldType)
+                {
+                case FieldType.Bool:
+                case FieldType.Int32:
+                case FieldType.Float:
+                case FieldType.Int64:
+                case FieldType.String:
+                    if (i.IsRepeated)
+                        clsPrimitivesCols.Add(i);
+                    else
+                        clsPrimitiveCols.Add(i);
+                    break;
+                case FieldType.Message:
+                    if (i.IsRepeated)
+                        clsObjsCols.Add(i);
+                    else
+                        clsObjCols.Add(i);
+                    break;
+                }
+            }
+
+            var xlsPrimitiveCols = new Dictionary<int, CDataColumn>();
+            foreach (var i in clsPrimitiveCols)
+            {
+                var p = xlsCols.FindIndex(e => string.Compare(e.Name, i.Name) == 0);
+                if (p != -1)
+                {
+                    xlsPrimitiveCols.Add(i.FieldNumber, xlsCols[p]);
+                    xlsCols.RemoveAt(p);
+                }
+            }
+
+            var xlsPrimitivesCols = new Dictionary<int, CDataColumn[]>();
+            foreach (var i in clsPrimitivesCols)
+            {
+                var p = xlsCols.FindIndex(e => string.Compare(e.Name, i.Name) == 0);
+                if (p != -1)
+                {
+                    xlsPrimitiveCols.Add(i.FieldNumber, xlsCols[p]);
+                    xlsCols.RemoveAt(p);
+                }
             }
 
             return true;
