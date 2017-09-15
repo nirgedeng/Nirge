@@ -24,54 +24,54 @@ namespace Nirge.Core {
   }
   public class CGameRpcCaller : CRpcCaller {
     public CGameRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
-    	: base(args, log, stream, communicator, stubs, global::Nirge.Core.ServiceReflection.Descriptor.Services[0], 1) {}
-    public void f(int channel = 0){
-      Call<Nirge.Core.RpcCallArgsEmpty>(channel, 1, ArgsEmpty);
+    	: base(args, log, stream, communicator, stubs, global::Nirge.Core.ServiceReflection.Descriptor.Services[0], 0) {}
+    public Task<Nirge.Core.RpcCallArgsEmpty> f(int channel = 0){
+      return CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, 0, ArgsEmpty);
     }
-    public void g(Nirge.Core.gargs args, int channel = 0){
-      Call<Nirge.Core.gargs>(channel, 2, args);
+    public Task<Nirge.Core.RpcCallArgsEmpty> g(Nirge.Core.gargs args, int channel = 0){
+      return CallAsync<Nirge.Core.gargs, Nirge.Core.RpcCallArgsEmpty>(channel, 0, args);
     }
     public Task<Nirge.Core.RpcCallArgsEmpty> h(int channel = 0){
-      return CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, 3, ArgsEmpty);
+      return CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, 0, ArgsEmpty);
     }
     public Task<Nirge.Core.RpcCallArgsEmpty> p(Nirge.Core.pargs args, int channel = 0){
-      return CallAsync<Nirge.Core.pargs, Nirge.Core.RpcCallArgsEmpty>(channel, 4, args);
+      return CallAsync<Nirge.Core.pargs, Nirge.Core.RpcCallArgsEmpty>(channel, 0, args);
     }
     public Task<Nirge.Core.qret> q(Nirge.Core.qargs args, int channel = 0){
-      return CallAsync<Nirge.Core.qargs, Nirge.Core.qret>(channel, 5, args);
+      return CallAsync<Nirge.Core.qargs, Nirge.Core.qret>(channel, 0, args);
     }
   }
-  [CRpcService(1)]
+  [CRpcService(0)]
   public class CGameRpcCallee : CRpcCallee<IGameRpcService> {
     public CGameRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, IGameRpcService service)
     	: base(args, log, stream, communicator, global::Nirge.Core.ServiceReflection.Descriptor.Services[0], service) {}
     public override void Call(int channel, Nirge.Core.RpcCallReq req) {
       switch (req.Call) {
-      case 1:
-        Call<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
+      case 0:
+        CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
           _service.f(channel);
           return ArgsEmpty;
         });
         break;
-      case 2:
-        Call<Nirge.Core.gargs, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
+      case 0:
+        CallAsync<Nirge.Core.gargs, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
           _service.g(channel, args);
           return ArgsEmpty;
         });
         break;
-      case 3:
+      case 0:
         CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
           _service.h(channel);
           return ArgsEmpty;
         });
         break;
-      case 4:
+      case 0:
         CallAsync<Nirge.Core.pargs, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
           _service.p(channel, args);
           return ArgsEmpty;
         });
         break;
-      case 5:
+      case 0:
         CallAsync<Nirge.Core.qargs, Nirge.Core.qret>(channel, req, (_, args) => {
           return _service.q(channel, args);
         });
