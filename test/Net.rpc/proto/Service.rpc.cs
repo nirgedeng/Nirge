@@ -21,68 +21,69 @@ namespace Nirge.Core {
     void h(int channel);
     void p(int channel, Nirge.Core.pargs args);
     Nirge.Core.qret q(int channel, Nirge.Core.qargs args);
-    Nirge.Core.mret m(int channel, Nirge.Core.margs args);
+    void m(int channel, Nirge.Core.margs args);
   }
   public class CGameRpcCaller : CRpcCaller {
     public CGameRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
-    	: base(args, log, stream, communicator, stubs, global::Nirge.Core.ServiceReflection.Descriptor.Services[0], 0) {}
-    public Task<Nirge.Core.RpcCallArgsEmpty> f(int channel = 0){
-      return CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, 0, ArgsEmpty);
+    	: base(args, log, stream, communicator, stubs, global::Nirge.Core.ServiceReflection.Descriptor.Services[0], 1) {}
+    public void f(int channel = 0){
+      Call<Nirge.Core.RpcCallArgsEmpty>(channel, 1, ArgsEmpty);
     }
-    public Task<Nirge.Core.RpcCallArgsEmpty> g(Nirge.Core.gargs args, int channel = 0){
-      return CallAsync<Nirge.Core.gargs, Nirge.Core.RpcCallArgsEmpty>(channel, 0, args);
+    public void g(Nirge.Core.gargs args, int channel = 0){
+      Call<Nirge.Core.gargs>(channel, 2, args);
     }
     public Task<Nirge.Core.RpcCallArgsEmpty> h(int channel = 0){
-      return CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, 0, ArgsEmpty);
+      return CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, 3, ArgsEmpty);
     }
     public Task<Nirge.Core.RpcCallArgsEmpty> p(Nirge.Core.pargs args, int channel = 0){
-      return CallAsync<Nirge.Core.pargs, Nirge.Core.RpcCallArgsEmpty>(channel, 0, args);
+      return CallAsync<Nirge.Core.pargs, Nirge.Core.RpcCallArgsEmpty>(channel, 4, args);
     }
     public Task<Nirge.Core.qret> q(Nirge.Core.qargs args, int channel = 0){
-      return CallAsync<Nirge.Core.qargs, Nirge.Core.qret>(channel, 0, args);
+      return CallAsync<Nirge.Core.qargs, Nirge.Core.qret>(channel, 5, args);
     }
-    public Task<Nirge.Core.mret> m(Nirge.Core.margs args, int channel = 0){
-      return CallAsync<Nirge.Core.margs, Nirge.Core.mret>(channel, 0, args);
+    public void m(Nirge.Core.margs args, int channel = 0){
+      Call<Nirge.Core.margs>(channel, 6, args);
     }
   }
-  [CRpcService(0)]
+  [CRpcService(1)]
   public class CGameRpcCallee : CRpcCallee<IGameRpcService> {
     public CGameRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, IGameRpcService service)
     	: base(args, log, stream, communicator, global::Nirge.Core.ServiceReflection.Descriptor.Services[0], service) {}
     public override void Call(int channel, Nirge.Core.RpcCallReq req) {
       switch (req.Call) {
-      case 0:
-        CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
+      case 1:
+        Call<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
           _service.f(channel);
           return ArgsEmpty;
         });
         break;
-      case 0:
-        CallAsync<Nirge.Core.gargs, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
+      case 2:
+        Call<Nirge.Core.gargs, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
           _service.g(channel, args);
           return ArgsEmpty;
         });
         break;
-      case 0:
+      case 3:
         CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
           _service.h(channel);
           return ArgsEmpty;
         });
         break;
-      case 0:
+      case 4:
         CallAsync<Nirge.Core.pargs, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
           _service.p(channel, args);
           return ArgsEmpty;
         });
         break;
-      case 0:
+      case 5:
         CallAsync<Nirge.Core.qargs, Nirge.Core.qret>(channel, req, (_, args) => {
           return _service.q(channel, args);
         });
         break;
-      case 0:
-        CallAsync<Nirge.Core.margs, Nirge.Core.mret>(channel, req, (_, args) => {
-          return _service.m(channel, args);
+      case 6:
+        Call<Nirge.Core.margs, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
+          _service.m(channel, args);
+          return ArgsEmpty;
         });
         break;
       default:
@@ -99,68 +100,69 @@ namespace Nirge.Core {
     void h(int channel);
     void p(int channel, Nirge.Core.pargs args);
     Nirge.Core.qret q(int channel, Nirge.Core.qargs args);
-    Nirge.Core.mret m(int channel, Nirge.Core.margs args);
+    void m(int channel, Nirge.Core.margs args);
   }
   public class CWebRpcCaller : CRpcCaller {
     public CWebRpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
-    	: base(args, log, stream, communicator, stubs, global::Nirge.Core.ServiceReflection.Descriptor.Services[1], 0) {}
-    public Task<Nirge.Core.RpcCallArgsEmpty> f(int channel = 0){
-      return CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, 0, ArgsEmpty);
+    	: base(args, log, stream, communicator, stubs, global::Nirge.Core.ServiceReflection.Descriptor.Services[1], 2) {}
+    public void f(int channel = 0){
+      Call<Nirge.Core.RpcCallArgsEmpty>(channel, 1, ArgsEmpty);
     }
-    public Task<Nirge.Core.RpcCallArgsEmpty> g(Nirge.Core.gargs args, int channel = 0){
-      return CallAsync<Nirge.Core.gargs, Nirge.Core.RpcCallArgsEmpty>(channel, 0, args);
+    public void g(Nirge.Core.gargs args, int channel = 0){
+      Call<Nirge.Core.gargs>(channel, 2, args);
     }
     public Task<Nirge.Core.RpcCallArgsEmpty> h(int channel = 0){
-      return CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, 0, ArgsEmpty);
+      return CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, 3, ArgsEmpty);
     }
     public Task<Nirge.Core.RpcCallArgsEmpty> p(Nirge.Core.pargs args, int channel = 0){
-      return CallAsync<Nirge.Core.pargs, Nirge.Core.RpcCallArgsEmpty>(channel, 0, args);
+      return CallAsync<Nirge.Core.pargs, Nirge.Core.RpcCallArgsEmpty>(channel, 4, args);
     }
     public Task<Nirge.Core.qret> q(Nirge.Core.qargs args, int channel = 0){
-      return CallAsync<Nirge.Core.qargs, Nirge.Core.qret>(channel, 0, args);
+      return CallAsync<Nirge.Core.qargs, Nirge.Core.qret>(channel, 5, args);
     }
-    public Task<Nirge.Core.mret> m(Nirge.Core.margs args, int channel = 0){
-      return CallAsync<Nirge.Core.margs, Nirge.Core.mret>(channel, 0, args);
+    public void m(Nirge.Core.margs args, int channel = 0){
+      Call<Nirge.Core.margs>(channel, 6, args);
     }
   }
-  [CRpcService(0)]
+  [CRpcService(2)]
   public class CWebRpcCallee : CRpcCallee<IWebRpcService> {
     public CWebRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, IWebRpcService service)
     	: base(args, log, stream, communicator, global::Nirge.Core.ServiceReflection.Descriptor.Services[1], service) {}
     public override void Call(int channel, Nirge.Core.RpcCallReq req) {
       switch (req.Call) {
-      case 0:
-        CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
+      case 1:
+        Call<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
           _service.f(channel);
           return ArgsEmpty;
         });
         break;
-      case 0:
-        CallAsync<Nirge.Core.gargs, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
+      case 2:
+        Call<Nirge.Core.gargs, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
           _service.g(channel, args);
           return ArgsEmpty;
         });
         break;
-      case 0:
+      case 3:
         CallAsync<Nirge.Core.RpcCallArgsEmpty, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
           _service.h(channel);
           return ArgsEmpty;
         });
         break;
-      case 0:
+      case 4:
         CallAsync<Nirge.Core.pargs, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
           _service.p(channel, args);
           return ArgsEmpty;
         });
         break;
-      case 0:
+      case 5:
         CallAsync<Nirge.Core.qargs, Nirge.Core.qret>(channel, req, (_, args) => {
           return _service.q(channel, args);
         });
         break;
-      case 0:
-        CallAsync<Nirge.Core.margs, Nirge.Core.mret>(channel, req, (_, args) => {
-          return _service.m(channel, args);
+      case 6:
+        Call<Nirge.Core.margs, Nirge.Core.RpcCallArgsEmpty>(channel, req, (_, args) => {
+          _service.m(channel, args);
+          return ArgsEmpty;
         });
         break;
       default:

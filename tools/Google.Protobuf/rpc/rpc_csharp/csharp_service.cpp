@@ -59,7 +59,7 @@ namespace google
                     , google::protobuf::internal::MessageTypeTraits<Nirge::Core::RpcServiceCallOption>
                     , 11
                     , false>
-                    args(60002, Nirge::Core::RpcServiceCallOption());
+                    args(60201, Nirge::Core::RpcServiceCallOption());
                     Nirge::Core::RpcServiceCallOption option = _descriptor->options().GetExtension(args);
                     _uid = option.uid();
                     _isOneWay = option.isoneway();
@@ -93,7 +93,7 @@ namespace google
                     , google::protobuf::internal::MessageTypeTraits<Nirge::Core::RpcServiceOption>
                     , 11
                     , false>
-                    args(60001, Nirge::Core::RpcServiceOption());
+                    args(60101, Nirge::Core::RpcServiceOption());
                     Nirge::Core::RpcServiceOption option = _descriptor->options().GetExtension(args);
                     _uid = option.uid();
 

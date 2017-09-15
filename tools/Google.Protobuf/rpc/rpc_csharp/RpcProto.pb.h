@@ -633,11 +633,11 @@ class RpcCallExceptionRsp : public ::google::protobuf::Message /* @@protoc_inser
 };
 // ===================================================================
 
-static const int kRpcServiceFieldNumber = 60001;
+static const int kRpcServiceFieldNumber = 60101;
 extern ::google::protobuf::internal::ExtensionIdentifier< ::google::protobuf::ServiceOptions,
     ::google::protobuf::internal::MessageTypeTraits< ::Nirge::Core::RpcServiceOption >, 11, false >
   RpcService;
-static const int kRpcServiceCallFieldNumber = 60002;
+static const int kRpcServiceCallFieldNumber = 60201;
 extern ::google::protobuf::internal::ExtensionIdentifier< ::google::protobuf::MethodOptions,
     ::google::protobuf::internal::MessageTypeTraits< ::Nirge::Core::RpcServiceCallOption >, 11, false >
   RpcServiceCall;

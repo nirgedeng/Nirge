@@ -178,11 +178,11 @@ void TableStruct::InitDefaultsImpl() {
   _RpcCallExceptionRsp_default_instance_.DefaultConstruct();
   ::google::protobuf::internal::ExtensionSet::RegisterMessageExtension(
     ::google::protobuf::ServiceOptions::internal_default_instance(),
-    60001, 11, false, false,
+    60101, 11, false, false,
     ::Nirge::Core::RpcServiceOption::internal_default_instance());
   ::google::protobuf::internal::ExtensionSet::RegisterMessageExtension(
     ::google::protobuf::MethodOptions::internal_default_instance(),
-    60002, 11, false, false,
+    60201, 11, false, false,
     ::Nirge::Core::RpcServiceCallOption::internal_default_instance());
 }
 
@@ -205,9 +205,9 @@ void AddDescriptorsImpl() {
       "\013\n\003Ret\030\004 \001(\014\"W\n\023RpcCallExceptionRsp\022\016\n\006S"
       "erial\030\001 \001(\005\022\017\n\007Service\030\002 \001(\005\022\014\n\004Call\030\003 \001"
       "(\005\022\021\n\tException\030\004 \001(\005:S\n\nRpcService\022\037.go"
-      "ogle.protobuf.ServiceOptions\030\341\324\003 \001(\0132\034.N"
+      "ogle.protobuf.ServiceOptions\030\305\325\003 \001(\0132\034.N"
       "irge.Core.RpcServiceOption:Z\n\016RpcService"
-      "Call\022\036.google.protobuf.MethodOptions\030\342\324\003"
+      "Call\022\036.google.protobuf.MethodOptions\030\251\326\003"
       " \001(\0132 .Nirge.Core.RpcServiceCallOptionB\r"
       "\252\002\nNirge.Coreb\006proto3"
   };
