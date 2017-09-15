@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using Google.Protobuf.Reflection;
+using System.Collections;
 using Google.Protobuf;
 using OfficeOpenXml;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Nirge.Core
         }
     }
 
-    public class CDataAsset<T> where T : CData, IMessage, new()
+    public class CDataAsset<T> : IEnumerable<T>, IEnumerable where T : CData, IMessage, new()
     {
         enum eDataRow
         {
@@ -44,18 +45,12 @@ namespace Nirge.Core
 
             public int Col
             {
-                get
-                {
-                    return _col;
-                }
+                get => _col;
             }
 
             public string Name
             {
-                get
-                {
-                    return _name;
-                }
+                get => _name;
             }
 
             public CXlsCol(int col, string name)
@@ -91,11 +86,22 @@ namespace Nirge.Core
         MessageDescriptor _descriptor;
         Dictionary<int, T> _datas;
 
+        public int Count
+        {
+            get => _datas.Count;
+        }
+
         public CDataAsset(ILog log, MessageDescriptor descriptor)
         {
             _log = log;
             _descriptor = descriptor;
             _datas = new Dictionary<int, T>(128);
+        }
+
+        public T Get(int id)
+        {
+            _datas.TryGetValue(id, out var e);
+            return e;
         }
 
         public bool Load(ExcelWorksheet sheet)
@@ -192,6 +198,15 @@ namespace Nirge.Core
             }
 
             return true;
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return _datas.Values as IEnumerator<T>;
         }
     }
 }
