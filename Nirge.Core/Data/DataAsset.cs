@@ -18,7 +18,7 @@ namespace Nirge.Core
     {
         #region 
 
-        public enum eRow
+        public enum eXlsRow
         {
             Name = 1,
             Pre = 1,
@@ -71,7 +71,7 @@ namespace Nirge.Core
 
         #endregion
 
-        protected int _uid;
+        int _uid;
 
         public int Uid
         {
@@ -147,7 +147,7 @@ namespace Nirge.Core
             if (sheet == null)
                 return false;
 
-            if (sheet.Dimension.Rows < (int)CData.eRow.Pre)
+            if (sheet.Dimension.Rows < (int)CData.eXlsRow.Pre)
             {
                 _log.ErrorFormat("[Data]CDataAsset.Load !rows, cls:\"{0}\", xls:\"{1}\", rows:\"{2}\", cols:\"{3}\""
                     , _descriptor.Name
@@ -157,7 +157,7 @@ namespace Nirge.Core
                 return false;
             }
 
-            var rows = sheet.Dimension.Rows - (int)CData.eRow.Pre;
+            var rows = sheet.Dimension.Rows - (int)CData.eXlsRow.Pre;
             if (rows == 0)
                 return true;
 
@@ -169,7 +169,7 @@ namespace Nirge.Core
 
                 try
                 {
-                    name = sheet.Cells[(int)CData.eRow.Name, i].GetValue<string>();
+                    name = sheet.Cells[(int)CData.eXlsRow.Name, i].GetValue<string>();
                 }
                 catch
                 {
@@ -235,14 +235,14 @@ namespace Nirge.Core
                 xlsCols.RemoveAt(p);
             }
 
-            for (int i = (int)CData.eRow.Data, len = (int)CData.eRow.Data + rows; i < len; ++i)
+            for (int i = (int)CData.eXlsRow.Data, len = (int)CData.eXlsRow.Data + rows; i < len; ++i)
             {
                 var e = new T();
                 e.ReadPrimitive(_log, _descriptor, sheet, i, xlsPrimitiveCols);
                 e.Uid = e.CombineUid();
                 if (_vals.ContainsKey(e.Uid))
                 {
-                    _log.ErrorFormat("[Data]CDataAsset.Load !row, cls:\"{0}\", xls:\"{1}\", row:\"{2}\", id:\"{3}\""
+                    _log.ErrorFormat("[Data]CDataAsset.Load !row, cls:\"{0}\", xls:\"{1}\", row:\"{2}, {3}\""
                         , _descriptor.Name
                         , sheet.Name
                         , i
