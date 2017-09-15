@@ -13,14 +13,14 @@ namespace Nirge.Core
 {
     public partial class a : CData
     {
-        public override int CombineUid()
+        protected override int CombineUid()
         {
             return F << 0 | G << 16;
         }
 
         public override string Uname => P;
 
-        public override void ReadPrimitive(ILog log, pbr.MessageDescriptor descriptor, ExcelWorksheet sheet, int row, scg.Dictionary<int, CPrimitiveCol> cols)
+        protected override void ReadPrimitive(ILog log, pbr.MessageDescriptor descriptor, ExcelWorksheet sheet, int row, scg.Dictionary<int, CPrimitiveCol> cols)
         {
             F = ReadPrimitive<int>(log, descriptor, sheet, row, 1, cols);
             G = ReadPrimitive<int>(log, descriptor, sheet, row, 2, cols);

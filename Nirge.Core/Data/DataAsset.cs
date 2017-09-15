@@ -84,7 +84,7 @@ namespace Nirge.Core
             get => "";
         }
 
-        public abstract int CombineUid();
+        internal protected abstract int CombineUid();
 
         T Read<T>(ILog log, MessageDescriptor descriptor, ExcelWorksheet sheet, int row, CPrimitiveCol col)
         {
@@ -113,7 +113,7 @@ namespace Nirge.Core
                 return default(T);
         }
 
-        public virtual void ReadPrimitive(ILog log, MessageDescriptor descriptor, ExcelWorksheet sheet, int row, Dictionary<int, CPrimitiveCol> cols)
+        internal protected virtual void ReadPrimitive(ILog log, MessageDescriptor descriptor, ExcelWorksheet sheet, int row, Dictionary<int, CPrimitiveCol> cols)
         {
         }
     }
