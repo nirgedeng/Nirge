@@ -117,13 +117,14 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                log.Error(string.Format("[Data]CData.Read !Cell, cls:\"{0}\", xls:\"{1}\", row:\"{2}\", col:\"{3},{4},{5}\""
+                log.Error(string.Format("[Data]CData.Read !Cell, cls:\"{0}\", xls:\"{1}\", row:\"{2}\", col:\"{3},{4},{5},{6}\""
                     , descriptor.Name
                     , sheet.Name
                     , row
                     , clsCol.Name
-                    , xlsCol.Col
-                    , xlsCol.Name), exception);
+                    , clsCol.FieldNumber
+                    , xlsCol.Name
+                    , xlsCol.Col), exception);
                 return default(T);
             }
         }
@@ -311,22 +312,24 @@ namespace Nirge.Core
                 var x = new List<Tuple<int, CData.CXlsCol>>();
                 for (var j = xlsCols.Count - 1; j >= 0; --j)
                 {
-                    var col = xlsCols[j];
+                    var xlsCol = xlsCols[j];
                     var pre = $"{i.Name}.";
-                    if (col.Name.StartsWith(pre))
+                    if (xlsCol.Name.StartsWith(pre))
                     {
-                        if (int.TryParse(col.Name.Substring(pre.Length), out var slot))
+                        if (int.TryParse(xlsCol.Name.Substring(pre.Length), out var slot))
                         {
-                            x.Add(Tuple.Create(slot, col));
+                            x.Add(Tuple.Create(slot, xlsCol));
                             xlsCols.RemoveAt(j);
                         }
                         else
                         {
-                            _log.ErrorFormat("[Data]CDataAsset.Load !Col, cls:\"{0}\", xls:\"{1}\", col:\"{2},{3}\""
+                            _log.ErrorFormat("[Data]CDataAsset.Load !Col, cls:\"{0}\", xls:\"{1}\", col:\"{2},{3},{4},{5}\""
                                 , _descriptor.Name
                                 , sheet.Name
                                 , i.Name
-                                , col.Name);
+                                , i.FieldNumber
+                                , xlsCol.Name
+                                , xlsCol.Col);
                         }
                     }
                 }
