@@ -33,7 +33,7 @@ extend google.protobuf.ServiceOptions
 
 extend google.protobuf.MethodOptions
 {
-    RpcServiceCallOption RpcServiceCall = 60102;
+    RpcServiceCallOption RpcServiceCall = 60201;
 }
 
 //----------------------------------------------------------------------------------------
