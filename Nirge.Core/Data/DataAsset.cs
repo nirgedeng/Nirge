@@ -15,19 +15,16 @@ namespace Nirge.Core
 {
     public class CData
     {
-        int _id;
-        string _name;
+        protected int _uid;
 
-        public int Id
+        public int Uid
         {
-            get => _id;
-            set => _id = value;
+            get => _uid;
         }
 
-        public string Name
+        public virtual string Uname
         {
-            get => _name;
-            set => _name = value;
+            get => "";
         }
     }
 
@@ -40,7 +37,7 @@ namespace Nirge.Core
             Data = 2,
         }
 
-        class CDataColumn
+        class CXlsCol
         {
             int _col;
             string _name;
@@ -61,10 +58,32 @@ namespace Nirge.Core
                 }
             }
 
-            public CDataColumn(int col, string name)
+            public CXlsCol(int col, string name)
             {
                 _col = col;
                 _name = name;
+            }
+        }
+
+        class CPrimitiveCol
+        {
+            FieldDescriptor _cls;
+            CXlsCol _xls;
+
+            public FieldDescriptor Cls
+            {
+                get => _cls;
+            }
+
+            public CXlsCol Xls
+            {
+                get => _xls;
+            }
+
+            public CPrimitiveCol(FieldDescriptor cls, CXlsCol xls)
+            {
+                _cls = cls;
+                _xls = xls;
             }
         }
 
@@ -86,7 +105,7 @@ namespace Nirge.Core
 
             if (sheet.Dimension.Rows < (int)eDataRow.Pre)
             {
-                _log.ErrorFormat("[Data]CDataAsset.Load err, cls:\"{0}\", sheet:\"{1}\", rows:\"{2}\", cols:\"{3}\""
+                _log.ErrorFormat("[Data]CDataAsset.Load !rows, cls:\"{0}\", xls:\"{1}\", rows:\"{2}\", cols:\"{3}\""
                     , _descriptor.Name
                     , sheet.Name
                     , sheet.Dimension.Rows
@@ -99,7 +118,7 @@ namespace Nirge.Core
                 return true;
 
             var clsCols = _descriptor.Fields.InFieldNumberOrder();
-            var xlsCols = new List<CDataColumn>();
+            var xlsCols = new List<CXlsCol>();
             for (int i = 1, len = sheet.Dimension.Columns; i <= len; ++i)
             {
                 var name = "";
@@ -114,19 +133,19 @@ namespace Nirge.Core
 
                 if (string.IsNullOrEmpty(name))
                 {
-                    _log.ErrorFormat("[Data]CDataAsset.Load !name, cls:\"{0}\", sheet:\"{1}\", col:\"{2}\""
+                    _log.ErrorFormat("[Data]CDataAsset.Load !name, cls:\"{0}\", xls:\"{1}\", col:\"{2}\""
                         , _descriptor.Name
                         , sheet.Name
                         , i);
                     continue;
                 }
 
-                xlsCols.Add(new CDataColumn(i, name));
+                xlsCols.Add(new CXlsCol(i, name));
             }
 
             if (xlsCols.Count < 1)
             {
-                _log.ErrorFormat("[Data]CDataAsset.Load err, cls:\"{0}\", sheet:\"{1}\", cols:\"{2}\""
+                _log.ErrorFormat("[Data]CDataAsset.Load !cols, cls:\"{0}\", xls:\"{1}\", cols:\"{2}\""
                     , _descriptor.Name
                     , sheet.Name
                     , xlsCols.Count);
@@ -162,26 +181,14 @@ namespace Nirge.Core
                 }
             }
 
-            var xlsPrimitiveCols = new Dictionary<int, CDataColumn>();
+            var xlsPrimitiveCols = new Dictionary<int, CPrimitiveCol>();
             foreach (var i in clsPrimitiveCols)
             {
                 var p = xlsCols.FindIndex(e => string.Compare(e.Name, i.Name) == 0);
-                if (p != -1)
-                {
-                    xlsPrimitiveCols.Add(i.FieldNumber, xlsCols[p]);
-                    xlsCols.RemoveAt(p);
-                }
-            }
-
-            var xlsPrimitivesCols = new Dictionary<int, CDataColumn[]>();
-            foreach (var i in clsPrimitivesCols)
-            {
-                var p = xlsCols.FindIndex(e => string.Compare(e.Name, i.Name) == 0);
-                if (p != -1)
-                {
-                    xlsPrimitiveCols.Add(i.FieldNumber, xlsCols[p]);
-                    xlsCols.RemoveAt(p);
-                }
+                if (p == -1)
+                    continue;
+                xlsPrimitiveCols.Add(i.FieldNumber, new CPrimitiveCol(i, xlsCols[p]));
+                xlsCols.RemoveAt(p);
             }
 
             return true;
