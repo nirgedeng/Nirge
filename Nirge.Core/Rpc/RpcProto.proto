@@ -28,12 +28,12 @@ message RpcServiceCallOption
 
 extend google.protobuf.ServiceOptions
 {
-    RpcServiceOption RpcService = 60001;
+    RpcServiceOption RpcService = 60101;
 }
 
 extend google.protobuf.MethodOptions
 {
-    RpcServiceCallOption RpcServiceCall = 60002;
+    RpcServiceCallOption RpcServiceCall = 60102;
 }
 
 //----------------------------------------------------------------------------------------

@@ -259,7 +259,7 @@ namespace Nirge.Core
                     else
                     {
                         clsPrimitiveCols.Add(i);
-                        if (i.CustomOptions.TryGetMessage<DataIdOption>(60102, out var e))
+                        if (i.CustomOptions.TryGetMessage<DataIdOption>(61201, out var e))
                             clsUidCols.Add(Tuple.Create(i, e));
                     }
                     break;

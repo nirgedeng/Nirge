@@ -31,13 +31,13 @@ message DataNameOption
 
 extend google.protobuf.MessageOptions 
 {
-    DataOption Data = 60101;
+    DataOption Data = 61101;
 }
 
 extend google.protobuf.FieldOptions 
 {
-    DataIdOption DataId = 60102;
-    DataNameOption DataName = 60103;
+    DataIdOption DataId = 61201;
+    DataNameOption DataName = 61202;
 }
 
 //----------------------------------------------------------------------------------------

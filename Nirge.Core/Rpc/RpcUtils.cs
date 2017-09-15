@@ -366,7 +366,7 @@ namespace Nirge.Core
         {
             return descriptor.Methods.FirstOrDefault(e =>
             {
-                return e.CustomOptions.TryGetMessage<RpcServiceCallOption>(60002, out var option) && call == option.Uid;
+                return e.CustomOptions.TryGetMessage<RpcServiceCallOption>(60102, out var option) && call == option.Uid;
             });
         }
     }
