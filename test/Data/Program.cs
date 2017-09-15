@@ -22,9 +22,9 @@ namespace Data
 
             using (var xls = new ExcelPackage(File.OpenRead(@"../../a.xlsx")))
             {
-                var ds = new CDataAsset<a>(LogManager.Exists("data", "all"), a.Descriptor);
-                ds.Load(xls.Workbook.Worksheets[1]);
-                foreach (var i in ds)
+                var aData = new CDataAsset<a>(LogManager.Exists("data", "all"), a.Descriptor);
+                aData.Load(xls.Workbook.Worksheets[1]);
+                foreach (var i in aData)
                     Console.WriteLine(i);
             }
         }
