@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="EPPlus.Core" Version="1.5.2" />
     <PackageReference Include="Google.Protobuf" Version="3.4.0" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.4.0" />
   </ItemGroup>
 
   <ItemGroup>
