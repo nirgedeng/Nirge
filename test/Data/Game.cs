@@ -22,18 +22,26 @@ namespace Nirge.Core {
     static GameReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgpnYW1lLnByb3RvEgpOaXJnZS5Db3JlGg9EYXRhUHJvdG8ucHJvdG8iOgoB",
-            "YhIJCgFmGAEgASgIEgkKAWcYAiABKAUSCQoBaBgDIAEoAhIJCgFwGAQgASgD",
-            "EgkKAXEYBSABKAkimgEKAWESFwoBZhgBIAEoBUIMivEdAggBivEdAhAQEhcK",
-            "AWcYAiABKAVCDIrxHQIIAorxHQIQEBIJCgFoGAMgASgDEhEKAXAYBCABKAlC",
-            "BpLxHQIIARIJCgFxGAUgAygFEhgKAW0YBiABKAsyDS5OaXJnZS5Db3JlLmIS",
-            "GAoBbhgHIAMoCzINLk5pcmdlLkNvcmUuYjoG6uodAggBQg2qAgpOaXJnZS5D",
-            "b3JlYgZwcm90bzM="));
+            "CgpnYW1lLnByb3RvEgpOaXJnZS5Db3JlGg9EYXRhUHJvdG8ucHJvdG8iuwEK",
+            "AWISCQoBZhgBIAEoCBIJCgFnGAIgASgFEgkKAWgYAyABKAISCQoBcBgEIAEo",
+            "AxIJCgFxGAUgASgJEgkKAXIYCyABKAgSCQoBcxgMIAEoBRIJCgF1GA0gASgC",
+            "EgkKAXQYDiABKAMSCQoBdhgPIAEoCRIJCgF3GBAgAygDEgkKAXgYESADKAkS",
+            "GAoBeRgSIAEoCzINLk5pcmdlLkNvcmUuYxIYCgF6GBMgAygLMg0uTmlyZ2Uu",
+            "Q29yZS5jIjoKAWMSCQoBZhgBIAEoCBIJCgFnGAIgASgFEgkKAWgYAyABKAIS",
+            "CQoBcBgEIAEoAxIJCgFxGAUgASgJIpsCCgFhEhcKAWYYASABKAVCDIrxHQII",
+            "AYrxHQIQEBIXCgFnGAIgASgFQgyK8R0CCAKK8R0CEBASCQoBaBgDIAEoAxIR",
+            "CgFwGAQgASgJQgaS8R0CCAESCQoBcRgFIAMoBRIYCgFtGAYgASgLMg0uTmly",
+            "Z2UuQ29yZS5iEhgKAW4YByADKAsyDS5OaXJnZS5Db3JlLmISCQoBchgLIAEo",
+            "CBIJCgFzGAwgASgFEgkKAXUYDSABKAISCQoBdBgOIAEoAxIJCgF2GA8gASgJ",
+            "EgkKAXcYECADKAMSCQoBeBgRIAMoCRIYCgF5GBIgASgLMg0uTmlyZ2UuQ29y",
+            "ZS5jEhgKAXoYEyADKAsyDS5OaXJnZS5Db3JlLmM6BurqHQIIAUINqgIKTmly",
+            "Z2UuQ29yZWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Nirge.Core.DataProtoReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.b), global::Nirge.Core.b.Parser, new[]{ "F", "G", "H", "P", "Q" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.a), global::Nirge.Core.a.Parser, new[]{ "F", "G", "H", "P", "Q", "M", "N" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.b), global::Nirge.Core.b.Parser, new[]{ "F", "G", "H", "P", "Q", "R", "S", "U", "T", "V", "W", "X", "Y", "Z" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.c), global::Nirge.Core.c.Parser, new[]{ "F", "G", "H", "P", "Q" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Nirge.Core.a), global::Nirge.Core.a.Parser, new[]{ "F", "G", "H", "P", "Q", "M", "N", "R", "S", "U", "T", "V", "W", "X", "Y", "Z" }, null, null, null)
           }));
     }
     #endregion
@@ -69,6 +77,15 @@ namespace Nirge.Core {
       h_ = other.h_;
       p_ = other.p_;
       q_ = other.q_;
+      r_ = other.r_;
+      s_ = other.s_;
+      u_ = other.u_;
+      t_ = other.t_;
+      v_ = other.v_;
+      w_ = other.w_.Clone();
+      x_ = other.x_.Clone();
+      Y = other.y_ != null ? other.Y.Clone() : null;
+      z_ = other.z_.Clone();
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -131,6 +148,102 @@ namespace Nirge.Core {
       }
     }
 
+    /// <summary>Field number for the "r" field.</summary>
+    public const int RFieldNumber = 11;
+    private bool r_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool R {
+      get { return r_; }
+      set {
+        r_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "s" field.</summary>
+    public const int SFieldNumber = 12;
+    private int s_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int S {
+      get { return s_; }
+      set {
+        s_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "u" field.</summary>
+    public const int UFieldNumber = 13;
+    private float u_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float U {
+      get { return u_; }
+      set {
+        u_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "t" field.</summary>
+    public const int TFieldNumber = 14;
+    private long t_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long T {
+      get { return t_; }
+      set {
+        t_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "v" field.</summary>
+    public const int VFieldNumber = 15;
+    private string v_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string V {
+      get { return v_; }
+      set {
+        v_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "w" field.</summary>
+    public const int WFieldNumber = 16;
+    private static readonly pb::FieldCodec<long> _repeated_w_codec
+        = pb::FieldCodec.ForInt64(130);
+    private readonly pbc::RepeatedField<long> w_ = new pbc::RepeatedField<long>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<long> W {
+      get { return w_; }
+    }
+
+    /// <summary>Field number for the "x" field.</summary>
+    public const int XFieldNumber = 17;
+    private static readonly pb::FieldCodec<string> _repeated_x_codec
+        = pb::FieldCodec.ForString(138);
+    private readonly pbc::RepeatedField<string> x_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<string> X {
+      get { return x_; }
+    }
+
+    /// <summary>Field number for the "y" field.</summary>
+    public const int YFieldNumber = 18;
+    private global::Nirge.Core.c y_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Nirge.Core.c Y {
+      get { return y_; }
+      set {
+        y_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "z" field.</summary>
+    public const int ZFieldNumber = 19;
+    private static readonly pb::FieldCodec<global::Nirge.Core.c> _repeated_z_codec
+        = pb::FieldCodec.ForMessage(154, global::Nirge.Core.c.Parser);
+    private readonly pbc::RepeatedField<global::Nirge.Core.c> z_ = new pbc::RepeatedField<global::Nirge.Core.c>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Nirge.Core.c> Z {
+      get { return z_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as b);
@@ -138,6 +251,365 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public bool Equals(b other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (F != other.F) return false;
+      if (G != other.G) return false;
+      if (H != other.H) return false;
+      if (P != other.P) return false;
+      if (Q != other.Q) return false;
+      if (R != other.R) return false;
+      if (S != other.S) return false;
+      if (U != other.U) return false;
+      if (T != other.T) return false;
+      if (V != other.V) return false;
+      if(!w_.Equals(other.w_)) return false;
+      if(!x_.Equals(other.x_)) return false;
+      if (!object.Equals(Y, other.Y)) return false;
+      if(!z_.Equals(other.z_)) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (F != false) hash ^= F.GetHashCode();
+      if (G != 0) hash ^= G.GetHashCode();
+      if (H != 0F) hash ^= H.GetHashCode();
+      if (P != 0L) hash ^= P.GetHashCode();
+      if (Q.Length != 0) hash ^= Q.GetHashCode();
+      if (R != false) hash ^= R.GetHashCode();
+      if (S != 0) hash ^= S.GetHashCode();
+      if (U != 0F) hash ^= U.GetHashCode();
+      if (T != 0L) hash ^= T.GetHashCode();
+      if (V.Length != 0) hash ^= V.GetHashCode();
+      hash ^= w_.GetHashCode();
+      hash ^= x_.GetHashCode();
+      if (y_ != null) hash ^= Y.GetHashCode();
+      hash ^= z_.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (F != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(F);
+      }
+      if (G != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(G);
+      }
+      if (H != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(H);
+      }
+      if (P != 0L) {
+        output.WriteRawTag(32);
+        output.WriteInt64(P);
+      }
+      if (Q.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Q);
+      }
+      if (R != false) {
+        output.WriteRawTag(88);
+        output.WriteBool(R);
+      }
+      if (S != 0) {
+        output.WriteRawTag(96);
+        output.WriteInt32(S);
+      }
+      if (U != 0F) {
+        output.WriteRawTag(109);
+        output.WriteFloat(U);
+      }
+      if (T != 0L) {
+        output.WriteRawTag(112);
+        output.WriteInt64(T);
+      }
+      if (V.Length != 0) {
+        output.WriteRawTag(122);
+        output.WriteString(V);
+      }
+      w_.WriteTo(output, _repeated_w_codec);
+      x_.WriteTo(output, _repeated_x_codec);
+      if (y_ != null) {
+        output.WriteRawTag(146, 1);
+        output.WriteMessage(Y);
+      }
+      z_.WriteTo(output, _repeated_z_codec);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (F != false) {
+        size += 1 + 1;
+      }
+      if (G != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(G);
+      }
+      if (H != 0F) {
+        size += 1 + 4;
+      }
+      if (P != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(P);
+      }
+      if (Q.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Q);
+      }
+      if (R != false) {
+        size += 1 + 1;
+      }
+      if (S != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(S);
+      }
+      if (U != 0F) {
+        size += 1 + 4;
+      }
+      if (T != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(T);
+      }
+      if (V.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(V);
+      }
+      size += w_.CalculateSize(_repeated_w_codec);
+      size += x_.CalculateSize(_repeated_x_codec);
+      if (y_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(Y);
+      }
+      size += z_.CalculateSize(_repeated_z_codec);
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(b other) {
+      if (other == null) {
+        return;
+      }
+      if (other.F != false) {
+        F = other.F;
+      }
+      if (other.G != 0) {
+        G = other.G;
+      }
+      if (other.H != 0F) {
+        H = other.H;
+      }
+      if (other.P != 0L) {
+        P = other.P;
+      }
+      if (other.Q.Length != 0) {
+        Q = other.Q;
+      }
+      if (other.R != false) {
+        R = other.R;
+      }
+      if (other.S != 0) {
+        S = other.S;
+      }
+      if (other.U != 0F) {
+        U = other.U;
+      }
+      if (other.T != 0L) {
+        T = other.T;
+      }
+      if (other.V.Length != 0) {
+        V = other.V;
+      }
+      w_.Add(other.w_);
+      x_.Add(other.x_);
+      if (other.y_ != null) {
+        if (y_ == null) {
+          y_ = new global::Nirge.Core.c();
+        }
+        Y.MergeFrom(other.Y);
+      }
+      z_.Add(other.z_);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            F = input.ReadBool();
+            break;
+          }
+          case 16: {
+            G = input.ReadInt32();
+            break;
+          }
+          case 29: {
+            H = input.ReadFloat();
+            break;
+          }
+          case 32: {
+            P = input.ReadInt64();
+            break;
+          }
+          case 42: {
+            Q = input.ReadString();
+            break;
+          }
+          case 88: {
+            R = input.ReadBool();
+            break;
+          }
+          case 96: {
+            S = input.ReadInt32();
+            break;
+          }
+          case 109: {
+            U = input.ReadFloat();
+            break;
+          }
+          case 112: {
+            T = input.ReadInt64();
+            break;
+          }
+          case 122: {
+            V = input.ReadString();
+            break;
+          }
+          case 130:
+          case 128: {
+            w_.AddEntriesFrom(input, _repeated_w_codec);
+            break;
+          }
+          case 138: {
+            x_.AddEntriesFrom(input, _repeated_x_codec);
+            break;
+          }
+          case 146: {
+            if (y_ == null) {
+              y_ = new global::Nirge.Core.c();
+            }
+            input.ReadMessage(y_);
+            break;
+          }
+          case 154: {
+            z_.AddEntriesFrom(input, _repeated_z_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class c : pb::IMessage<c> {
+    private static readonly pb::MessageParser<c> _parser = new pb::MessageParser<c>(() => new c());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<c> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Nirge.Core.GameReflection.Descriptor.MessageTypes[1]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public c() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public c(c other) : this() {
+      f_ = other.f_;
+      g_ = other.g_;
+      h_ = other.h_;
+      p_ = other.p_;
+      q_ = other.q_;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public c Clone() {
+      return new c(this);
+    }
+
+    /// <summary>Field number for the "f" field.</summary>
+    public const int FFieldNumber = 1;
+    private bool f_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool F {
+      get { return f_; }
+      set {
+        f_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "g" field.</summary>
+    public const int GFieldNumber = 2;
+    private int g_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int G {
+      get { return g_; }
+      set {
+        g_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "h" field.</summary>
+    public const int HFieldNumber = 3;
+    private float h_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float H {
+      get { return h_; }
+      set {
+        h_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "p" field.</summary>
+    public const int PFieldNumber = 4;
+    private long p_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long P {
+      get { return p_; }
+      set {
+        p_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "q" field.</summary>
+    public const int QFieldNumber = 5;
+    private string q_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Q {
+      get { return q_; }
+      set {
+        q_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as c);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(c other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -214,7 +686,7 @@ namespace Nirge.Core {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(b other) {
+    public void MergeFrom(c other) {
       if (other == null) {
         return;
       }
@@ -276,7 +748,7 @@ namespace Nirge.Core {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Nirge.Core.GameReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Nirge.Core.GameReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -300,6 +772,15 @@ namespace Nirge.Core {
       q_ = other.q_.Clone();
       M = other.m_ != null ? other.M.Clone() : null;
       n_ = other.n_.Clone();
+      r_ = other.r_;
+      s_ = other.s_;
+      u_ = other.u_;
+      t_ = other.t_;
+      v_ = other.v_;
+      w_ = other.w_.Clone();
+      x_ = other.x_.Clone();
+      Y = other.y_ != null ? other.Y.Clone() : null;
+      z_ = other.z_.Clone();
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -382,6 +863,102 @@ namespace Nirge.Core {
       get { return n_; }
     }
 
+    /// <summary>Field number for the "r" field.</summary>
+    public const int RFieldNumber = 11;
+    private bool r_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool R {
+      get { return r_; }
+      set {
+        r_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "s" field.</summary>
+    public const int SFieldNumber = 12;
+    private int s_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int S {
+      get { return s_; }
+      set {
+        s_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "u" field.</summary>
+    public const int UFieldNumber = 13;
+    private float u_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float U {
+      get { return u_; }
+      set {
+        u_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "t" field.</summary>
+    public const int TFieldNumber = 14;
+    private long t_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long T {
+      get { return t_; }
+      set {
+        t_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "v" field.</summary>
+    public const int VFieldNumber = 15;
+    private string v_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string V {
+      get { return v_; }
+      set {
+        v_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "w" field.</summary>
+    public const int WFieldNumber = 16;
+    private static readonly pb::FieldCodec<long> _repeated_w_codec
+        = pb::FieldCodec.ForInt64(130);
+    private readonly pbc::RepeatedField<long> w_ = new pbc::RepeatedField<long>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<long> W {
+      get { return w_; }
+    }
+
+    /// <summary>Field number for the "x" field.</summary>
+    public const int XFieldNumber = 17;
+    private static readonly pb::FieldCodec<string> _repeated_x_codec
+        = pb::FieldCodec.ForString(138);
+    private readonly pbc::RepeatedField<string> x_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<string> X {
+      get { return x_; }
+    }
+
+    /// <summary>Field number for the "y" field.</summary>
+    public const int YFieldNumber = 18;
+    private global::Nirge.Core.c y_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Nirge.Core.c Y {
+      get { return y_; }
+      set {
+        y_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "z" field.</summary>
+    public const int ZFieldNumber = 19;
+    private static readonly pb::FieldCodec<global::Nirge.Core.c> _repeated_z_codec
+        = pb::FieldCodec.ForMessage(154, global::Nirge.Core.c.Parser);
+    private readonly pbc::RepeatedField<global::Nirge.Core.c> z_ = new pbc::RepeatedField<global::Nirge.Core.c>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Nirge.Core.c> Z {
+      get { return z_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as a);
@@ -402,6 +979,15 @@ namespace Nirge.Core {
       if(!q_.Equals(other.q_)) return false;
       if (!object.Equals(M, other.M)) return false;
       if(!n_.Equals(other.n_)) return false;
+      if (R != other.R) return false;
+      if (S != other.S) return false;
+      if (U != other.U) return false;
+      if (T != other.T) return false;
+      if (V != other.V) return false;
+      if(!w_.Equals(other.w_)) return false;
+      if(!x_.Equals(other.x_)) return false;
+      if (!object.Equals(Y, other.Y)) return false;
+      if(!z_.Equals(other.z_)) return false;
       return true;
     }
 
@@ -415,6 +1001,15 @@ namespace Nirge.Core {
       hash ^= q_.GetHashCode();
       if (m_ != null) hash ^= M.GetHashCode();
       hash ^= n_.GetHashCode();
+      if (R != false) hash ^= R.GetHashCode();
+      if (S != 0) hash ^= S.GetHashCode();
+      if (U != 0F) hash ^= U.GetHashCode();
+      if (T != 0L) hash ^= T.GetHashCode();
+      if (V.Length != 0) hash ^= V.GetHashCode();
+      hash ^= w_.GetHashCode();
+      hash ^= x_.GetHashCode();
+      if (y_ != null) hash ^= Y.GetHashCode();
+      hash ^= z_.GetHashCode();
       return hash;
     }
 
@@ -447,6 +1042,33 @@ namespace Nirge.Core {
         output.WriteMessage(M);
       }
       n_.WriteTo(output, _repeated_n_codec);
+      if (R != false) {
+        output.WriteRawTag(88);
+        output.WriteBool(R);
+      }
+      if (S != 0) {
+        output.WriteRawTag(96);
+        output.WriteInt32(S);
+      }
+      if (U != 0F) {
+        output.WriteRawTag(109);
+        output.WriteFloat(U);
+      }
+      if (T != 0L) {
+        output.WriteRawTag(112);
+        output.WriteInt64(T);
+      }
+      if (V.Length != 0) {
+        output.WriteRawTag(122);
+        output.WriteString(V);
+      }
+      w_.WriteTo(output, _repeated_w_codec);
+      x_.WriteTo(output, _repeated_x_codec);
+      if (y_ != null) {
+        output.WriteRawTag(146, 1);
+        output.WriteMessage(Y);
+      }
+      z_.WriteTo(output, _repeated_z_codec);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -469,6 +1091,27 @@ namespace Nirge.Core {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(M);
       }
       size += n_.CalculateSize(_repeated_n_codec);
+      if (R != false) {
+        size += 1 + 1;
+      }
+      if (S != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(S);
+      }
+      if (U != 0F) {
+        size += 1 + 4;
+      }
+      if (T != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(T);
+      }
+      if (V.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(V);
+      }
+      size += w_.CalculateSize(_repeated_w_codec);
+      size += x_.CalculateSize(_repeated_x_codec);
+      if (y_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(Y);
+      }
+      size += z_.CalculateSize(_repeated_z_codec);
       return size;
     }
 
@@ -497,6 +1140,30 @@ namespace Nirge.Core {
         M.MergeFrom(other.M);
       }
       n_.Add(other.n_);
+      if (other.R != false) {
+        R = other.R;
+      }
+      if (other.S != 0) {
+        S = other.S;
+      }
+      if (other.U != 0F) {
+        U = other.U;
+      }
+      if (other.T != 0L) {
+        T = other.T;
+      }
+      if (other.V.Length != 0) {
+        V = other.V;
+      }
+      w_.Add(other.w_);
+      x_.Add(other.x_);
+      if (other.y_ != null) {
+        if (y_ == null) {
+          y_ = new global::Nirge.Core.c();
+        }
+        Y.MergeFrom(other.Y);
+      }
+      z_.Add(other.z_);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -537,6 +1204,46 @@ namespace Nirge.Core {
           }
           case 58: {
             n_.AddEntriesFrom(input, _repeated_n_codec);
+            break;
+          }
+          case 88: {
+            R = input.ReadBool();
+            break;
+          }
+          case 96: {
+            S = input.ReadInt32();
+            break;
+          }
+          case 109: {
+            U = input.ReadFloat();
+            break;
+          }
+          case 112: {
+            T = input.ReadInt64();
+            break;
+          }
+          case 122: {
+            V = input.ReadString();
+            break;
+          }
+          case 130:
+          case 128: {
+            w_.AddEntriesFrom(input, _repeated_w_codec);
+            break;
+          }
+          case 138: {
+            x_.AddEntriesFrom(input, _repeated_x_codec);
+            break;
+          }
+          case 146: {
+            if (y_ == null) {
+              y_ = new global::Nirge.Core.c();
+            }
+            input.ReadMessage(y_);
+            break;
+          }
+          case 154: {
+            z_.AddEntriesFrom(input, _repeated_z_codec);
             break;
           }
         }

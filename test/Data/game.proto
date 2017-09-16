@@ -20,6 +20,25 @@ message b
     float h = 3;
     int64 p = 4;
     string q = 5;
+
+    bool r = 11;
+    int32 s = 12;
+    float u = 13;
+    int64 t = 14;
+    string v = 15;
+    repeated int64 w = 16;
+    repeated string x = 17;
+    c y = 18;
+    repeated c z = 19;
+}
+
+message c
+{
+    bool f = 1;
+    int32 g = 2;
+    float h = 3;
+    int64 p = 4;
+    string q = 5;
 }
 
 message a
@@ -32,6 +51,16 @@ message a
     repeated int32 q = 5;
     b m = 6;
     repeated b n = 7;
+
+    bool r = 11;
+    int32 s = 12;
+    float u = 13;
+    int64 t = 14;
+    string v = 15;
+    repeated int64 w = 16;
+    repeated string x = 17;
+    c y = 18;
+    repeated c z = 19;
 }
 
 //----------------------------------------------------------------------------------------
