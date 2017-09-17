@@ -239,7 +239,6 @@ namespace Nirge.Core
             }
 
             var clsPrimitiveCols = new List<FieldDescriptor>();
-            var clsUidCols = new List<Tuple<FieldDescriptor, DataIdOption>>();
             var clsPrimitivesCols = new List<FieldDescriptor>();
             var clsObjCols = new List<FieldDescriptor>();
             var clsObjsCols = new List<FieldDescriptor>();
@@ -257,11 +256,7 @@ namespace Nirge.Core
                     if (i.IsRepeated)
                         clsPrimitivesCols.Add(i);
                     else
-                    {
                         clsPrimitiveCols.Add(i);
-                        if (i.CustomOptions.TryGetMessage<DataIdOption>(61201, out var e))
-                            clsUidCols.Add(Tuple.Create(i, e));
-                    }
                     break;
                 case FieldType.Message:
                     if (i.IsRepeated)
@@ -272,36 +267,24 @@ namespace Nirge.Core
                 }
             }
 
-            var uidBits = 0;
-            foreach (var i in clsUidCols)
-            {
-                if (i.Item2.Bits < 0)
-                {
-                    _log.ErrorFormat("[Data]CDataAsset.Load !Uid, cls:\"{0}\", xls:\"{1}\", bits:\"{2},{3},{4}\""
-                        , _descriptor.Name
-                        , sheet.Name
-                        , i.Item1.Name
-                        , i.Item2.Order
-                        , i.Item2.Bits);
-                    return false;
-                }
-                uidBits += i.Item2.Bits;
-            }
-            if (uidBits != 32)
-            {
-                _log.ErrorFormat("[Data]CDataAsset.Load !Uid, cls:\"{0}\", xls:\"{1}\", bits:\"{2}\""
-                    , _descriptor.Name
-                    , sheet.Name
-                    , uidBits);
-                return false;
-            }
-
             var xlsPrimitiveCols = new Dictionary<int, CData.CPrimitiveCol>();
             foreach (var i in clsPrimitiveCols)
             {
                 var p = xlsCols.FindIndex(e => string.Compare(e.Name, i.Name) == 0);
                 if (p == -1)
+                {
+                    DataIdOption e;
+                    if (i.CustomOptions.TryGetMessage<DataIdOption>(61201, out e))
+                    {
+                        _log.ErrorFormat("[Data]CDataAsset.Load !Uid, cls:\"{0}\", xls:\"{1}\", col:\"{2},{3}\""
+                            , _descriptor.Name
+                            , sheet.Name
+                            , i.Name
+                            , i.FieldNumber);
+                        return false;
+                    }
                     continue;
+                }
                 xlsPrimitiveCols.Add(i.FieldNumber, new CData.CPrimitiveCol(i, xlsCols[p]));
                 xlsCols.RemoveAt(p);
             }
