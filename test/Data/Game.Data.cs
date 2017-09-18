@@ -13,9 +13,20 @@ namespace Nirge.Core
 {
     public partial class a : CData
     {
+        public static int CombineUid(int f, int g)
+        {
+            return f << 0 | g << 16;
+        }
+
+        public static void ResolveUid(int uid, out int f, out int g)
+        {
+            f = uid << 16 >> 16;
+            g = (uid & ~f) << 0 >> 16;
+        }
+
         protected override int CombineUid()
         {
-            return F << 0 | G << 16;
+            return CombineUid(F, G);
         }
 
         public override string Uname => P;
