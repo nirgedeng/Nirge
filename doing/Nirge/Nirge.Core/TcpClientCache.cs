@@ -135,12 +135,12 @@ namespace Nirge.Core
 
         #region 
 
-        public byte[] FetchSendBuf(int count)
+        public byte[] AllocSendBuf(int count)
         {
             return new byte[count];
         }
 
-        public void BackSendBuf(byte[] buf)
+        public void CollectSendBuf(byte[] buf)
         {
         }
 
@@ -148,12 +148,12 @@ namespace Nirge.Core
 
         #region 
 
-        public byte[] FetchRecvBuf(int count)
+        public byte[] AllocRecvBuf(int count)
         {
             return new byte[count];
         }
 
-        public void BackRecvBuf(byte[] buf)
+        public void CollectRecvBuf(byte[] buf)
         {
         }
 
@@ -210,7 +210,7 @@ namespace Nirge.Core
 
         #region 
 
-        public byte[] FetchSendBuf(int count)
+        public byte[] AllocSendBuf(int count)
         {
             if (count > g8k)
                 return new byte[count];
@@ -240,7 +240,7 @@ namespace Nirge.Core
             }
         }
 
-        public void BackSendBuf(byte[] buf)
+        public void CollectSendBuf(byte[] buf)
         {
             switch (buf.Length)
             {
@@ -263,7 +263,7 @@ namespace Nirge.Core
 
         #region 
 
-        public byte[] FetchRecvBuf(int count)
+        public byte[] AllocRecvBuf(int count)
         {
             if (count > g8k)
                 return new byte[count];
@@ -293,7 +293,7 @@ namespace Nirge.Core
             }
         }
 
-        public void BackRecvBuf(byte[] buf)
+        public void CollectRecvBuf(byte[] buf)
         {
             switch (buf.Length)
             {

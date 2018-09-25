@@ -12,39 +12,39 @@ namespace Nirge.Core
 
     public class CDataEventArgs : EventArgs, IObjAlloc, IObjCollect
     {
-        public static CDataEventArgs<TArg1> Alloc<TArg1>(TArg1 arg1)
+        public static CDataEventArgs<TArg1> Create<TArg1>(TArg1 arg1)
         {
             return new CDataEventArgs<TArg1>(arg1);
         }
-        public static CDataEventArgs<TArg1, TArg2> Alloc<TArg1, TArg2>(TArg1 arg1, TArg2 arg2)
+        public static CDataEventArgs<TArg1, TArg2> Create<TArg1, TArg2>(TArg1 arg1, TArg2 arg2)
         {
             return new CDataEventArgs<TArg1, TArg2>(arg1, arg2);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3> Alloc<TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3)
+        public static CDataEventArgs<TArg1, TArg2, TArg3> Create<TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3)
         {
             return new CDataEventArgs<TArg1, TArg2, TArg3>(arg1, arg2, arg3);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4> Alloc<TArg1, TArg2, TArg3, TArg4>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4> Create<TArg1, TArg2, TArg3, TArg4>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
         {
             return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4>(arg1, arg2, arg3, arg4);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5> Alloc<TArg1, TArg2, TArg3, TArg4, TArg5>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5> Create<TArg1, TArg2, TArg3, TArg4, TArg5>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
         {
             return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5>(arg1, arg2, arg3, arg4, arg5);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> Alloc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
         {
             return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(arg1, arg2, arg3, arg4, arg5, arg6);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> Alloc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
         {
             return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> Alloc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8)
         {
             return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
         }
-        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> Alloc<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
+        public static CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9> Create<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9)
         {
             return new CDataEventArgs<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         }
