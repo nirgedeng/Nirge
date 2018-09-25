@@ -117,6 +117,8 @@ namespace Nirge.Core
             _args = args;
 
             _sends = new ConcurrentQueue<byte[]>[gTcpClientBufSize.Length];
+            for (var i = 0; i < gTcpClientBufSize.Length; ++i)
+                _sends[i] = new ConcurrentQueue<byte[]>();
             _recvs = new ConcurrentQueue<byte[]>();
         }
 
