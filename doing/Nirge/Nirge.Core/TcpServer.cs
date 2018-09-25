@@ -17,10 +17,8 @@ namespace Nirge.Core
     {
         int _sendBufSize;
         int _recvBufSize;
-        int _pkgSize;
-        int _sendCapacity;
-        int _recvCapacity;
-        int _capacity;
+        int _sendCacheSize;
+        int _recvCacheSize;
 
         public int SendBufSize
         {
@@ -38,68 +36,38 @@ namespace Nirge.Core
             }
         }
 
-        public int PkgSize
+        public int SendCacheSize
         {
             get
             {
-                return _pkgSize;
+                return _sendCacheSize;
             }
         }
 
-        public int SendCapacity
+        public int RecvCacheSize
         {
             get
             {
-                return _sendCapacity;
+                return _recvCacheSize;
             }
         }
 
-        public int RecvCapacity
-        {
-            get
-            {
-                return _recvCapacity;
-            }
-        }
 
-        public int Capacity
-        {
-            get
-            {
-                return _capacity;
-            }
-        }
-
-        public CTcpServerArgs(int sendBufSize = 0, int recvBufSize = 0, int pkgSize = 0, int sendCapacity = 0, int recvCapacity = 0, int capacity = 0)
+        public CTcpServerArgs(int sendBufSize = 0, int recvBufSize = 0, int sendCacheSize = 0, int recvCacheSize = 0)
         {
             _sendBufSize = sendBufSize;
             _recvBufSize = recvBufSize;
-            _pkgSize = pkgSize;
-            _sendCapacity = sendCapacity;
-            _recvCapacity = recvCapacity;
-            _capacity = capacity;
+            _sendCacheSize = sendCacheSize;
+            _recvCacheSize = recvCacheSize;
 
-            if (_sendBufSize == 0)
+            if (_sendBufSize < 8192)
                 _sendBufSize = 8192;
-            else if (_sendBufSize < 8192)
-                _sendBufSize = 8192;
-            else if (_sendBufSize > 16384)
-                _sendBufSize = 16384;
-            if (_recvBufSize == 0)
+            if (_recvBufSize < 8192)
                 _recvBufSize = 8192;
-            else if (_recvBufSize < 8192)
-                _recvBufSize = 8192;
-            else if (_recvBufSize > 16384)
-                _recvBufSize = 16384;
-            if (_pkgSize == 0)
-                _pkgSize = 8192;
-            else if (_pkgSize < 8192)
-                _pkgSize = 8192;
-            else if (_pkgSize > 1048576)
-                _pkgSize = 1048576;
-            _sendCapacity = 128;
-            _recvCapacity = 128;
-            _capacity = 1024;
+            if (_sendCacheSize < 1048576)
+                _sendCacheSize = 1048576;
+            if (_recvCacheSize < 1048576)
+                _recvCacheSize = 1048576;
         }
     }
 
@@ -183,7 +151,7 @@ namespace Nirge.Core
         bool _lising;
 
         Queue<CTcpClient> _clisPool;
-        int _cliId;
+        int _clisSeed;
         Queue<TcpClient> _clisPre;
         Queue<TcpClient> _clisPost;
         List<CTcpClient> _clis;
@@ -204,7 +172,7 @@ namespace Nirge.Core
 
         public CTcpServer(ILog log)
             :
-            this(new CTcpServerArgs(), log, new CTcpClientCacheEmpty(new CTcpClientCacheArgs(25600, 12800, 6400, 25600, 12800, 6400)))
+            this(new CTcpServerArgs(), log, new CTcpClientCacheEmpty(new CTcpClientCacheArgs()))
         {
         }
 
@@ -224,12 +192,12 @@ namespace Nirge.Core
 
             _lising = false;
 
-            _clisPool = new Queue<CTcpClient>(_args.Capacity);
-            _cliId = 0;
+            _clisPool = new Queue<CTcpClient>();
+            _clisSeed = 0;
             _clisPre = new Queue<TcpClient>(32);
             _clisPost = new Queue<TcpClient>(32);
-            _clis = new List<CTcpClient>(_args.Capacity);
-            _clisDict = new Dictionary<int, CTcpClient>(_args.Capacity);
+            _clis = new List<CTcpClient>();
+            _clisDict = new Dictionary<int, CTcpClient>();
         }
 
         public void Collect()
@@ -285,7 +253,7 @@ namespace Nirge.Core
                 }
             }
 
-            _cliId = 0;
+            _clisSeed = 0;
             _clisPost.Clear();
             _clis.Clear();
             _clisDict.Clear();
@@ -538,7 +506,7 @@ namespace Nirge.Core
 
         #region
 
-        public eTcpError Send(int cli, byte[] buf, int offset, int count)
+        public eTcpError Send(int cli, ArraySegment<byte> pkg)
         {
             switch (_state)
             {
@@ -546,7 +514,7 @@ namespace Nirge.Core
                 CTcpClient e;
                 if (!_clisDict.TryGetValue(cli, out e))
                     return eTcpError.CliOutOfRange;
-                return e.Send(buf, offset, count);
+                return e.Send(pkg);
             case eTcpServerState.Closed:
             case eTcpServerState.Opening:
             case eTcpServerState.Closing:
@@ -592,9 +560,9 @@ namespace Nirge.Core
                         if (_clisPool.Count > 0)
                             cli = _clisPool.Dequeue();
                         else
-                            cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.PkgSize, _args.SendCapacity, _args.RecvCapacity), _log, _cache);
+                            cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.SendCacheSize, _args.RecvCacheSize), _log, _cache);
 
-                        var cliId = ++_cliId;
+                        var cliId = ++_clisSeed;
                         _clis.Add(cli);
                         _clisDict.Add(cliId, cli);
 

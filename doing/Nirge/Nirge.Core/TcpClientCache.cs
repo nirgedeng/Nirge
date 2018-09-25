@@ -14,107 +14,46 @@ namespace Nirge.Core
 
     public class CTcpClientCacheArgs
     {
-        int _2kSendCapacity;
-        int _4kSendCapacity;
-        int _8kSendCapacity;
-        int _2kRecvCapacity;
-        int _4kRecvCapacity;
-        int _8kRecvCapacity;
+        int _recvBufSize;
+        int _sendCacheSize;
+        int _recvCacheSize;
 
-        public int K2SendCapacity
+        public int RecvBufSize
         {
             get
             {
-                return _2kSendCapacity;
+                return _recvBufSize;
             }
         }
 
-        public int K4SendCapacity
+        public int SendCacheSize
         {
             get
             {
-                return _4kSendCapacity;
+                return _sendCacheSize;
             }
         }
 
-        public int K8SendCapacity
+        public int RecvCacheSize
         {
             get
             {
-                return _8kSendCapacity;
+                return _recvCacheSize;
             }
         }
 
-        public int K2RecvCapacity
+        public CTcpClientCacheArgs(int recvBufSize = 0, int sendCacheSize = 0, int recvCacheSize = 0)
         {
-            get
-            {
-                return _2kRecvCapacity;
-            }
-        }
+            _recvBufSize = recvBufSize;
+            _sendCacheSize = sendCacheSize;
+            _recvCacheSize = recvCacheSize;
 
-        public int K4RecvCapacity
-        {
-            get
-            {
-                return _4kRecvCapacity;
-            }
-        }
-
-        public int K8RecvCapacity
-        {
-            get
-            {
-                return _8kRecvCapacity;
-            }
-        }
-
-        public CTcpClientCacheArgs(int k2SendCapacity = 0, int k4SendCapacity = 0, int k8SendCapacity = 0, int k2RecvCapacity = 0, int k4RecvCapacity = 0, int k8RecvCapacity = 0)
-        {
-            _2kSendCapacity = k2SendCapacity;
-            _4kSendCapacity = k4SendCapacity;
-            _8kSendCapacity = k8SendCapacity;
-            _2kRecvCapacity = k2RecvCapacity;
-            _4kRecvCapacity = k4RecvCapacity;
-            _8kRecvCapacity = k8RecvCapacity;
-
-            if (_2kSendCapacity == 0)
-                _2kSendCapacity = 256;
-            else if (_2kSendCapacity < 256)
-                _2kSendCapacity = 256;
-            else if (_2kSendCapacity > 25600)
-                _2kSendCapacity = 25600;
-            if (_4kSendCapacity == 0)
-                _4kSendCapacity = 128;
-            else if (_4kSendCapacity < 128)
-                _4kSendCapacity = 128;
-            else if (_4kSendCapacity > 12800)
-                _4kSendCapacity = 12800;
-            if (_8kSendCapacity == 0)
-                _8kSendCapacity = 64;
-            else if (_8kSendCapacity < 64)
-                _8kSendCapacity = 64;
-            else if (_8kSendCapacity > 6400)
-                _8kSendCapacity = 6400;
-
-            if (_2kRecvCapacity == 0)
-                _2kRecvCapacity = 256;
-            else if (_2kRecvCapacity < 256)
-                _2kRecvCapacity = 256;
-            else if (_2kRecvCapacity > 25600)
-                _2kRecvCapacity = 25600;
-            if (_4kRecvCapacity == 0)
-                _4kRecvCapacity = 128;
-            else if (_4kRecvCapacity < 128)
-                _4kRecvCapacity = 128;
-            else if (_4kRecvCapacity > 12800)
-                _4kRecvCapacity = 12800;
-            if (_8kRecvCapacity == 0)
-                _8kRecvCapacity = 64;
-            else if (_8kRecvCapacity < 64)
-                _8kRecvCapacity = 64;
-            else if (_8kRecvCapacity > 6400)
-                _8kRecvCapacity = 6400;
+            if (_recvBufSize < 8192)
+                _recvBufSize = 8192;
+            if (_sendCacheSize == 0)
+                _sendCacheSize = 1073741824;
+            if (_recvCacheSize == 0)
+                _recvCacheSize = 1073741824;
         }
     }
 
@@ -135,26 +74,30 @@ namespace Nirge.Core
 
         #region 
 
-        public byte[] AllocSendBuf(int count)
+        public eTcpError AllocSendBuf(int count, out byte[] buf)
         {
-            return new byte[count];
+            buf = new byte[count];
+            return eTcpError.None;
         }
 
-        public void CollectSendBuf(byte[] buf)
+        public eTcpError CollectSendBuf(byte[] buf)
         {
+            return eTcpError.None;
         }
 
         #endregion
 
         #region 
 
-        public byte[] AllocRecvBuf(int count)
+        public eTcpError AllocRecvBuf(out byte[] buf)
         {
-            return new byte[count];
+            buf = new byte[_args.RecvBufSize];
+            return eTcpError.None;
         }
 
-        public void CollectRecvBuf(byte[] buf)
+        public eTcpError CollectRecvBuf(byte[] buf)
         {
+            return eTcpError.None;
         }
 
         #endregion
@@ -162,154 +105,98 @@ namespace Nirge.Core
 
     public class CTcpClientCache : ITcpClientCache
     {
-        const int g2k = 2048;
-        const int g4k = 4096;
-        const int g8k = 8192;
+        static int[] gTcpClientBufSize = { 32, 64, 128, 256, 512, 1024, 2048 };
 
         CTcpClientCacheArgs _args;
 
-        ConcurrentQueue<byte[]> _2kSends;
-        ConcurrentQueue<byte[]> _4kSends;
-        ConcurrentQueue<byte[]> _8kSends;
-
-        ConcurrentQueue<byte[]> _2kRecvs;
-        ConcurrentQueue<byte[]> _4kRecvs;
-        ConcurrentQueue<byte[]> _8kRecvs;
+        ConcurrentQueue<byte[]>[] _sends;
+        ConcurrentQueue<byte[]> _recvs;
 
         public CTcpClientCache(CTcpClientCacheArgs args)
         {
             _args = args;
 
-            _2kSends = new ConcurrentQueue<byte[]>();
-            _4kSends = new ConcurrentQueue<byte[]>();
-            _8kSends = new ConcurrentQueue<byte[]>();
-
-            _2kRecvs = new ConcurrentQueue<byte[]>();
-            _4kRecvs = new ConcurrentQueue<byte[]>();
-            _8kRecvs = new ConcurrentQueue<byte[]>();
+            _sends = new ConcurrentQueue<byte[]>[gTcpClientBufSize.Length];
+            _recvs = new ConcurrentQueue<byte[]>();
         }
 
         public void Clear()
         {
             byte[] buf;
 
-            while (_2kSends.Count > 0)
-                _2kSends.TryDequeue(out buf);
-            while (_4kSends.Count > 0)
-                _4kSends.TryDequeue(out buf);
-            while (_8kSends.Count > 0)
-                _8kSends.TryDequeue(out buf);
+            foreach (var i in _sends)
+            {
+                while (i.Count > 0)
+                    i.TryDequeue(out buf);
+            }
 
-            while (_2kRecvs.Count > 0)
-                _2kRecvs.TryDequeue(out buf);
-            while (_4kRecvs.Count > 0)
-                _4kRecvs.TryDequeue(out buf);
-            while (_8kRecvs.Count > 0)
-                _8kRecvs.TryDequeue(out buf);
+            while (_recvs.Count > 0)
+                _recvs.TryDequeue(out buf);
         }
 
         #region 
 
-        public byte[] AllocSendBuf(int count)
+        public eTcpError AllocSendBuf(int count, out byte[] buf)
         {
-            if (count > g8k)
-                return new byte[count];
-            else if (count > g4k)
+            if (count == 0)
             {
-                byte[] buf;
-                if (_8kSends.TryDequeue(out buf))
-                    return buf;
-                else
-                    return new byte[g8k];
+                buf = null;
+                return eTcpError.PkgSizeIsZero;
             }
-            else if (count > g2k)
+
+            for (var i = 0; i < gTcpClientBufSize.Length; ++i)
             {
-                byte[] buf;
-                if (_4kSends.TryDequeue(out buf))
-                    return buf;
-                else
-                    return new byte[g4k];
+                if (count < gTcpClientBufSize[i])
+                {
+                    if (!_sends[i].TryDequeue(out buf))
+                    {
+                        buf = new byte[gTcpClientBufSize[i]];
+                        return eTcpError.None;
+                    }
+                }
             }
-            else
-            {
-                byte[] buf;
-                if (_2kSends.TryDequeue(out buf))
-                    return buf;
-                else
-                    return new byte[g2k];
-            }
+
+            buf = null;
+            return eTcpError.PkgSizeOutOfRange;
         }
 
-        public void CollectSendBuf(byte[] buf)
+        public eTcpError CollectSendBuf(byte[] buf)
         {
-            switch (buf.Length)
+            if (buf == null)
+                return eTcpError.ArgumentNull;
+
+            for (var i = 0; i < gTcpClientBufSize.Length; ++i)
             {
-            case g2k:
-                if (_2kSends.Count < _args.K2SendCapacity)
-                    _2kSends.Enqueue(buf);
-                break;
-            case g4k:
-                if (_4kSends.Count < _args.K4SendCapacity)
-                    _4kSends.Enqueue(buf);
-                break;
-            case g8k:
-                if (_8kSends.Count < _args.K8SendCapacity)
-                    _8kSends.Enqueue(buf);
-                break;
+                if (buf.Length == gTcpClientBufSize[i])
+                {
+                    _sends[i].Enqueue(buf);
+                    return eTcpError.None;
+                }
             }
+
+            return eTcpError.PkgSizeOutOfRange;
         }
 
         #endregion
 
         #region 
 
-        public byte[] AllocRecvBuf(int count)
+        public eTcpError AllocRecvBuf(out byte[] buf)
         {
-            if (count > g8k)
-                return new byte[count];
-            else if (count > g4k)
-            {
-                byte[] buf;
-                if (_8kRecvs.TryDequeue(out buf))
-                    return buf;
-                else
-                    return new byte[g8k];
-            }
-            else if (count > g2k)
-            {
-                byte[] buf;
-                if (_4kRecvs.TryDequeue(out buf))
-                    return buf;
-                else
-                    return new byte[g4k];
-            }
-            else
-            {
-                byte[] buf;
-                if (_2kRecvs.TryDequeue(out buf))
-                    return buf;
-                else
-                    return new byte[g2k];
-            }
+            if (!_recvs.TryDequeue(out buf))
+                buf = new byte[_args.RecvBufSize];
+            return eTcpError.None;
         }
 
-        public void CollectRecvBuf(byte[] buf)
+        public eTcpError CollectRecvBuf(byte[] buf)
         {
-            switch (buf.Length)
-            {
-            case g2k:
-                if (_2kRecvs.Count < _args.K2RecvCapacity)
-                    _2kRecvs.Enqueue(buf);
-                break;
-            case g4k:
-                if (_4kRecvs.Count < _args.K4RecvCapacity)
-                    _4kRecvs.Enqueue(buf);
-                break;
-            case g8k:
-                if (_8kRecvs.Count < _args.K8RecvCapacity)
-                    _8kRecvs.Enqueue(buf);
-                break;
-            }
+            if (buf == null)
+                return eTcpError.ArgumentNull;
+            if (buf.Length != _args.RecvBufSize)
+                return eTcpError.ArgumentOutOfRange;
+
+            _recvs.Enqueue(buf);
+            return eTcpError.None;
         }
 
         #endregion

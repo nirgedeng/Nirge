@@ -17,9 +17,8 @@ namespace Nirge.Core
     {
         int _sendBufSize;
         int _recvBufSize;
-        int _pkgSize;
-        int _sendCapacity;
-        int _recvCapacity;
+        int _sendCacheSize;
+        int _recvCacheSize;
 
         public int SendBufSize
         {
@@ -37,58 +36,37 @@ namespace Nirge.Core
             }
         }
 
-        public int PkgSize
+        public int SendCacheSize
         {
             get
             {
-                return _pkgSize;
+                return _sendCacheSize;
             }
         }
 
-        public int SendCapacity
+        public int RecvCacheSize
         {
             get
             {
-                return _sendCapacity;
+                return _recvCacheSize;
             }
         }
 
-        public int RecvCapacity
-        {
-            get
-            {
-                return _recvCapacity;
-            }
-        }
-
-        public CTcpClientArgs(int sendBufSize = 0, int recvBufSize = 0, int pkgSize = 0, int sendCapacity = 0, int recvCapacity = 0)
+        public CTcpClientArgs(int sendBufSize = 0, int recvBufSize = 0, int sendCacheSize = 0, int recvCacheSize = 0)
         {
             _sendBufSize = sendBufSize;
             _recvBufSize = recvBufSize;
-            _pkgSize = pkgSize;
-            _sendCapacity = sendCapacity;
-            _recvCapacity = recvCapacity;
+            _sendCacheSize = sendCacheSize;
+            _recvCacheSize = recvCacheSize;
 
-            if (_sendBufSize == 0)
+            if (_sendBufSize < 8192)
                 _sendBufSize = 8192;
-            else if (_sendBufSize < 8192)
-                _sendBufSize = 8192;
-            else if (_sendBufSize > 16384)
-                _sendBufSize = 16384;
-            if (_recvBufSize == 0)
+            if (_recvBufSize < 8192)
                 _recvBufSize = 8192;
-            else if (_recvBufSize < 8192)
-                _recvBufSize = 8192;
-            else if (_recvBufSize > 16384)
-                _recvBufSize = 16384;
-            if (_pkgSize == 0)
-                _pkgSize = 8192;
-            else if (_pkgSize < 8192)
-                _pkgSize = 8192;
-            else if (_pkgSize > 1048576)
-                _pkgSize = 1048576;
-            _sendCapacity = 128;
-            _recvCapacity = 128;
+            if (_sendCacheSize < 1048576)
+                _sendCacheSize = 1048576;
+            if (_recvCacheSize < 1048576)
+                _recvCacheSize = 1048576;
         }
     }
 
@@ -173,19 +151,15 @@ namespace Nirge.Core
 
         TcpClient _cli;
 
-        byte[] _pkgLen;
-
         SocketAsyncEventArgs _sendArgs;
+        List<ArraySegment<byte>> _sendsPre;
         Queue<ArraySegment<byte>> _sends;
-        List<ArraySegment<byte>> _sendsAfter;
+        List<ArraySegment<byte>> _sendsPost;
         bool _sending;
 
-        byte[] _recv;
         SocketAsyncEventArgs _recvArgs;
-        CRingBuf _recvBuf;
-        Queue<ArraySegment<byte>> _recvsBefore;
         Queue<ArraySegment<byte>> _recvs;
-        Queue<ArraySegment<byte>> _recvsAfter;
+        Queue<ArraySegment<byte>> _recvsPost;
         bool _recving;
 
         public eTcpClientState State
@@ -227,28 +201,23 @@ namespace Nirge.Core
                 SocketError = SocketError.Success,
             };
 
-            _pkgLen = new byte[4];
-
             _sendArgs = new SocketAsyncEventArgs();
             _sendArgs.Completed += (sender, e) =>
             {
                 EndSend(_sendArgs);
             };
-            _sends = new Queue<ArraySegment<byte>>(_args.SendCapacity);
-            _sendsAfter = new List<ArraySegment<byte>>(_args.SendCapacity);
+            _sendsPre = new List<ArraySegment<byte>>();
+            _sends = new Queue<ArraySegment<byte>>();
+            _sendsPost = new List<ArraySegment<byte>>();
             _sending = false;
 
-            _recv = new byte[_args.RecvBufSize];
             _recvArgs = new SocketAsyncEventArgs();
-            _recvArgs.SetBuffer(_recv, 0, _recv.Length);
             _recvArgs.Completed += (sender, e) =>
             {
                 EndRecv(_recvArgs);
             };
-            _recvBuf = new CRingBuf(_args.PkgSize + _args.RecvBufSize);
-            _recvsBefore = new Queue<ArraySegment<byte>>(32);
-            _recvs = new Queue<ArraySegment<byte>>(_args.RecvCapacity);
-            _recvsAfter = new Queue<ArraySegment<byte>>(_args.RecvCapacity);
+            _recvs = new Queue<ArraySegment<byte>>();
+            _recvsPost = new Queue<ArraySegment<byte>>();
             _recving = false;
         }
 
@@ -264,20 +233,18 @@ namespace Nirge.Core
                 _connectTag = null;
                 _closeTag = null;
 
-                _pkgLen = null;
+                _cli = null;
 
                 _sendArgs.Dispose();
                 _sendArgs = null;
+                _sendsPre = null;
                 _sends = null;
-                _sendsAfter = null;
+                _sendsPost = null;
 
-                _recv = null;
                 _recvArgs.Dispose();
                 _recvArgs = null;
-                _recvBuf = null;
-                _recvsBefore = null;
                 _recvs = null;
-                _recvsAfter = null;
+                _recvsPost = null;
                 break;
             case eTcpClientState.Connecting:
             case eTcpClientState.Connected:
@@ -300,20 +267,28 @@ namespace Nirge.Core
             _closeTag.SocketError = SocketError.Success;
 
             _cli = null;
+            _sendArgs.AcceptSocket = null;
+            _recvArgs.AcceptSocket = null;
 
-            foreach (var i in _sends)
-                _cache.CollectSendBuf(i.Array);
-            _sends.Clear();
-            foreach (var i in _sendsAfter)
-                _cache.CollectSendBuf(i.Array);
-            _sendsAfter.Clear();
+            if (_sendsPre.Count > 0)
+            {
+                foreach (var i in _sendsPre)
+                    _cache.CollectSendBuf(i.Array);
+                _sendsPre.Clear();
+            }
+            while (_sends.Count > 0)
+                _cache.CollectSendBuf(_sends.Dequeue().Array);
+            if (_sendsPost.Count > 0)
+            {
+                foreach (var i in _sendsPost)
+                    _cache.CollectSendBuf(i.Array);
+                _sendsPost.Clear();
+            }
 
-            _recvBuf.Clear();
-            while (_recvsBefore.Count > 0)
-                _cache.CollectRecvBuf(_recvsBefore.Dequeue().Array);
             while (_recvs.Count > 0)
                 _cache.CollectRecvBuf(_recvs.Dequeue().Array);
-            _recvsAfter.Clear();
+            while (_recvsPost.Count > 0)
+                _cache.CollectRecvBuf(_recvsPost.Dequeue().Array);
         }
 
         #region
@@ -366,7 +341,7 @@ namespace Nirge.Core
         public eTcpError Connect(TcpClient cli)
         {
             if (cli == null)
-                return eTcpError.ArgumentNullRange;
+                return eTcpError.ArgumentNull;
 
             switch (_state)
             {
@@ -523,29 +498,21 @@ namespace Nirge.Core
 
         #region
 
-        public eTcpError Send(byte[] buf, int offset, int count)
+        public eTcpError Send(ArraySegment<byte> pkg)
         {
-            if (buf == null)
-                return eTcpError.ArgumentNullRange;
-            if (count == 0)
-                return eTcpError.PkgSizeOutOfRange;
-            var pkgLen = _pkgLen.Length + count;
-            if (pkgLen > _args.PkgSize)
-                return eTcpError.PkgSizeOutOfRange;
+            if (pkg == null)
+                return eTcpError.ArgumentNull;
+            if (pkg.Count == 0)
+                return eTcpError.PkgSizeIsZero;
 
             switch (_state)
             {
             case eTcpClientState.Connected:
-                var pkg = _cache.AllocSendBuf(pkgLen);
-                var len = BitConverter.GetBytes(count);
-                ArrayUtils.Copy(len, 0, pkg, 0, _pkgLen.Length);
-                ArrayUtils.Copy(buf, offset, pkg, _pkgLen.Length, count);
-
                 if (_sending)
                 {
                     lock (_sends)
                     {
-                        _sends.Enqueue(new ArraySegment<byte>(pkg, 0, pkgLen));
+                        _sends.Enqueue(pkg);
                     }
                 }
                 else
@@ -554,7 +521,82 @@ namespace Nirge.Core
                     try
                     {
                         _sendArgs.BufferList = null;
-                        _sendArgs.SetBuffer(pkg, 0, pkgLen);
+                        _sendArgs.SetBuffer(pkg.Array, pkg.Offset, pkg.Count);
+                        pass = true;
+                    }
+                    catch (SocketException exception)
+                    {
+                        lock (_closeTag)
+                        {
+                            switch (_closeTag.Reason)
+                            {
+                            case eTcpClientCloseReason.None:
+                                _closeTag.Reason = eTcpClientCloseReason.Exception;
+                                _closeTag.Error = eTcpError.SocketError;
+                                _closeTag.SocketError = exception.SocketErrorCode;
+                                break;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        lock (_closeTag)
+                        {
+                            switch (_closeTag.Reason)
+                            {
+                            case eTcpClientCloseReason.None:
+                                _closeTag.Reason = eTcpClientCloseReason.Exception;
+                                _closeTag.Error = eTcpError.Exception;
+                                _closeTag.SocketError = SocketError.Success;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (pass)
+                    {
+                        _sending = true;
+                        BeginSend();
+                    }
+                }
+                return eTcpError.None;
+            case eTcpClientState.Closed:
+            case eTcpClientState.Connecting:
+            case eTcpClientState.Closing:
+            case eTcpClientState.ClosingWait:
+            default:
+                return eTcpError.WrongState;
+            }
+        }
+
+        public eTcpError Send(Queue<ArraySegment<byte>> pkgs)
+        {
+            if (pkgs == null)
+                return eTcpError.ArgumentNull;
+            if (pkgs.Count == 0)
+                return eTcpError.PkgSizeIsZero;
+
+            switch (_state)
+            {
+            case eTcpClientState.Connected:
+                if (_sending)
+                {
+                    lock (_sends)
+                    {
+                        while (pkgs.Count > 0)
+                            _sends.Enqueue(pkgs.Dequeue());
+                    }
+                }
+                else
+                {
+                    while (pkgs.Count > 0)
+                        _sendsPre.Add(pkgs.Dequeue());
+
+                    var pass = false;
+                    try
+                    {
+                        _sendArgs.SetBuffer(null, 0, 0);
+                        _sendArgs.BufferList = _sendsPre;
                         pass = true;
                     }
                     catch (SocketException exception)
@@ -607,18 +649,16 @@ namespace Nirge.Core
             lock (_sends)
             {
                 while (_sends.Count > 0)
-                {
-                    _sendsAfter.Add(_sends.Dequeue());
-                }
+                    _sendsPost.Add(_sends.Dequeue());
             }
 
-            if (_sendsAfter.Count > 0)
+            if (_sendsPost.Count > 0)
             {
                 var pass = false;
                 try
                 {
                     _sendArgs.SetBuffer(null, 0, 0);
-                    _sendArgs.BufferList = _sendsAfter;
+                    _sendArgs.BufferList = _sendsPost;
                     pass = true;
                 }
                 catch (SocketException exception)
@@ -714,12 +754,16 @@ namespace Nirge.Core
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
                 if (_sendArgs.Buffer != null)
+                {
                     _cache.CollectSendBuf(_sendArgs.Buffer);
+                    _sendArgs.SetBuffer(null, 0, 0);
+                }
                 else if (_sendArgs.BufferList != null)
                 {
                     foreach (var i in _sendArgs.BufferList)
                         _cache.CollectSendBuf(i.Array);
-                    _sendsAfter.Clear();
+                    _sendArgs.BufferList.Clear();
+                    _sendArgs.BufferList = null;
                 }
                 break;
             }
@@ -772,6 +816,10 @@ namespace Nirge.Core
             var pass = false;
             try
             {
+                _recvArgs.BufferList = null;
+                byte[] buf;
+                _cache.AllocRecvBuf(out buf);
+                _recvArgs.SetBuffer(buf, 0, buf.Length);
                 if (_cli.Client.ReceiveAsync(_recvArgs))
                     return;
                 pass = true;
@@ -821,35 +869,12 @@ namespace Nirge.Core
                 case SocketError.Success:
                     if (e.BytesTransferred > 0)
                     {
-                        if (Unpack(e))
+                        lock (_recvs)
                         {
-                            if (_recvsBefore.Count > 0)
-                            {
-                                lock (_recvs)
-                                {
-                                    while (_recvsBefore.Count > 0)
-                                        _recvs.Enqueue(_recvsBefore.Dequeue());
-                                }
-                            }
-
-                            BeginRecv();
+                            _recvs.Enqueue(new ArraySegment<byte>(e.Buffer, 0, e.BytesTransferred));
                         }
-                        else
-                        {
-                            lock (_closeTag)
-                            {
-                                switch (_closeTag.Reason)
-                                {
-                                case eTcpClientCloseReason.None:
-                                    _closeTag.Reason = eTcpClientCloseReason.User;
-                                    _closeTag.Error = eTcpError.PkgSizeOutOfRange;
-                                    _closeTag.SocketError = SocketError.Success;
-                                    break;
-                                }
-                            }
 
-                            _recving = false;
-                        }
+                        BeginRecv();
                     }
                     else
                     {
@@ -892,31 +917,6 @@ namespace Nirge.Core
                 _recving = false;
                 break;
             }
-        }
-
-        bool Unpack(SocketAsyncEventArgs e)
-        {
-            if (!_recvBuf.Write(_recv, 0, e.BytesTransferred))
-                return false;
-
-            for (; _recvBuf.UsedCapacity > _pkgLen.Length;)
-            {
-                _recvBuf.Peek(_pkgLen, 0, _pkgLen.Length);
-                var pkgLen = BitConverter.ToInt32(_pkgLen, 0);
-
-                if (pkgLen > _args.PkgSize)
-                    return false;
-                if (_recvBuf.UsedCapacity < (_pkgLen.Length + pkgLen))
-                    break;
-
-                _recvBuf.Read(_pkgLen, 0, _pkgLen.Length);
-                var pkg = _cache.AllocRecvBuf(pkgLen);
-                _recvBuf.Read(pkg, 0, pkgLen);
-
-                _recvsBefore.Enqueue(new ArraySegment<byte>(pkg, 0, pkgLen));
-            }
-
-            return true;
         }
 
         #endregion
@@ -1006,13 +1006,13 @@ namespace Nirge.Core
                         lock (_recvs)
                         {
                             while (_recvs.Count > 0)
-                                _recvsAfter.Enqueue(_recvs.Dequeue());
+                                _recvsPost.Enqueue(_recvs.Dequeue());
                         }
                     }
 
-                    while (_recvsAfter.Count > 0)
+                    while (_recvsPost.Count > 0)
                     {
-                        var pkg = _recvsAfter.Dequeue();
+                        var pkg = _recvsPost.Dequeue();
 
                         try
                         {

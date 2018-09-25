@@ -17,20 +17,20 @@ namespace Nirge.Core
         SocketError,
 
         WrongState,
-        ArgumentNullRange,
+
+        ArgumentNull,
         ArgumentOutOfRange,
+        PkgSizeIsZero,
         PkgSizeOutOfRange,
-        SendQueueFull,
-        RecvQueueFull,
         CliOutOfRange,
     }
 
     public interface ITcpClientCache
     {
         void Clear();
-        byte[] AllocSendBuf(int count);
-        void CollectSendBuf(byte[] buf);
-        byte[] AllocRecvBuf(int count);
-        void CollectRecvBuf(byte[] buf);
+        eTcpError AllocSendBuf(int count, out byte[] buf);
+        eTcpError CollectSendBuf(byte[] buf);
+        eTcpError AllocRecvBuf(out byte[] buf);
+        eTcpError CollectRecvBuf(byte[] buf);
     }
 }
