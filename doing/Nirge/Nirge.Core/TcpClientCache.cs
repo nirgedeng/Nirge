@@ -179,9 +179,10 @@ namespace Nirge.Core
                     continue;
 
                 if (_sends[i].TryDequeue(out buf))
-                    Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
+                    Interlocked.Add(ref _sendCacheSize, -buf.Length);
                 else
                     buf = new byte[gTcpClientBufSize[i]];
+                Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
                 return eTcpError.Success;
             }
 
@@ -201,7 +202,8 @@ namespace Nirge.Core
                 if (buf.Length == gTcpClientBufSize[i])
                 {
                     _sends[i].Enqueue(buf);
-                    Interlocked.Add(ref _sendCacheSize, -buf.Length);
+                    Interlocked.Add(ref _sendCacheSize, buf.Length);
+                    Interlocked.Add(ref _sendCacheSizeAlloc, -buf.Length);
                     return eTcpError.Success;
                 }
             }
@@ -216,9 +218,10 @@ namespace Nirge.Core
         public eTcpError AllocRecvBuf(out byte[] buf)
         {
             if (_recvs.TryDequeue(out buf))
-                Interlocked.Add(ref _recvCacheSizeAlloc, buf.Length);
+                Interlocked.Add(ref _recvCacheSize, -buf.Length);
             else
                 buf = new byte[_args.RecvBufSize];
+            Interlocked.Add(ref _recvCacheSizeAlloc, buf.Length);
             return eTcpError.Success;
         }
 
@@ -230,7 +233,8 @@ namespace Nirge.Core
                 return eTcpError.BlockSizeOutOfRange;
 
             _recvs.Enqueue(buf);
-            Interlocked.Add(ref _recvCacheSize, -buf.Length);
+            Interlocked.Add(ref _recvCacheSize, buf.Length);
+            Interlocked.Add(ref _recvCacheSizeAlloc, -buf.Length);
             return eTcpError.Success;
         }
 
