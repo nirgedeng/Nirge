@@ -113,6 +113,26 @@ namespace Nirge.Core
             }
         }
 
+        public bool CanAllocSendBuf
+        {
+            get
+            {
+                if (_sendCacheSizeAlloc > _args.SendCacheSize)
+                    return false;
+                return true;
+            }
+        }
+
+        public bool CanAllocRecvBuf
+        {
+            get
+            {
+                if (_recvCacheSizeAlloc > _args.RecvCacheSize)
+                    return false;
+                return true;
+            }
+        }
+
         public CTcpClientCache(CTcpClientCacheArgs args)
         {
             _args = args;

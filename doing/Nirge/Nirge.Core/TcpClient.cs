@@ -508,9 +508,6 @@ namespace Nirge.Core
             case eTcpClientState.Connected:
                 if (_sending)
                 {
-                    if (_sendCacheSize > _args.SendCacheSize)
-                        return eTcpError.SendCacheFull;
-
                     lock (_sends)
                     {
                         _sends.Enqueue(pkg);
@@ -823,47 +820,54 @@ namespace Nirge.Core
 
         void BeginRecv()
         {
-            if (_recvCacheSize > _args.RecvCacheSize)
-            {
-                _recving = false;
-            }
-
             var pass = false;
-            try
+            if (_recvCacheSize > _args.RecvCacheSize)
+                _log.WarnFormat("NET recv cache full threshold {0} cur {1}", _args.RecvCacheSize, _recvCacheSize);
+            else if (!_cache.CanAllocRecvBuf)
+                _log.WarnFormat("NET global recv cache alloc {0}", _cache.RecvCacheSizeAlloc);
+            else
             {
-                _recvArgs.BufferList = null;
                 byte[] buf;
-                _cache.AllocRecvBuf(out buf);
-                _recvArgs.SetBuffer(buf, 0, buf.Length);
-                if (_cli.Client.ReceiveAsync(_recvArgs))
-                    return;
-                pass = true;
-            }
-            catch (SocketException exception)
-            {
-                lock (_closeTag)
+                var result = _cache.AllocRecvBuf(out buf);
+                if (result != eTcpError.Success)
+                    _log.WarnFormat("NET global recv cache cant alloc {0}", result);
+                else
                 {
-                    switch (_closeTag.Reason)
+                    try
                     {
-                    case eTcpClientCloseReason.None:
-                        _closeTag.Reason = eTcpClientCloseReason.Exception;
-                        _closeTag.Error = eTcpError.SocketError;
-                        _closeTag.SocketError = exception.SocketErrorCode;
-                        break;
+                        _recvArgs.BufferList = null;
+                        _recvArgs.SetBuffer(buf, 0, buf.Length);
+                        if (_cli.Client.ReceiveAsync(_recvArgs))
+                            return;
+                        pass = true;
                     }
-                }
-            }
-            catch
-            {
-                lock (_closeTag)
-                {
-                    switch (_closeTag.Reason)
+                    catch (SocketException exception)
                     {
-                    case eTcpClientCloseReason.None:
-                        _closeTag.Error = eTcpError.SysException;
-                        _closeTag.SocketError = SocketError.Success;
-                        _closeTag.Reason = eTcpClientCloseReason.Exception;
-                        break;
+                        lock (_closeTag)
+                        {
+                            switch (_closeTag.Reason)
+                            {
+                            case eTcpClientCloseReason.None:
+                                _closeTag.Reason = eTcpClientCloseReason.Exception;
+                                _closeTag.Error = eTcpError.SocketError;
+                                _closeTag.SocketError = exception.SocketErrorCode;
+                                break;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        lock (_closeTag)
+                        {
+                            switch (_closeTag.Reason)
+                            {
+                            case eTcpClientCloseReason.None:
+                                _closeTag.Error = eTcpError.SysException;
+                                _closeTag.SocketError = SocketError.Success;
+                                _closeTag.Reason = eTcpClientCloseReason.Exception;
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -971,8 +975,7 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0}\", connectArgs:\"{1},{2},{3}\""
-                            , ""
+                        _log.Error(string.Format("NET cli OnConnected exception connectArgs {0} {1} {2}"
                             , e.Result
                             , e.Error
                             , e.SocketError), exception);
@@ -988,12 +991,12 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _log.Error(string.Format("[TcpClient]OnConnected exception, addr:\"{0},{1}\", connectArgs:\"{2},{3},{4}\""
-                            , _cli.Client.LocalEndPoint
-                            , _cli.Client.RemoteEndPoint
-                            , _connectTag.Result
-                            , _connectTag.Error
-                            , _connectTag.SocketError), exception);
+                        _log.Error(string.Format("NET cli OnConnected exception addr {0} {1} connectArgs {2} {3} {4}"
+                                , _cli.Client.LocalEndPoint
+                                , _cli.Client.RemoteEndPoint
+                                , _connectTag.Result
+                                , _connectTag.Error
+                                , _connectTag.SocketError), exception);
                     }
 
                     _connectTag.Result = eTcpClientConnectResult.None;
@@ -1039,10 +1042,6 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _log.Error(string.Format("[TcpClient]Recved exception, addr:\"{0},{1}\", pkg:\"{2}\""
-                                , _cli.Client.LocalEndPoint
-                                , _cli.Client.RemoteEndPoint
-                                , pkg.Count), exception);
                         }
 
                         _cache.CollectRecvBuf(pkg.Array);
@@ -1116,9 +1115,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _log.Error(string.Format("[TcpClient]OnClosed exception, addr:\"{0},{1}\", closeArgs:\"{2},{3},{4}\""
-                                , ""
-                                , ""
+                            _log.Error(string.Format("NET cli OnClosed exception closeArgs {0} {1} {2}"
                                 , e.Reason
                                 , e.Error
                                 , e.SocketError), exception);

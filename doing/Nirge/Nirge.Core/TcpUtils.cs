@@ -27,10 +27,39 @@ namespace Nirge.Core
         CliOutOfRange,
         SendCacheFull,
         RecvCacheFull,
+        CantAllocSendBuf,
+        CantAllocRecvBuf,
     }
 
     public interface ITcpClientCache
     {
+        int SendCacheSize
+        {
+            get;
+        }
+        int SendCacheSizeAlloc
+        {
+            get;
+        }
+        int RecvCacheSize
+        {
+            get;
+        }
+        int RecvCacheSizeAlloc
+        {
+            get;
+        }
+
+        bool CanAllocSendBuf
+        {
+            get;
+        }
+
+        bool CanAllocRecvBuf
+        {
+            get;
+        }
+
         void Clear();
         eTcpError AllocSendBuf(int count, out byte[] buf);
         eTcpError CollectSendBuf(byte[] buf);
