@@ -11,31 +11,52 @@ namespace cli
 {
     class Program
     {
+        static void f(IEnumerable<int> v)
+        {
+        }
+
         static void Main(string[] args)
         {
             XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.basic.log.cli.xml"));
             var cache = new CTcpClientCache(new CTcpClientCacheArgs());
 
-            var clis = new List<CTcpClient>(1024);
-            for (var i = 0; i < clis.Capacity; ++i)
+            const int gCapacity = 1024;
+
+            var clis = new CTcpClient[gCapacity];
+            for (var i = 0; i < clis.Length; ++i)
             {
                 var cli = new CTcpClient(new CTcpClientArgs(), LogManager.Exists("cli", "all"), cache);
-                clis.Add(cli);
+                clis[i] = cli;
                 cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
+            }
+
+            var pkgs = new Queue<ArraySegment<byte>>[gCapacity];
+            for (var i = 0; i < clis.Length; ++i)
+            {
+                pkgs[i] = new Queue<ArraySegment<byte>>();
             }
 
             var rng = new Random();
 
             while (true)
             {
-                foreach (var i in clis)
+                for (var i = 0; i < gCapacity; ++i)
                 {
-                    i.Exec();
-                    if (i.State == eTcpClientState.Connected)
+                    var cli = clis[i];
+
+                    cli.Exec();
+                    if (cli.State == eTcpClientState.Connected)
                     {
-                        byte[] buf;
-                        cache.AllocSendBuf(rng.Next(1024), out buf);
-                        i.Send(buf);
+                        if (cache.CanAllocSendBuf)
+                        {
+                            byte[] buf;
+                            var result = cache.AllocSendBuf(rng.Next(1024), out buf);
+                            if (result == eTcpError.Success)
+                            {
+                                pkgs[i].Enqueue(buf);
+                                cli.Send(pkgs[i]);
+                            }
+                        }
                     }
                 }
                 Thread.Sleep(1);

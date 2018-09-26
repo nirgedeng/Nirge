@@ -506,7 +506,7 @@ namespace Nirge.Core
 
         #region
 
-        public eTcpError Send(int cli, ArraySegment<byte> pkg)
+        public eTcpError Send(int cli, Queue<ArraySegment<byte>> pkgs)
         {
             switch (_state)
             {
@@ -514,7 +514,7 @@ namespace Nirge.Core
                 CTcpClient e;
                 if (!_clisDict.TryGetValue(cli, out e))
                     return eTcpError.CliOutOfRange;
-                return e.Send(pkg);
+                return e.Send(pkgs);
             case eTcpServerState.Closed:
             case eTcpServerState.Opening:
             case eTcpServerState.Closing:

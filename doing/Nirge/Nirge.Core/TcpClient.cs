@@ -156,12 +156,16 @@ namespace Nirge.Core
         List<ArraySegment<byte>> _sendsPost;
         bool _sending;
         int _sendCacheSize;
+        ulong _sendBlockSize;
+        ulong _sendBlockSizetmp;
 
         SocketAsyncEventArgs _recvArgs;
         Queue<ArraySegment<byte>> _recvs;
         Queue<ArraySegment<byte>> _recvsPost;
         bool _recving;
         int _recvCacheSize;
+        ulong _recvBlockSize;
+        ulong _recvBlockSizetmp;
 
         public CTcpClientArgs Args
         {
@@ -278,6 +282,8 @@ namespace Nirge.Core
             }
             _sending = false;
             _sendCacheSize = 0;
+            _sendBlockSize = 0;
+            _sendBlockSizetmp = 0;
 
             _recvArgs.AcceptSocket = null;
             while (_recvs.Count > 0)
@@ -286,6 +292,8 @@ namespace Nirge.Core
                 _cache.CollectRecvBuf(_recvsPost.Dequeue().Array);
             _recving = false;
             _recvCacheSize = 0;
+            _recvBlockSize = 0;
+            _recvBlockSizetmp = 0;
         }
 
         #region
@@ -496,84 +504,6 @@ namespace Nirge.Core
 
         #region
 
-        public eTcpError Send(ArraySegment<byte> pkg)
-        {
-            if (pkg == null)
-                return eTcpError.BlockNull;
-            if (pkg.Count == 0)
-                return eTcpError.BlockSizeIsZero;
-
-            switch (_state)
-            {
-            case eTcpClientState.Connected:
-                if (_sending)
-                {
-                    if (_sendCacheSize > _args.SendCacheSize)
-                    {
-                        _log.WarnFormat("NET send cache full threshold {0} cur {1}", _args.SendCacheSize, _sendCacheSize);
-                        return eTcpError.SendCacheFull;
-                    }
-
-                    lock (_sends)
-                    {
-                        _sends.Enqueue(pkg);
-                        _sendCacheSize += pkg.Count;
-                    }
-                }
-                else
-                {
-                    var pass = false;
-                    try
-                    {
-                        _sendArgs.BufferList = null;
-                        _sendArgs.SetBuffer(pkg.Array, pkg.Offset, pkg.Count);
-                        pass = true;
-                    }
-                    catch (SocketException exception)
-                    {
-                        lock (_closeTag)
-                        {
-                            switch (_closeTag.Reason)
-                            {
-                            case eTcpClientCloseReason.None:
-                                _closeTag.Reason = eTcpClientCloseReason.Exception;
-                                _closeTag.Error = eTcpError.SocketError;
-                                _closeTag.SocketError = exception.SocketErrorCode;
-                                break;
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        lock (_closeTag)
-                        {
-                            switch (_closeTag.Reason)
-                            {
-                            case eTcpClientCloseReason.None:
-                                _closeTag.Reason = eTcpClientCloseReason.Exception;
-                                _closeTag.Error = eTcpError.SysException;
-                                _closeTag.SocketError = SocketError.Success;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (pass)
-                    {
-                        _sending = true;
-                        BeginSend();
-                    }
-                }
-                return eTcpError.Success;
-            case eTcpClientState.Closed:
-            case eTcpClientState.Connecting:
-            case eTcpClientState.Closing:
-            case eTcpClientState.ClosingWait:
-            default:
-                return eTcpError.WrongTcpState;
-            }
-        }
-
         public eTcpError Send(Queue<ArraySegment<byte>> pkgs)
         {
             if (pkgs == null)
@@ -588,7 +518,7 @@ namespace Nirge.Core
                 {
                     if (_sendCacheSize > _args.SendCacheSize)
                     {
-                        _log.WarnFormat("NET send cache full threshold {0} cur {1}", _args.SendCacheSize, _sendCacheSize);
+                        _log.WarnFormat("NET cli send cache full {0} over {1}", _sendCacheSize, _args.SendCacheSize);
                         return eTcpError.SendCacheFull;
                     }
 
@@ -832,15 +762,15 @@ namespace Nirge.Core
             var pass = false;
 
             if (_recvCacheSize > _args.RecvCacheSize)
-                _log.WarnFormat("NET recv cache full threshold {0} cur {1}", _args.RecvCacheSize, _recvCacheSize);
+                _log.WarnFormat("NET cli recv cache full {0} over {1}", _recvCacheSize, _args.RecvCacheSize);
             else if (!_cache.CanAllocRecvBuf)
-                _log.WarnFormat("NET global recv cache alloc {0}", _cache.RecvCacheSizeAlloc);
+                _log.WarnFormat("NET g recv cache full {0} over {1}", _cache.RecvCacheSizeAlloc, _cache.RecvCacheSize);
             else
             {
                 byte[] buf;
                 var result = _cache.AllocRecvBuf(out buf);
                 if (result != eTcpError.Success)
-                    _log.WarnFormat("NET global recv cache cant alloc {0}", result);
+                    _log.WarnFormat("NET cli can't alloc recv cache reason {0}", result);
                 else
                 {
                     try
