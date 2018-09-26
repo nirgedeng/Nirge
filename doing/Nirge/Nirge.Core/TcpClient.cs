@@ -508,6 +508,12 @@ namespace Nirge.Core
             case eTcpClientState.Connected:
                 if (_sending)
                 {
+                    if (_sendCacheSize > _args.SendCacheSize)
+                    {
+                        _log.WarnFormat("NET send cache full threshold {0} cur {1}", _args.SendCacheSize, _sendCacheSize);
+                        return eTcpError.SendCacheFull;
+                    }
+
                     lock (_sends)
                     {
                         _sends.Enqueue(pkg);
@@ -581,7 +587,10 @@ namespace Nirge.Core
                 if (_sending)
                 {
                     if (_sendCacheSize > _args.SendCacheSize)
+                    {
+                        _log.WarnFormat("NET send cache full threshold {0} cur {1}", _args.SendCacheSize, _sendCacheSize);
                         return eTcpError.SendCacheFull;
+                    }
 
                     lock (_sends)
                     {
@@ -821,6 +830,7 @@ namespace Nirge.Core
         void BeginRecv()
         {
             var pass = false;
+
             if (_recvCacheSize > _args.RecvCacheSize)
                 _log.WarnFormat("NET recv cache full threshold {0} cur {1}", _args.RecvCacheSize, _recvCacheSize);
             else if (!_cache.CanAllocRecvBuf)
