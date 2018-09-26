@@ -12,17 +12,21 @@ namespace Nirge.Core
     public enum eTcpError
     {
         None,
+        Success,
 
-        Exception,
+        SysException,
         SocketError,
+        WrongTcpState,
 
-        WrongState,
-
-        ArgumentNull,
-        ArgumentOutOfRange,
-        PkgSizeIsZero,
-        PkgSizeOutOfRange,
+        ArgNull,
+        ArgOutOfRange,
+        BlockNull,
+        BlockSizeIsZero,
+        BlockSizeOutOfRange,
+        CliNull,
         CliOutOfRange,
+        SendCacheFull,
+        RecvCacheFull,
     }
 
     public interface ITcpClientCache

@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System;
+using System.Threading;
 
 namespace Nirge.Core
 {
@@ -59,79 +60,85 @@ namespace Nirge.Core
 
     #endregion
 
-    public class CTcpClientCacheEmpty : ITcpClientCache
-    {
-        CTcpClientCacheArgs _args;
-
-        public CTcpClientCacheEmpty(CTcpClientCacheArgs args)
-        {
-            _args = args;
-        }
-
-        public void Clear()
-        {
-        }
-
-        #region 
-
-        public eTcpError AllocSendBuf(int count, out byte[] buf)
-        {
-            buf = new byte[count];
-            return eTcpError.None;
-        }
-
-        public eTcpError CollectSendBuf(byte[] buf)
-        {
-            return eTcpError.None;
-        }
-
-        #endregion
-
-        #region 
-
-        public eTcpError AllocRecvBuf(out byte[] buf)
-        {
-            buf = new byte[_args.RecvBufSize];
-            return eTcpError.None;
-        }
-
-        public eTcpError CollectRecvBuf(byte[] buf)
-        {
-            return eTcpError.None;
-        }
-
-        #endregion
-    }
-
     public class CTcpClientCache : ITcpClientCache
     {
-        static int[] gTcpClientBufSize = { 32, 64, 128, 256, 512, 1024, 2048 };
+        static readonly int[] gTcpClientBufSize = { 32, 64, 128, 256, 512, 1024, 2048 };
 
         CTcpClientCacheArgs _args;
 
+        int _sendCacheSize;
+        int _sendCacheSizeAlloc;
         ConcurrentQueue<byte[]>[] _sends;
+        int _recvCacheSize;
+        int _recvCacheSizeAlloc;
         ConcurrentQueue<byte[]> _recvs;
+
+        public CTcpClientCacheArgs Args
+        {
+            get
+            {
+                return _args;
+            }
+        }
+
+        public int SendCacheSize
+        {
+            get
+            {
+                return _sendCacheSize;
+            }
+        }
+
+        public int SendCacheSizeAlloc
+        {
+            get
+            {
+                return _sendCacheSizeAlloc;
+            }
+        }
+
+        public int RecvCacheSize
+        {
+            get
+            {
+                return _recvCacheSize;
+            }
+        }
+
+        public int RecvCacheSizeAlloc
+        {
+            get
+            {
+                return _recvCacheSizeAlloc;
+            }
+        }
 
         public CTcpClientCache(CTcpClientCacheArgs args)
         {
             _args = args;
 
             _sends = new ConcurrentQueue<byte[]>[gTcpClientBufSize.Length];
-            for (var i = 0; i < gTcpClientBufSize.Length; ++i)
+            for (var i = 0; i < _sends.Length; ++i)
                 _sends[i] = new ConcurrentQueue<byte[]>();
             _recvs = new ConcurrentQueue<byte[]>();
+
+            Clear();
         }
 
         public void Clear()
         {
             byte[] buf;
 
+            _sendCacheSize = 0;
+            _sendCacheSizeAlloc = 0;
             foreach (var i in _sends)
             {
                 while (i.Count > 0)
                     i.TryDequeue(out buf);
             }
 
+            _recvCacheSize = 0;
+            _recvCacheSizeAlloc = 0;
             while (_recvs.Count > 0)
                 _recvs.TryDequeue(out buf);
         }
@@ -143,40 +150,43 @@ namespace Nirge.Core
             if (count == 0)
             {
                 buf = null;
-                return eTcpError.PkgSizeIsZero;
+                return eTcpError.BlockSizeIsZero;
             }
 
             for (var i = 0; i < gTcpClientBufSize.Length; ++i)
             {
-                if (count < gTcpClientBufSize[i])
-                {
-                    if (!_sends[i].TryDequeue(out buf))
-                    {
-                        buf = new byte[gTcpClientBufSize[i]];
-                        return eTcpError.None;
-                    }
-                }
+                if (count > i)
+                    continue;
+
+                if (_sends[i].TryDequeue(out buf))
+                    Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
+                else
+                    buf = new byte[gTcpClientBufSize[i]];
+                return eTcpError.Success;
             }
 
             buf = null;
-            return eTcpError.PkgSizeOutOfRange;
+            return eTcpError.BlockSizeOutOfRange;
         }
 
         public eTcpError CollectSendBuf(byte[] buf)
         {
             if (buf == null)
-                return eTcpError.ArgumentNull;
+                return eTcpError.BlockNull;
+            if (buf.Length == 0)
+                return eTcpError.BlockSizeIsZero;
 
             for (var i = 0; i < gTcpClientBufSize.Length; ++i)
             {
                 if (buf.Length == gTcpClientBufSize[i])
                 {
                     _sends[i].Enqueue(buf);
-                    return eTcpError.None;
+                    Interlocked.Add(ref _sendCacheSize, buf.Length);
+                    return eTcpError.Success;
                 }
             }
 
-            return eTcpError.PkgSizeOutOfRange;
+            return eTcpError.BlockSizeOutOfRange;
         }
 
         #endregion
@@ -185,20 +195,23 @@ namespace Nirge.Core
 
         public eTcpError AllocRecvBuf(out byte[] buf)
         {
-            if (!_recvs.TryDequeue(out buf))
+            if (_recvs.TryDequeue(out buf))
+                Interlocked.Add(ref _recvCacheSizeAlloc, buf.Length);
+            else
                 buf = new byte[_args.RecvBufSize];
-            return eTcpError.None;
+            return eTcpError.Success;
         }
 
         public eTcpError CollectRecvBuf(byte[] buf)
         {
             if (buf == null)
-                return eTcpError.ArgumentNull;
+                return eTcpError.BlockNull;
             if (buf.Length != _args.RecvBufSize)
-                return eTcpError.ArgumentOutOfRange;
+                return eTcpError.BlockSizeOutOfRange;
 
             _recvs.Enqueue(buf);
-            return eTcpError.None;
+            Interlocked.Add(ref _recvCacheSize, buf.Length);
+            return eTcpError.Success;
         }
 
         #endregion
