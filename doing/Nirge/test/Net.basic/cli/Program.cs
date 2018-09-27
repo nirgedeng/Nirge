@@ -6,13 +6,15 @@ using System.Threading;
 using Nirge.Core;
 using System.Net;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace cli
 {
     class Program
     {
-        static void f(IEnumerable<int> v)
+        static void f(int i, [CallerFilePath] string a = "")
         {
+            Console.WriteLine(a);
         }
 
         static void Main(string[] args)

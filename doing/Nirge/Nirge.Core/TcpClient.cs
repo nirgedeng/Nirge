@@ -445,7 +445,7 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _log.Error(string.Format("NET cli OnConnected exception addr {0} {1} connectArgs {2} {3} {4}"
+                    _log.WriteLine(eLogPattern.Error, string.Format("NET cli OnConnected exception addr {0} {1} connectArgs {2} {3} {4}"
                         , _cli.Client.LocalEndPoint
                         , _cli.Client.RemoteEndPoint
                         , e.Result
@@ -779,14 +779,14 @@ namespace Nirge.Core
         {
             if (_recvCacheSize > _args.RecvCacheSize)
             {
-                _log.WarnFormat("NET cli recv cache full {0} over {1}", _recvCacheSize, _args.RecvCacheSize);
+                _log.WriteLine(eLogPattern.Warn, string.Format("NET cli recv cache full {0} over {1}", _recvCacheSize, _args.RecvCacheSize));
                 buf = null;
                 return false;
             }
 
             if (!_cache.CanAllocRecvBuf)
             {
-                _log.WarnFormat("NET g recv cache used up {0} over {1}", _cache.RecvCacheSizeAlloc, _cache.RecvCacheSize);
+                _log.WriteLine(eLogPattern.Warn, string.Format("NET g recv cache used up {0} over {1}", _cache.RecvCacheSizeAlloc, _cache.RecvCacheSize));
                 buf = null;
                 return false;
             }
@@ -796,7 +796,7 @@ namespace Nirge.Core
             case eTcpError.Success:
                 break;
             default:
-                _log.WarnFormat("NET g failed to alloc recv buf {0}", _cache.RecvBufSize);
+                _log.WriteLine(eLogPattern.Warn, string.Format("NET g failed to alloc recv buf {0}", _cache.RecvBufSize));
                 buf = null;
                 break;
             }
@@ -920,7 +920,7 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _log.Error(string.Format("NET cli OnConnected exception connectArgs {0} {1} {2}"
+                        _log.WriteLine(eLogPattern.Error, string.Format("NET cli OnConnected exception connectArgs {0} {1} {2}"
                             , e.Result
                             , e.Error
                             , e.SocketError), exception);
@@ -936,7 +936,7 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _log.Error(string.Format("NET cli OnConnected exception addr {0} {1} connectArgs {2} {3} {4}"
+                        _log.WriteLine(eLogPattern.Error, string.Format("NET cli OnConnected exception addr {0} {1} connectArgs {2} {3} {4}"
                                 , _cli.Client.LocalEndPoint
                                 , _cli.Client.RemoteEndPoint
                                 , _connectTag.Result
@@ -1060,7 +1060,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _log.Error(string.Format("NET cli OnClosed exception closeArgs {0} {1} {2}"
+                            _log.WriteLine(eLogPattern.Error, string.Format("NET cli OnClosed exception closeArgs {0} {1} {2}"
                                 , e.Reason
                                 , e.Error
                                 , e.SocketError), exception);
