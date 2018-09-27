@@ -52,9 +52,9 @@ namespace Nirge.Core
             if (_recvBufSize < 8192)
                 _recvBufSize = 8192;
             if (_sendCacheSize == 0)
-                _sendCacheSize = 1073741824;
+                _sendCacheSize = 10485760;
             if (_recvCacheSize == 0)
-                _recvCacheSize = 1073741824;
+                _recvCacheSize = 10485760;
         }
     }
 

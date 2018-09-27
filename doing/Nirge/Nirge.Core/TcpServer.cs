@@ -172,7 +172,7 @@ namespace Nirge.Core
 
         public CTcpServer(ILog log)
             :
-            this(new CTcpServerArgs(), log, new CTcpClientCache(new CTcpClientCacheArgs()))
+            this(new CTcpServerArgs(), log, new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824)))
         {
         }
 

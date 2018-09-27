@@ -12,15 +12,10 @@ namespace cli
 {
     class Program
     {
-        static void f(int i, [CallerFilePath] string a = "")
-        {
-            Console.WriteLine(a);
-        }
-
         static void Main(string[] args)
         {
             XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.basic.log.cli.xml"));
-            var cache = new CTcpClientCache(new CTcpClientCacheArgs());
+            var cache = new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824));
 
             const int gCapacity = 1024;
 
