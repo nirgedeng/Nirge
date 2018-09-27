@@ -31,12 +31,12 @@ namespace ser
 
         private static void Ser_CliRecved(object arg1, int arg2, byte[] arg3, int arg4, int arg5)
         {
-            //Console.WriteLine("cli {0} recv msg {1}", arg2, arg5);
+            Console.WriteLine("cli {0} recv msg {1}", arg2, arg5);
         }
 
         private static void Ser_CliClosed(object sender, CDataEventArgs<int, CTcpClientCloseArgs> e)
         {
-            Console.WriteLine("cli {0} closed", e.Arg1);
+            Console.WriteLine("cli {0} closed {1} {2} {3}", e.Arg1, e.Arg2.Reason, e.Arg2.Error, e.Arg2.SocketError);
         }
 
         private static void Ser_CliConnected(object sender, CDataEventArgs<int> e)

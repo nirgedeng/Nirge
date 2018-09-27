@@ -37,7 +37,11 @@ namespace Nirge.Core
         {
             get;
         }
-        int SendCacheSizeAlloc
+        int SendAllocCacheSize
+        {
+            get;
+        }
+        int RecvBufSize
         {
             get;
         }
@@ -45,7 +49,7 @@ namespace Nirge.Core
         {
             get;
         }
-        int RecvCacheSizeAlloc
+        int RecvAllocCacheSize
         {
             get;
         }

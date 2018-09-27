@@ -51,10 +51,12 @@ namespace cli
                         {
                             byte[] buf;
                             var result = cache.AllocSendBuf(rng.Next(1024), out buf);
-                            if (result == eTcpError.Success)
+                            switch (result)
                             {
+                            case eTcpError.Success:
                                 pkgs[i].Enqueue(buf);
                                 cli.Send(pkgs[i]);
+                                break;
                             }
                         }
                     }
