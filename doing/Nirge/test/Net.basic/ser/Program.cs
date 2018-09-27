@@ -31,7 +31,7 @@ namespace ser
 
         private static void Ser_CliRecved(object arg1, int arg2, byte[] arg3, int arg4, int arg5)
         {
-            Console.WriteLine("cli {0} recv msg {1}", arg2, arg5);
+            //Console.WriteLine("cli {0} recv msg {1}", arg2, arg5);
         }
 
         private static void Ser_CliClosed(object sender, CDataEventArgs<int, CTcpClientCloseArgs> e)

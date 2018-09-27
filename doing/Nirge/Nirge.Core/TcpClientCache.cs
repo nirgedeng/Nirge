@@ -67,10 +67,10 @@ namespace Nirge.Core
         CTcpClientCacheArgs _args;
 
         int _sendCacheSize;
-        int _sendAllocCacheSize;
+        int _sendCacheSizeAlloc;
         ConcurrentQueue<byte[]>[] _sends;
         int _recvCacheSize;
-        int _recvAllocCacheSize;
+        int _recvCacheSizeAlloc;
         ConcurrentQueue<byte[]> _recvs;
 
         public CTcpClientCacheArgs Args
@@ -89,11 +89,11 @@ namespace Nirge.Core
             }
         }
 
-        public int SendAllocCacheSize
+        public int SendCacheSizeAlloc
         {
             get
             {
-                return _sendAllocCacheSize;
+                return _sendCacheSizeAlloc;
             }
         }
 
@@ -113,11 +113,11 @@ namespace Nirge.Core
             }
         }
 
-        public int RecvAllocCacheSize
+        public int RecvCacheSizeAlloc
         {
             get
             {
-                return _recvAllocCacheSize;
+                return _recvCacheSizeAlloc;
             }
         }
 
@@ -125,7 +125,7 @@ namespace Nirge.Core
         {
             get
             {
-                if (_sendAllocCacheSize > _args.SendCacheSize)
+                if (_sendCacheSizeAlloc > _args.SendCacheSize)
                     return false;
                 return true;
             }
@@ -135,7 +135,7 @@ namespace Nirge.Core
         {
             get
             {
-                if (_recvAllocCacheSize > _args.RecvCacheSize)
+                if (_recvCacheSizeAlloc > _args.RecvCacheSize)
                     return false;
                 return true;
             }
@@ -158,7 +158,7 @@ namespace Nirge.Core
             byte[] buf;
 
             _sendCacheSize = 0;
-            _sendAllocCacheSize = 0;
+            _sendCacheSizeAlloc = 0;
             foreach (var i in _sends)
             {
                 while (i.Count > 0)
@@ -166,7 +166,7 @@ namespace Nirge.Core
             }
 
             _recvCacheSize = 0;
-            _recvAllocCacheSize = 0;
+            _recvCacheSizeAlloc = 0;
             while (_recvs.Count > 0)
                 _recvs.TryDequeue(out buf);
         }
@@ -190,7 +190,7 @@ namespace Nirge.Core
                     Interlocked.Add(ref _sendCacheSize, -buf.Length);
                 else
                     buf = new byte[gTcpClientBufSize[i]];
-                Interlocked.Add(ref _sendAllocCacheSize, buf.Length);
+                Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
                 return eTcpError.Success;
             }
 
@@ -211,7 +211,7 @@ namespace Nirge.Core
                 {
                     _sends[i].Enqueue(buf);
                     Interlocked.Add(ref _sendCacheSize, buf.Length);
-                    Interlocked.Add(ref _sendAllocCacheSize, -buf.Length);
+                    Interlocked.Add(ref _sendCacheSizeAlloc, -buf.Length);
                     return eTcpError.Success;
                 }
             }
@@ -229,7 +229,7 @@ namespace Nirge.Core
                 Interlocked.Add(ref _recvCacheSize, -buf.Length);
             else
                 buf = new byte[_args.RecvBufSize];
-            Interlocked.Add(ref _recvAllocCacheSize, buf.Length);
+            Interlocked.Add(ref _recvCacheSizeAlloc, buf.Length);
             return eTcpError.Success;
         }
 
@@ -242,7 +242,7 @@ namespace Nirge.Core
 
             _recvs.Enqueue(buf);
             Interlocked.Add(ref _recvCacheSize, buf.Length);
-            Interlocked.Add(ref _recvAllocCacheSize, -buf.Length);
+            Interlocked.Add(ref _recvCacheSizeAlloc, -buf.Length);
             return eTcpError.Success;
         }
 

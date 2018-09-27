@@ -221,7 +221,6 @@ namespace Nirge.Core
         bool _sending;
         int _sendCacheSize;
         ulong _sendBlockSize;
-        ulong _sendBlockSizetmp;
 
         SocketAsyncEventArgs _recvArgs;
         Queue<ArraySegment<byte>> _recvs;
@@ -229,7 +228,6 @@ namespace Nirge.Core
         bool _recving;
         int _recvCacheSize;
         ulong _recvBlockSize;
-        ulong _recvBlockSizetmp;
 
         public CTcpClientArgs Args
         {
@@ -244,6 +242,38 @@ namespace Nirge.Core
             get
             {
                 return _state;
+            }
+        }
+
+        public int SendCacheSize
+        {
+            get
+            {
+                return _sendCacheSize;
+            }
+        }
+
+        public ulong SendBlockSize
+        {
+            get
+            {
+                return _sendBlockSize;
+            }
+        }
+
+        public int RecvCacheSize
+        {
+            get
+            {
+                return _recvCacheSize;
+            }
+        }
+
+        public ulong RecvBlockSize
+        {
+            get
+            {
+                return _recvBlockSize;
             }
         }
 
@@ -336,7 +366,6 @@ namespace Nirge.Core
             _sending = false;
             _sendCacheSize = 0;
             _sendBlockSize = 0;
-            _sendBlockSizetmp = 0;
 
             _recvArgs.AcceptSocket = null;
             while (_recvs.Count > 0)
@@ -346,7 +375,6 @@ namespace Nirge.Core
             _recving = false;
             _recvCacheSize = 0;
             _recvBlockSize = 0;
-            _recvBlockSizetmp = 0;
         }
 
         #region
@@ -693,13 +721,17 @@ namespace Nirge.Core
             case eTcpClientState.ClosingWait:
                 if (_sendArgs.Buffer != null)
                 {
+                    _sendBlockSize += (ulong)_sendArgs.Count;
                     _cache.CollectSendBuf(_sendArgs.Buffer);
                     _sendArgs.SetBuffer(null, 0, 0);
                 }
                 else if (_sendArgs.BufferList != null)
                 {
                     foreach (var i in _sendArgs.BufferList)
+                    {
+                        _sendBlockSize += (ulong)i.Count;
                         _cache.CollectSendBuf(i.Array);
+                    }
                     _sendArgs.BufferList.Clear();
                     _sendArgs.BufferList = null;
                 }
@@ -754,7 +786,7 @@ namespace Nirge.Core
 
             if (!_cache.CanAllocRecvBuf)
             {
-                _log.WarnFormat("NET g recv cache used up {0} over {1}", _cache.RecvAllocCacheSize, _cache.RecvCacheSize);
+                _log.WarnFormat("NET g recv cache used up {0} over {1}", _cache.RecvCacheSizeAlloc, _cache.RecvCacheSize);
                 buf = null;
                 return false;
             }
@@ -821,6 +853,7 @@ namespace Nirge.Core
                             var pkg = new ArraySegment<byte>(e.Buffer, 0, e.BytesTransferred);
                             _recvs.Enqueue(pkg);
                             _recvCacheSize += pkg.Count;
+                            _recvBlockSize += (ulong)pkg.Count;
                         }
 
                         byte[] buf;
