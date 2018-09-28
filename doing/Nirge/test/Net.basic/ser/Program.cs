@@ -14,16 +14,26 @@ namespace ser
         {
             XmlConfigurator.Configure(LogManager.CreateRepository("ser"), new FileInfo("../../Net.basic.log.ser.xml"));
 
-            var ser = new CTcpServer(LogManager.Exists("ser", "all"));
+            var cache = new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824));
+            var ser = new CTcpServer(new CTcpServerArgs(), LogManager.Exists("ser", "all"), cache);
             ser.Closed += Ser_Closed;
             ser.CliConnected += Ser_CliConnected;
             ser.CliClosed += Ser_CliClosed;
             ser.CliRecved += Ser_CliRecved;
             ser.Open(new IPEndPoint(IPAddress.Any, 9527));
 
+            var t = Environment.TickCount;
+
             while (true)
             {
                 ser.Exec();
+
+                if (Environment.TickCount > t + 10000)
+                {
+                    t = Environment.TickCount;
+                    Console.WriteLine(cache.Stat);
+                }
+
                 Thread.Sleep(1);
             }
 

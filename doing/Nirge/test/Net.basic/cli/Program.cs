@@ -38,6 +38,7 @@ namespace cli
             }
 
             var rng = new Random();
+            var t = Environment.TickCount;
 
             while (true)
             {
@@ -57,6 +58,13 @@ namespace cli
                         }
                     }
                 }
+
+                if (Environment.TickCount > t + 10000)
+                {
+                    t = Environment.TickCount;
+                    Console.WriteLine(cache.Stat);
+                }
+
                 Thread.Sleep(1);
             }
         }

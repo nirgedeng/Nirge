@@ -137,6 +137,14 @@ namespace Nirge.Core
             }
         }
 
+        public string Stat
+        {
+            get
+            {
+                return "";
+            }
+        }
+
         public CTcpClientCacheEmpty(CTcpClientCacheArgs args)
         {
             _args = args;
@@ -278,6 +286,24 @@ namespace Nirge.Core
                 if (_recvCacheSizeAlloc > _args.RecvCacheSize)
                     return false;
                 return true;
+            }
+        }
+
+        public string Stat
+        {
+            get
+            {
+                return string.Format("stat cache {0} {1} alloc {2} {3} S{4}S {5} S{6}S {7} S{8}S {9} S{10}S {11} S{12}S {13} S{14}S {15} S{16}S {17} R{18}R {19}"
+                    , _sendCacheSize, _recvCacheSize
+                    , _sendCacheSizeAlloc, _recvCacheSizeAlloc
+                    , gTcpClientBufSize[0], _sends[0].Count
+                    , gTcpClientBufSize[1], _sends[1].Count
+                    , gTcpClientBufSize[2], _sends[2].Count
+                    , gTcpClientBufSize[3], _sends[3].Count
+                    , gTcpClientBufSize[4], _sends[4].Count
+                    , gTcpClientBufSize[5], _sends[5].Count
+                    , gTcpClientBufSize[6], _sends[6].Count
+                    , _args.RecvBufSize, _recvs.Count);
             }
         }
 

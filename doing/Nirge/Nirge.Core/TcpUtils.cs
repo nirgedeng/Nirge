@@ -64,6 +64,11 @@ namespace Nirge.Core
             get;
         }
 
+        string Stat
+        {
+            get;
+        }
+
         void Clear();
         eTcpError AllocSendBuf(int count, out byte[] buf);
         eTcpError CollectSendBuf(byte[] buf);
