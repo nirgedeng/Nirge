@@ -17,8 +17,8 @@ namespace cli
             XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.basic.log.cli.xml"));
             var cache = new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824));
 
-            const int gCapacity = 300;
-            const int gPkg = 32;
+            const int gCapacity = 100;
+            const int gPkg = 128;
 
             var clis = new CTcpClient[gCapacity];
             for (var i = 0; i < clis.Length; ++i)

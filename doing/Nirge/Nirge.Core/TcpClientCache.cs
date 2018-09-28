@@ -60,6 +60,146 @@ namespace Nirge.Core
 
     #endregion
 
+    public class CTcpClientCacheEmpty : ITcpClientCache
+    {
+        CTcpClientCacheArgs _args;
+
+        int _sendCacheSize;
+        int _sendCacheSizeAlloc;
+        int _recvCacheSize;
+        int _recvCacheSizeAlloc;
+
+        public CTcpClientCacheArgs Args
+        {
+            get
+            {
+                return _args;
+            }
+        }
+
+        public int SendCacheSize
+        {
+            get
+            {
+                return _sendCacheSize;
+            }
+        }
+
+        public int SendCacheSizeAlloc
+        {
+            get
+            {
+                return _sendCacheSizeAlloc;
+            }
+        }
+
+        public int RecvBufSize
+        {
+            get
+            {
+                return _args.RecvBufSize;
+            }
+        }
+
+        public int RecvCacheSize
+        {
+            get
+            {
+                return _recvCacheSize;
+            }
+        }
+
+        public int RecvCacheSizeAlloc
+        {
+            get
+            {
+                return _recvCacheSizeAlloc;
+            }
+        }
+
+        public bool CanAllocSendBuf
+        {
+            get
+            {
+                if (_sendCacheSizeAlloc > _args.SendCacheSize)
+                    return false;
+                return true;
+            }
+        }
+
+        public bool CanAllocRecvBuf
+        {
+            get
+            {
+                if (_recvCacheSizeAlloc > _args.RecvCacheSize)
+                    return false;
+                return true;
+            }
+        }
+
+        public CTcpClientCacheEmpty(CTcpClientCacheArgs args)
+        {
+            _args = args;
+
+            Clear();
+        }
+
+        public void Clear()
+        {
+            _sendCacheSize = 0;
+            _sendCacheSizeAlloc = 0;
+
+            _recvCacheSize = 0;
+            _recvCacheSizeAlloc = 0;
+        }
+
+        #region 
+
+        public eTcpError AllocSendBuf(int count, out byte[] buf)
+        {
+            if (count == 0)
+            {
+                buf = null;
+                return eTcpError.BlockSizeIsZero;
+            }
+
+            buf = new byte[count];
+            return eTcpError.Success;
+        }
+
+        public eTcpError CollectSendBuf(byte[] buf)
+        {
+            if (buf == null)
+                return eTcpError.BlockNull;
+            if (buf.Length == 0)
+                return eTcpError.BlockSizeIsZero;
+
+            return eTcpError.Success;
+        }
+
+        #endregion
+
+        #region 
+
+        public eTcpError AllocRecvBuf(out byte[] buf)
+        {
+            buf = new byte[_args.RecvBufSize];
+            return eTcpError.Success;
+        }
+
+        public eTcpError CollectRecvBuf(byte[] buf)
+        {
+            if (buf == null)
+                return eTcpError.BlockNull;
+            if (buf.Length != _args.RecvBufSize)
+                return eTcpError.BlockSizeOutOfRange;
+
+            return eTcpError.Success;
+        }
+
+        #endregion
+    }
+
     public class CTcpClientCache : ITcpClientCache
     {
         static readonly int[] gTcpClientBufSize = { 32, 64, 128, 256, 512, 1024, 2048 };
