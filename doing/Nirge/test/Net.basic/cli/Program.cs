@@ -18,9 +18,9 @@ namespace cli
             var cache = new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824));
 
             const int gCapacity = 10;
-            const int gPkg = 128;
+            var msg = new byte[2048];
 
-            var clis = new CTcpClient[gCapacity];
+            var clis = new CTcpClientBase[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
             {
                 var cli = new CTcpClient(new CTcpClientArgs(), LogManager.Exists("cli", "all"), cache);
@@ -29,12 +29,6 @@ namespace cli
                 cli.Recved += Cli_Recved;
                 clis[i] = cli;
                 cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
-            }
-
-            var pkgs = new Queue<ArraySegment<byte>>[gCapacity];
-            for (var i = 0; i < clis.Length; ++i)
-            {
-                pkgs[i] = new Queue<ArraySegment<byte>>();
             }
 
             var rng = new Random();
@@ -47,15 +41,11 @@ namespace cli
                     var cli = clis[i];
 
                     cli.Exec();
-                    if (cli.State == eTcpClientState.Connected)
+                    switch (cli.State)
                     {
-                        if (cache.CanAllocSendBuf)
-                        {
-                            byte[] buf;
-                            cache.AllocSendBuf(rng.Next(1, gPkg << 1), out buf);
-                            pkgs[i].Enqueue(buf);
-                            cli.Send(pkgs[i]);
-                        }
+                    case eTcpClientState.Connected:
+                        cli.Send(new ArraySegment<byte>(msg, 0, rng.Next(1, msg.Length)));
+                        break;
                     }
                 }
 

@@ -138,7 +138,7 @@ namespace Nirge.Core
 
     #endregion
 
-    public class CTcpServer : IObjAlloc<CTcpServerArgs, ILog, ITcpClientCache>, IObjCollect
+    public class CTcpServer<T> : IObjAlloc<CTcpServerArgs, ILog, ITcpClientCache>, IObjCollect where T : CTcpClientBase, new()
     {
         CTcpServerArgs _args;
         ILog _log;
@@ -150,12 +150,12 @@ namespace Nirge.Core
         TcpListener _lis;
         bool _lising;
 
-        Queue<CTcpClient> _clisPool;
+        Queue<T> _clisPool;
         int _clisSeed;
         Queue<TcpClient> _clisPre;
         Queue<TcpClient> _clisPost;
-        List<CTcpClient> _clis;
-        Dictionary<int, CTcpClient> _clisDict;
+        List<T> _clis;
+        Dictionary<int, T> _clisDict;
 
         public eTcpServerState State
         {
@@ -192,12 +192,12 @@ namespace Nirge.Core
 
             _lising = false;
 
-            _clisPool = new Queue<CTcpClient>();
+            _clisPool = new Queue<T>();
             _clisSeed = 0;
             _clisPre = new Queue<TcpClient>(32);
             _clisPost = new Queue<TcpClient>(32);
-            _clis = new List<CTcpClient>();
-            _clisDict = new Dictionary<int, CTcpClient>();
+            _clis = new List<T>();
+            _clisDict = new Dictionary<int, T>();
         }
 
         public void Collect()
@@ -405,7 +405,7 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpServerState.Opened:
-                CTcpClient e;
+                T e;
                 if (_clisDict.TryGetValue(cli, out e))
                     e.Close(graceful: true);
                 break;
@@ -506,15 +506,15 @@ namespace Nirge.Core
 
         #region
 
-        public eTcpError Send(int cli, Queue<ArraySegment<byte>> pkgs)
+        public eTcpError Send(int cli, object pkg)
         {
             switch (_state)
             {
             case eTcpServerState.Opened:
-                CTcpClient e;
+                T e;
                 if (!_clisDict.TryGetValue(cli, out e))
                     return eTcpError.CliOutOfRange;
-                return e.Send(pkgs);
+                return e.Send(pkg);
             case eTcpServerState.Closed:
             case eTcpServerState.Opening:
             case eTcpServerState.Closing:
@@ -556,11 +556,14 @@ namespace Nirge.Core
 
                     while (_clisPost.Count > 0)
                     {
-                        CTcpClient cli;
+                        T cli;
                         if (_clisPool.Count > 0)
                             cli = _clisPool.Dequeue();
                         else
-                            cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.SendCacheSize, _args.RecvCacheSize), _log, _cache);
+                        {
+                            cli = new T();
+                            cli.Alloc(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.SendCacheSize, _args.RecvCacheSize), _log, _cache);
+                        }
 
                         var cliId = ++_clisSeed;
                         _clis.Add(cli);

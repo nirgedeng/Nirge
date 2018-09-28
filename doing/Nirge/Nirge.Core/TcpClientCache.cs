@@ -163,15 +163,17 @@ namespace Nirge.Core
 
         #region 
 
-        public eTcpError AllocSendBuf(int count, out byte[] buf)
+        public eTcpError AllocSendBuf(int count, Queue<ArraySegment<byte>> bufs)
         {
             if (count == 0)
-            {
-                buf = null;
                 return eTcpError.BlockSizeIsZero;
-            }
+            if (bufs == null)
+                return eTcpError.ArgNull;
+            if (bufs.Count > 0)
+                return eTcpError.ArgOutOfRange;
 
-            buf = new byte[count];
+            var buf = new byte[count];
+            bufs.Enqueue(buf);
             return eTcpError.Success;
         }
 
@@ -339,29 +341,59 @@ namespace Nirge.Core
 
         #region 
 
-        public eTcpError AllocSendBuf(int count, out byte[] buf)
+        public eTcpError AllocSendBuf(int count, Queue<ArraySegment<byte>> bufs)
         {
             if (count == 0)
-            {
-                buf = null;
                 return eTcpError.BlockSizeIsZero;
-            }
+            if (bufs == null)
+                return eTcpError.ArgNull;
+            if (bufs.Count > 0)
+                return eTcpError.ArgOutOfRange;
 
-            for (var i = 0; i < gTcpClientBufSize.Length; ++i)
+            byte[] buf;
+
+            if (_sendCacheSize > count)
             {
-                if (count > gTcpClientBufSize[i])
-                    continue;
+                for (var i = 0; i < gTcpClientBufSize.Length; ++i)
+                {
+                    if (count > gTcpClientBufSize[i])
+                        continue;
 
-                if (_sends[i].TryDequeue(out buf))
-                    Interlocked.Add(ref _sendCacheSize, -buf.Length);
-                else
-                    buf = new byte[gTcpClientBufSize[i]];
-                Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
-                return eTcpError.Success;
+                    if (_sends[i].TryDequeue(out buf))
+                    {
+                        Interlocked.Add(ref _sendCacheSize, -buf.Length);
+                        Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
+                        return eTcpError.Success;
+                    }
+                }
             }
 
-            buf = null;
-            return eTcpError.BlockSizeOutOfRange;
+            for (; _sendCacheSize > 0;)
+                for (var i = 0; i < _sends.Length; ++i)
+                {
+                    if (_sends[i].Count > 0
+                        && _sends[i].TryDequeue(out buf))
+                    {
+                        bufs.Enqueue(buf);
+                        Interlocked.Add(ref _sendCacheSize, -buf.Length);
+                        Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
+                        count -= buf.Length;
+                        if (count <= 0)
+                            return eTcpError.Success;
+                    }
+                }
+            for (; count > 0;)
+            {
+                for (var i = 0; i < gTcpClientBufSize.Length; ++i)
+                {
+                    buf = new byte[gTcpClientBufSize[i]];
+                    bufs.Enqueue(buf);
+                    Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
+                    count -= buf.Length;
+                }
+            }
+
+            return eTcpError.Success;
         }
 
         public eTcpError CollectSendBuf(byte[] buf)

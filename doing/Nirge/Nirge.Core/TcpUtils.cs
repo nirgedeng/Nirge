@@ -23,12 +23,13 @@ namespace Nirge.Core
         BlockNull,
         BlockSizeIsZero,
         BlockSizeOutOfRange,
+        BlockTypeNotSupported,
         CliNull,
         CliOutOfRange,
         SendCacheFull,
         RecvCacheFull,
-        CantAllocSendBuf,
-        CantAllocRecvBuf,
+        SendCacheUsedUp,
+        RecvCacheUsedUp,
     }
 
     public interface ITcpClientCache
@@ -70,7 +71,7 @@ namespace Nirge.Core
         }
 
         void Clear();
-        eTcpError AllocSendBuf(int count, out byte[] buf);
+        eTcpError AllocSendBuf(int count, Queue<ArraySegment<byte>> bufs);
         eTcpError CollectSendBuf(byte[] buf);
         eTcpError AllocRecvBuf(out byte[] buf);
         eTcpError CollectRecvBuf(byte[] buf);
