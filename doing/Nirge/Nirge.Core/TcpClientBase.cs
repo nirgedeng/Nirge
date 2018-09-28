@@ -617,7 +617,7 @@ namespace Nirge.Core
                 var result = Fill(pkg, _sendsPre, _cache);
                 if (result != eTcpError.Success)
                 {
-                    _log.WriteLine(eLogPattern.Warn, string.Format("NET cli send failed to fill {0}", result));
+                    _log.WriteLine(eLogPattern.Error, string.Format("NET cli send failed to fill {0}", result));
                     return result;
                 }
 
@@ -833,7 +833,7 @@ namespace Nirge.Core
             case eTcpError.Success:
                 break;
             default:
-                _log.WriteLine(eLogPattern.Warn, string.Format("NET g failed to alloc recv buf {0}", _cache.RecvBufSize));
+                _log.WriteLine(eLogPattern.Error, string.Format("NET g failed to alloc recv buf {0}", _cache.RecvBufSize));
                 buf = null;
                 break;
             }
