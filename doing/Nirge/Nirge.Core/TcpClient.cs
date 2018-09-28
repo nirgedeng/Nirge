@@ -871,9 +871,9 @@ namespace Nirge.Core
 
                         byte[] buf;
                         if (PreRecv(out buf))
-                        {
                             BeginRecv(buf);
-                        }
+                        else
+                            _recving = false;
                     }
                     else
                     {
