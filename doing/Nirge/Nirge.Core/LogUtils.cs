@@ -23,12 +23,12 @@ namespace Nirge.Core
 
     public static class LogUtils
     {
-        public static void WriteLine(this ILog log, eLogPattern pattern, object message, Exception exception = null, [CallerFilePath] string filePath = "", [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
+        public static void WriteLine(this ILog log, eLogPattern pattern, object message = null, Exception exception = null, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string memberName = "")
         {
             if (log == null)
                 return;
 
-            var s = string.Format("{0}:{1}:{2} {3}", filePath, memberName, lineNumber, message);
+            var s = string.Format("{0}:{1}:{2} {3}", filePath, lineNumber, memberName, message ?? "");
 
             switch (pattern)
             {

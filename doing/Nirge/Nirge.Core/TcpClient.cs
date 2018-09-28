@@ -355,6 +355,18 @@ namespace Nirge.Core
             _cli = null;
 
             _sendArgs.AcceptSocket = null;
+            if (_sendArgs.Buffer != null)
+            {
+                _cache.CollectSendBuf(_sendArgs.Buffer);
+                _sendArgs.SetBuffer(null, 0, 0);
+            }
+            else if (_sendArgs.BufferList != null)
+            {
+                foreach (var i in _sendArgs.BufferList)
+                    _cache.CollectSendBuf(i.Array);
+                _sendArgs.BufferList.Clear();
+                _sendArgs.BufferList = null;
+            }
             while (_sends.Count > 0)
                 _cache.CollectSendBuf(_sends.Dequeue().Array);
             if (_sendsPost.Count > 0)
@@ -368,6 +380,11 @@ namespace Nirge.Core
             _sendBlockSize = 0;
 
             _recvArgs.AcceptSocket = null;
+            if (_recvArgs.Buffer != null)
+            {
+                _cache.CollectRecvBuf(_recvArgs.Buffer);
+                _recvArgs.SetBuffer(null, 0, 0);
+            }
             while (_recvs.Count > 0)
                 _cache.CollectRecvBuf(_recvs.Dequeue().Array);
             while (_recvsPost.Count > 0)
@@ -806,6 +823,9 @@ namespace Nirge.Core
 
         void BeginRecv(byte[] buf)
         {
+            if (_recvArgs.Buffer != null)
+                _cache.CollectRecvBuf(_recvArgs.Buffer);
+
             var pass = false;
             try
             {
@@ -855,6 +875,8 @@ namespace Nirge.Core
                             _recvCacheSize += pkg.Count;
                             _recvBlockSize += (ulong)pkg.Count;
                         }
+
+                        _recvArgs.SetBuffer(null, 0, 0);
 
                         byte[] buf;
                         if (PreRecv(out buf))
