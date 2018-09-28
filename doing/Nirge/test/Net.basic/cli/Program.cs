@@ -47,14 +47,9 @@ namespace cli
                         if (cache.CanAllocSendBuf)
                         {
                             byte[] buf;
-                            var result = cache.AllocSendBuf(rng.Next(1024), out buf);
-                            switch (result)
-                            {
-                            case eTcpError.Success:
-                                pkgs[i].Enqueue(buf);
-                                cli.Send(pkgs[i]);
-                                break;
-                            }
+                            cache.AllocSendBuf(rng.Next(1, 1024), out buf);
+                            pkgs[i].Enqueue(buf);
+                            cli.Send(pkgs[i]);
                         }
                     }
                 }

@@ -823,9 +823,6 @@ namespace Nirge.Core
 
         void BeginRecv(byte[] buf)
         {
-            if (_recvArgs.Buffer != null)
-                _cache.CollectRecvBuf(_recvArgs.Buffer);
-
             var pass = false;
             try
             {
