@@ -17,7 +17,8 @@ namespace cli
             XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.basic.log.cli.xml"));
             var cache = new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824));
 
-            const int gCapacity = 1024;
+            const int gCapacity = 300;
+            const int gPkg = 32;
 
             var clis = new CTcpClient[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
@@ -47,13 +48,13 @@ namespace cli
                         if (cache.CanAllocSendBuf)
                         {
                             byte[] buf;
-                            cache.AllocSendBuf(rng.Next(1, 1024), out buf);
+                            cache.AllocSendBuf(rng.Next(1, gPkg << 1), out buf);
                             pkgs[i].Enqueue(buf);
                             cli.Send(pkgs[i]);
                         }
                     }
                 }
-                Thread.Sleep(50);
+                Thread.Sleep(1);
             }
         }
     }
