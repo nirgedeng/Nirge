@@ -293,7 +293,7 @@ namespace Nirge.Core
         {
             get
             {
-                return string.Format("stat cache {0} {1} alloc {2} {3} S{4}S {5} S{6}S {7} S{8}S {9} S{10}S {11} S{12}S {13} S{14}S {15} S{16}S {17} R{18}R {19}"
+                return string.Format("STAT CACHE {0} {1} ALLOC {2} {3} S{4}S {5} S{6}S {7} S{8}S {9} S{10}S {11} S{12}S {13} S{14}S {15} S{16}S {17} R{18}R {19}"
                     , _sendCacheSize, _recvCacheSize
                     , _sendCacheSizeAlloc, _recvCacheSizeAlloc
                     , gTcpClientBufSize[0], _sends[0].Count
