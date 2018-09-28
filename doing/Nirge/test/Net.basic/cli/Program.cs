@@ -18,7 +18,7 @@ namespace cli
             var cache = new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824));
 
             const int gCapacity = 10;
-            var msg = new byte[2048];
+            var pkg = new byte[2048];
 
             var clis = new CTcpClientBase[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
@@ -44,7 +44,7 @@ namespace cli
                     switch (cli.State)
                     {
                     case eTcpClientState.Connected:
-                        cli.Send(new ArraySegment<byte>(msg, 0, rng.Next(1, msg.Length)));
+                        cli.Send(new ArraySegment<byte>(pkg, 0, rng.Next(1, pkg.Length)));
                         break;
                     }
                 }

@@ -13,6 +13,7 @@ namespace Nirge.Core
     {
         None,
         Success,
+        Unknown,
 
         SysException,
         SocketError,

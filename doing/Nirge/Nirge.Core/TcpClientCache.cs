@@ -295,7 +295,7 @@ namespace Nirge.Core
         {
             get
             {
-                return string.Format("STAT CACHE {0} {1} ALLOC {2} {3} S{4}S {5} S{6}S {7} S{8}S {9} S{10}S {11} S{12}S {13} S{14}S {15} S{16}S {17} R{18}R {19}"
+                return string.Format("STAT CACHE {0} {1} ALLOC {2} {3} S{4} {5} S{6} {7} S{8} {9} S{10} {11} S{12} {13} S{14} {15} S{16} {17} R{18} {19}"
                     , _sendCacheSize, _recvCacheSize
                     , _sendCacheSizeAlloc, _recvCacheSizeAlloc
                     , gTcpClientBufSize[0], _sends[0].Count
@@ -361,6 +361,7 @@ namespace Nirge.Core
 
                     if (_sends[i].TryDequeue(out buf))
                     {
+                        bufs.Enqueue(buf);
                         Interlocked.Add(ref _sendCacheSize, -buf.Length);
                         Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
                         return eTcpError.Success;
@@ -377,8 +378,7 @@ namespace Nirge.Core
                         bufs.Enqueue(buf);
                         Interlocked.Add(ref _sendCacheSize, -buf.Length);
                         Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
-                        count -= buf.Length;
-                        if (count <= 0)
+                        if ((count -= buf.Length) <= 0)
                             return eTcpError.Success;
                     }
                 }
@@ -389,11 +389,12 @@ namespace Nirge.Core
                     buf = new byte[gTcpClientBufSize[i]];
                     bufs.Enqueue(buf);
                     Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
-                    count -= buf.Length;
+                    if ((count -= buf.Length) <= 0)
+                        return eTcpError.Success;
                 }
             }
 
-            return eTcpError.Success;
+            return eTcpError.Unknown;
         }
 
         public eTcpError CollectSendBuf(byte[] buf)
