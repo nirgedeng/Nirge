@@ -17,13 +17,16 @@ namespace cli
             XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.basic.log.cli.xml"));
             var cache = new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824));
 
-            const int gCapacity = 100;
+            const int gCapacity = 10;
             const int gPkg = 128;
 
             var clis = new CTcpClient[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
             {
                 var cli = new CTcpClient(new CTcpClientArgs(), LogManager.Exists("cli", "all"), cache);
+                cli.Connected += Cli_Connected;
+                cli.Closed += Cli_Closed;
+                cli.Recved += Cli_Recved;
                 clis[i] = cli;
                 cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
             }
@@ -56,6 +59,20 @@ namespace cli
                 }
                 Thread.Sleep(1);
             }
+        }
+
+        private static void Cli_Recved(object arg1, byte[] arg2, int arg3, int arg4)
+        {
+        }
+
+        private static void Cli_Closed(object sender, CDataEventArgs<CTcpClientCloseArgs> e)
+        {
+            Console.WriteLine("cli close {0} {1} {2} {3}", e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError, e.Arg1.Exception != null ? e.Arg1.Exception.ToString() : "");
+        }
+
+        private static void Cli_Connected(object sender, CDataEventArgs<CTcpClientConnectArgs> e)
+        {
+            Console.WriteLine("cli connect {0} {1} {2} {3}", e.Arg1.Result, e.Arg1.Error, e.Arg1.SocketError, e.Arg1.Exception != null ? e.Arg1.Exception.ToString() : "");
         }
     }
 }
