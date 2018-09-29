@@ -36,7 +36,7 @@ namespace Nirge.Core
         {
             base.Alloc(args, log, cache);
 
-            _segPkg = new CTcpClientPkgArraySegment();
+            _segPkg = new CTcpClientArraySegment();
         }
 
         protected override void Clear()
@@ -64,10 +64,7 @@ namespace Nirge.Core
         protected override eTcpError Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache)
         {
             if (pkg is byte[])
-            {
-                ArraySegment<byte> source = (byte[])pkg;
-                return _segPkg.Fill(source, target, cache);
-            }
+                return _segPkg.Fill(pkg, target, cache);
             else if (pkg is ArraySegment<byte>)
                 return _segPkg.Fill(pkg, target, cache);
 

@@ -16,13 +16,13 @@ namespace Nirge.Core
         eTcpError Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache);
     }
 
-    public class CTcpClientPkgArraySegment : ITcpClientPkg
+    public class CTcpClientArraySegment : ITcpClientPkg
     {
         public eTcpError Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache)
         {
             if (pkg == null)
                 return eTcpError.BlockNull;
-            if (!(pkg is ArraySegment<byte>))
+            if (!(pkg is byte[] || pkg is ArraySegment<byte>))
                 return eTcpError.PkgTypeNoMatch;
             var source = (ArraySegment<byte>)pkg;
             if (source.Count == 0)

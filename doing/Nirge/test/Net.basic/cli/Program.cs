@@ -14,6 +14,9 @@ namespace cli
     {
         static void Main(string[] args)
         {
+            var a = new byte[1];
+            ArraySegment<byte> b = (ArraySegment<byte>)a;
+
             XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.basic.log.cli.xml"));
             var cache = new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824));
 
