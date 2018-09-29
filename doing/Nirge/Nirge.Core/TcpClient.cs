@@ -314,6 +314,7 @@ namespace Nirge.Core
                 _args = null;
                 _log = null;
                 _cache = null;
+                _fill = null;
 
                 _connectTag = null;
                 _closeTag = null;
@@ -501,11 +502,8 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                lock (_connectTag)
-                {
-                    if (_connectTag.Result == eTcpClientConnectResult.None)
-                        _connectTag.Set(eTcpClientConnectResult.Fail, exception, SocketError.Success);
-                }
+                if (_connectTag.Result == eTcpClientConnectResult.None)
+                    _connectTag.Set(eTcpClientConnectResult.Fail, exception, SocketError.Success);
             }
 
             if (pass)
@@ -513,11 +511,8 @@ namespace Nirge.Core
                 switch (_state)
                 {
                 case eTcpClientState.Connecting:
-                    lock (_connectTag)
-                    {
-                        if (_connectTag.Result == eTcpClientConnectResult.None)
-                            _connectTag.Set(eTcpClientConnectResult.Success, null, SocketError.Success);
-                    }
+                    if (_connectTag.Result == eTcpClientConnectResult.None)
+                        _connectTag.Set(eTcpClientConnectResult.Success, null, SocketError.Success);
                     break;
                 case eTcpClientState.Closed:
                 case eTcpClientState.Connected:
