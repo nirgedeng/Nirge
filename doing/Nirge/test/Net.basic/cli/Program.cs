@@ -20,7 +20,7 @@ namespace cli
             fill.Register(typeof(byte[]), new CTcpClientArraySegment());
             fill.Register(typeof(ArraySegment<byte>), new CTcpClientArraySegment());
 
-            const int gCapacity = 1000;
+            const int gCapacity = 3000;
             var pkg = new byte[512];
 
             var clis = new CTcpClient[gCapacity];
@@ -31,7 +31,7 @@ namespace cli
                 cli.Closed += Cli_Closed;
                 cli.Recved += Cli_Recved;
                 clis[i] = cli;
-                cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
+                cli.Connect(new IPEndPoint(IPAddress.Parse("10.8.26.15"), 9527));
             }
 
             var rng = new Random();
@@ -65,7 +65,7 @@ namespace cli
                     Console.WriteLine(cache.Stat);
                 }
 
-                Thread.Sleep(50);
+                Thread.Sleep(100);
             }
         }
 

@@ -23,7 +23,7 @@ namespace ser
             ser.CliConnected += Ser_CliConnected;
             ser.CliClosed += Ser_CliClosed;
             ser.CliRecved += Ser_CliRecved;
-            ser.Open(new IPEndPoint(IPAddress.Any, 9527));
+            ser.Open(new IPEndPoint(IPAddress.Parse("10.8.26.15"), 9527));
 
             var t = Environment.TickCount;
 
