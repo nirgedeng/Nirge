@@ -306,6 +306,11 @@ namespace Nirge.Core
 
         public CTcpClientCache(CTcpClientCacheArgs args, ILog log)
         {
+            if (args == null)
+                throw new ArgumentNullException("args");
+            if (log == null)
+                throw new ArgumentNullException("log");
+
             _args = args;
             _log = log;
 

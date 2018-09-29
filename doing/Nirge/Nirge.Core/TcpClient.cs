@@ -272,6 +272,15 @@ namespace Nirge.Core
 
         public void Alloc(CTcpClientArgs args, ILog log, ITcpClientCache cache, CTcpClientPkgFill fill)
         {
+            if (args == null)
+                throw new ArgumentNullException("args");
+            if (log == null)
+                throw new ArgumentNullException("log");
+            if (cache == null)
+                throw new ArgumentNullException("cache");
+            if (fill == null)
+                throw new ArgumentNullException("fill");
+
             _args = args;
             _log = log;
             _cache = cache;
@@ -411,6 +420,9 @@ namespace Nirge.Core
 
         public void Connect(IPEndPoint endPoint)
         {
+            if (endPoint == null)
+                throw new ArgumentNullException("endPoint");
+
             switch (_state)
             {
             case eTcpClientState.Closed:
