@@ -65,12 +65,12 @@ namespace cli
 
         private static void Cli_Closed(object sender, CDataEventArgs<CTcpClientCloseArgs> e)
         {
-            Console.WriteLine("cli close {0} {1} {2} {3}", e.Arg1.Reason, e.Arg1.Error, e.Arg1.SocketError, e.Arg1.Exception != null ? e.Arg1.Exception.ToString() : "");
+            Console.WriteLine("cli close {0} {1} {2}", e.Arg1.Reason, e.Arg1.SocketError, e.Arg1.Exception != null ? e.Arg1.Exception.ToString() : "");
         }
 
         private static void Cli_Connected(object sender, CDataEventArgs<CTcpClientConnectArgs> e)
         {
-            Console.WriteLine("cli connect {0} {1} {2} {3}", e.Arg1.Result, e.Arg1.Error, e.Arg1.SocketError, e.Arg1.Exception != null ? e.Arg1.Exception.ToString() : "");
+            Console.WriteLine("cli connect {0} {1} {2}", e.Arg1.Result, e.Arg1.SocketError, e.Arg1.Exception != null ? e.Arg1.Exception.ToString() : "");
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Nirge.Core
 {
     public interface ITcpClientPkg
     {
-        eTcpError Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache);
+        void Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache);
     }
 
     public class CTcpClientArraySegment : ITcpClientPkg
@@ -25,31 +25,25 @@ namespace Nirge.Core
             _segs = new List<byte[]>();
         }
 
-        public eTcpError Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache)
+        public void Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache)
         {
             if (pkg == null)
-                return eTcpError.BlockNull;
+                throw new ArgumentNullException("pkg");
             if (!(pkg is byte[] || pkg is ArraySegment<byte>))
-                return eTcpError.PkgTypeNoMatch;
+                throw new ArgumentOutOfRangeException("pkg");
             var source = (ArraySegment<byte>)pkg;
             if (source.Count == 0)
-                return eTcpError.BlockSizeIsZero;
+                throw new ArgumentOutOfRangeException("pkg");
             if (target == null)
-                return eTcpError.ArgNull;
+                throw new ArgumentNullException("target");
             if (cache == null)
-                return eTcpError.ArgNull;
+                throw new ArgumentNullException("cache");
 
-            var result = cache.AllocSendBuf(source.Count, _segs);
-            if (result != eTcpError.Success)
-                return result;
-            if (_segs.Count == 0)
-                return eTcpError.BlockSizeIsZero;
+            cache.AllocSendBuf(source.Count, _segs);
 
             foreach (var i in _segs)
                 target.Enqueue(i);
             _segs.Clear();
-
-            return eTcpError.Success;
         }
     }
 }

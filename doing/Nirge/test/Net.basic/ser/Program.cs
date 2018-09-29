@@ -46,7 +46,7 @@ namespace ser
 
         private static void Ser_CliClosed(object sender, CDataEventArgs<int, CTcpClientCloseArgs> e)
         {
-            Console.WriteLine("cli {0} closed {1} {2} {3} {4}", e.Arg1, e.Arg2.Reason, e.Arg2.Error, e.Arg2.SocketError, e.Arg2.Exception == null ? "" : e.Arg2.Exception.ToString());
+            Console.WriteLine("cli {0} closed {1} {2} {3}", e.Arg1, e.Arg2.Reason, e.Arg2.SocketError, e.Arg2.Exception == null ? "" : e.Arg2.Exception.ToString());
         }
 
         private static void Ser_CliConnected(object sender, CDataEventArgs<int> e)

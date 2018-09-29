@@ -164,48 +164,42 @@ namespace Nirge.Core
 
         #region 
 
-        public eTcpError AllocSendBuf(int count, IList<byte[]> bufs)
+        public void AllocSendBuf(int count, IList<byte[]> bufs)
         {
             if (count == 0)
-                return eTcpError.BlockSizeIsZero;
+                throw new ArgumentOutOfRangeException("count");
             if (bufs == null)
-                return eTcpError.ArgNull;
+                throw new ArgumentNullException("bufs");
             if (bufs.Count > 0)
-                return eTcpError.ArgOutOfRange;
+                throw new ArgumentOutOfRangeException("bufs");
 
             var buf = new byte[count];
             bufs.Add(buf);
-            return eTcpError.Success;
         }
 
-        public eTcpError CollectSendBuf(byte[] buf)
+        public void CollectSendBuf(byte[] buf)
         {
             if (buf == null)
-                return eTcpError.BlockNull;
+                throw new ArgumentNullException("buf");
             if (buf.Length == 0)
-                return eTcpError.BlockSizeIsZero;
-
-            return eTcpError.Success;
+                throw new ArgumentOutOfRangeException("buf");
         }
 
         #endregion
 
         #region 
 
-        public eTcpError AllocRecvBuf(out byte[] buf)
+        public void AllocRecvBuf(out byte[] buf)
         {
             buf = new byte[_args.RecvBufSize];
-            return eTcpError.Success;
         }
 
-        public eTcpError CollectRecvBuf(byte[] buf)
+        public void CollectRecvBuf(byte[] buf)
         {
             if (buf == null)
-                return eTcpError.BlockNull;
+                throw new ArgumentNullException("buf");
             if (buf.Length != _args.RecvBufSize)
-                return eTcpError.BlockSizeOutOfRange;
-
-            return eTcpError.Success;
+                throw new ArgumentOutOfRangeException("buf");
         }
 
         #endregion
@@ -343,14 +337,14 @@ namespace Nirge.Core
 
         #region 
 
-        public eTcpError AllocSendBuf(int count, IList<byte[]> bufs)
+        public void AllocSendBuf(int count, IList<byte[]> bufs)
         {
             if (count == 0)
-                return eTcpError.BlockSizeIsZero;
+                throw new ArgumentOutOfRangeException("count");
             if (bufs == null)
-                return eTcpError.ArgNull;
+                throw new ArgumentNullException("bufs");
             if (bufs.Count > 0)
-                return eTcpError.ArgOutOfRange;
+                throw new ArgumentOutOfRangeException("bufs");
 
             byte[] buf;
 
@@ -366,7 +360,7 @@ namespace Nirge.Core
                         bufs.Add(buf);
                         Interlocked.Add(ref _sendCacheSize, -buf.Length);
                         Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
-                        return eTcpError.Success;
+                        return;
                     }
                 }
             }
@@ -381,7 +375,7 @@ namespace Nirge.Core
                         Interlocked.Add(ref _sendCacheSize, -buf.Length);
                         Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
                         if ((count -= buf.Length) <= 0)
-                            return eTcpError.Success;
+                            return;
                     }
                 }
             for (; count > 0;)
@@ -392,19 +386,19 @@ namespace Nirge.Core
                     bufs.Add(buf);
                     Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
                     if ((count -= buf.Length) <= 0)
-                        return eTcpError.Success;
+                        return;
                 }
             }
 
-            return eTcpError.BlockSizeOutOfRange;
+            throw new CNetException("Unknown");
         }
 
-        public eTcpError CollectSendBuf(byte[] buf)
+        public void CollectSendBuf(byte[] buf)
         {
             if (buf == null)
-                return eTcpError.BlockNull;
+                throw new ArgumentNullException("buf");
             if (buf.Length == 0)
-                return eTcpError.BlockSizeIsZero;
+                throw new ArgumentOutOfRangeException("buf");
 
             for (var i = 0; i < gTcpClientBufSize.Length; ++i)
             {
@@ -413,38 +407,36 @@ namespace Nirge.Core
                     _sends[i].Enqueue(buf);
                     Interlocked.Add(ref _sendCacheSize, buf.Length);
                     Interlocked.Add(ref _sendCacheSizeAlloc, -buf.Length);
-                    return eTcpError.Success;
+                    return;
                 }
             }
 
-            return eTcpError.BlockSizeOutOfRange;
+            throw new ArgumentOutOfRangeException("buf");
         }
 
         #endregion
 
         #region 
 
-        public eTcpError AllocRecvBuf(out byte[] buf)
+        public void AllocRecvBuf(out byte[] buf)
         {
             if (_recvs.TryDequeue(out buf))
                 Interlocked.Add(ref _recvCacheSize, -buf.Length);
             else
                 buf = new byte[_args.RecvBufSize];
             Interlocked.Add(ref _recvCacheSizeAlloc, buf.Length);
-            return eTcpError.Success;
         }
 
-        public eTcpError CollectRecvBuf(byte[] buf)
+        public void CollectRecvBuf(byte[] buf)
         {
             if (buf == null)
-                return eTcpError.BlockNull;
+                throw new ArgumentNullException("buf");
             if (buf.Length != _args.RecvBufSize)
-                return eTcpError.BlockSizeOutOfRange;
+                throw new ArgumentOutOfRangeException("buf");
 
             _recvs.Enqueue(buf);
             Interlocked.Add(ref _recvCacheSize, buf.Length);
             Interlocked.Add(ref _recvCacheSizeAlloc, -buf.Length);
-            return eTcpError.Success;
         }
 
         #endregion

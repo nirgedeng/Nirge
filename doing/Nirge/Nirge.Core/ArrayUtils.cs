@@ -10,21 +10,21 @@ namespace Nirge.Core
 {
     public static class ArrayUtils
     {
-        public static eTcpError Copy(byte[] src, int srcOffset, byte[] dst, int dstOffset, int count)
+        public static void Copy(byte[] src, int srcOffset, byte[] dst, int dstOffset, int count)
         {
             if (src == null)
-                return eTcpError.BlockNull;
+                throw new ArgumentNullException("src");
             if (srcOffset < 0)
-                return eTcpError.BlockSizeOutOfRange;
+                throw new ArgumentOutOfRangeException("srcOffset");
             if (dst == null)
-                return eTcpError.BlockNull;
+                throw new ArgumentNullException("dst");
             if (dstOffset < 0)
-                return eTcpError.BlockSizeOutOfRange;
+                throw new ArgumentOutOfRangeException("dstOffset");
             if (count < 0)
-                return eTcpError.BlockSizeOutOfRange;
+                throw new ArgumentOutOfRangeException("count");
 
             if (count == 0)
-                return eTcpError.Success;
+                return;
             else if (count > 8)
                 Buffer.BlockCopy(src, srcOffset, dst, dstOffset, count);
             else
@@ -32,8 +32,6 @@ namespace Nirge.Core
                 for (var i = 0; i < count; ++i)
                     dst[dstOffset + i] = src[srcOffset + i];
             }
-
-            return eTcpError.Success;
         }
     }
 }

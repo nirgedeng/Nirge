@@ -95,12 +95,6 @@ namespace Nirge.Core
             set;
         }
 
-        public eTcpError Error
-        {
-            get;
-            set;
-        }
-
         public SocketError SocketError
         {
             get;
@@ -118,12 +112,6 @@ namespace Nirge.Core
     public class CTcpServerCloseArgs
     {
         public eTcpServerCloseReason Reason
-        {
-            get;
-            set;
-        }
-
-        public eTcpError Error
         {
             get;
             set;
@@ -186,7 +174,6 @@ namespace Nirge.Core
             _closeTag = new CTcpServerCloseArgs()
             {
                 Reason = eTcpServerCloseReason.None,
-                Error = eTcpError.None,
                 SocketError = SocketError.Success,
             };
 
@@ -231,7 +218,6 @@ namespace Nirge.Core
             _state = eTcpServerState.Closed;
 
             _closeTag.Reason = eTcpServerCloseReason.None;
-            _closeTag.Error = eTcpError.None;
             _closeTag.SocketError = SocketError.Success;
 
             _lis = null;
@@ -313,7 +299,6 @@ namespace Nirge.Core
                 var e = new CTcpServerOpenArgs()
                 {
                     Result = eTcpServerOpenResult.Success,
-                    Error = eTcpError.None,
                     SocketError = SocketError.Success,
                 };
 
@@ -325,13 +310,11 @@ namespace Nirge.Core
                 catch (SocketException exception)
                 {
                     e.Result = eTcpServerOpenResult.Fail;
-                    e.Error = eTcpError.SocketError;
                     e.SocketError = exception.SocketErrorCode;
                 }
                 catch
                 {
                     e.Result = eTcpServerOpenResult.Fail;
-                    e.Error = eTcpError.SysException;
                     e.SocketError = SocketError.Success;
                 }
 
@@ -357,7 +340,6 @@ namespace Nirge.Core
                 return new CTcpServerOpenArgs()
                 {
                     Result = eTcpServerOpenResult.Fail,
-                    Error = eTcpError.WrongTcpState,
                     SocketError = SocketError.Success,
                 };
             }
@@ -375,7 +357,6 @@ namespace Nirge.Core
                     {
                     case eTcpServerCloseReason.None:
                         _closeTag.Reason = eTcpServerCloseReason.Active;
-                        _closeTag.Error = eTcpError.None;
                         _closeTag.SocketError = SocketError.Success;
                         break;
                     }
@@ -439,7 +420,6 @@ namespace Nirge.Core
                     {
                     case eTcpServerCloseReason.None:
                         _closeTag.Reason = eTcpServerCloseReason.Exception;
-                        _closeTag.Error = eTcpError.SocketError;
                         _closeTag.SocketError = exception.SocketErrorCode;
                         break;
                     }
@@ -453,7 +433,6 @@ namespace Nirge.Core
                     {
                     case eTcpServerCloseReason.None:
                         _closeTag.Reason = eTcpServerCloseReason.Exception;
-                        _closeTag.Error = eTcpError.SysException;
                         _closeTag.SocketError = SocketError.Success;
                         break;
                     }
@@ -506,21 +485,22 @@ namespace Nirge.Core
 
         #region
 
-        public eTcpError Send(int cli, object pkg)
+        public void Send(int cli, object pkg)
         {
             switch (_state)
             {
             case eTcpServerState.Opened:
                 T e;
                 if (!_clisDict.TryGetValue(cli, out e))
-                    return eTcpError.CliOutOfRange;
-                return e.Send(pkg);
+                    throw new ArgumentOutOfRangeException("cli");
+                e.Send(pkg);
+                break;
             case eTcpServerState.Closed:
             case eTcpServerState.Opening:
             case eTcpServerState.Closing:
             case eTcpServerState.ClosingWait:
             default:
-                return eTcpError.WrongTcpState;
+                throw new CNetException("wrong tcp state");
             }
         }
 
@@ -581,10 +561,9 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[TcpServer]OnCliConnected exception, cli:\"{0}\", connectArgs:\"{1},{2},{3}\""
+                                _log.Error(string.Format("[TcpServer]OnCliConnected exception, cli:\"{0}\", connectArgs:\"{1},{2}\""
                                     , cliId
-                                    , e.Arg1.Error
-                                    , e.Arg1.Error
+                                    , e.Arg1.Result
                                     , e.Arg1.SocketError), exception);
                             }
                         };
@@ -605,10 +584,9 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[TcpServer]OnCliClosed exception, cli:\"{0}\", closeArgs:\"{1},{2},{3}\""
+                                _log.Error(string.Format("[TcpServer]OnCliClosed exception, cli:\"{0}\", closeArgs:\"{1},{2}\""
                                     , cliId
                                     , e.Arg1.Reason
-                                    , e.Arg1.Error
                                     , e.Arg1.SocketError), exception);
                             }
                         };
@@ -675,7 +653,6 @@ namespace Nirge.Core
                         var e = new CTcpServerCloseArgs()
                         {
                             Reason = _closeTag.Reason,
-                            Error = _closeTag.Error,
                             SocketError = _closeTag.SocketError,
                         };
 
@@ -688,10 +665,9 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _log.Error(string.Format("[TcpServer]OnClosed exception, addr:\"{0}\", closeArgs:\"{1},{2},{3}\""
+                            _log.Error(string.Format("[TcpServer]OnClosed exception, addr:\"{0}\", closeArgs:\"{1},{2}\""
                                 , ""
                                 , e.Reason
-                                , e.Error
                                 , e.SocketError), exception);
                         }
                     }

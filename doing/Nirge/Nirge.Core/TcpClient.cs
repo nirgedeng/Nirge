@@ -61,14 +61,14 @@ namespace Nirge.Core
             base.Collect();
         }
 
-        protected override eTcpError Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache)
+        protected override void Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache)
         {
             if (pkg is byte[])
-                return _segPkg.Fill(pkg, target, cache);
+                _segPkg.Fill(pkg, target, cache);
             else if (pkg is ArraySegment<byte>)
-                return _segPkg.Fill(pkg, target, cache);
+                _segPkg.Fill(pkg, target, cache);
 
-            return eTcpError.PkgTypeNotSupported;
+            throw new CNetException("pkg type not supported");
         }
     }
 }

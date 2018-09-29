@@ -9,29 +9,24 @@ using System;
 
 namespace Nirge.Core
 {
-    public enum eTcpError
+    public class CNetException : Exception
     {
-        None,
-        Success,
-        Unknown,
+        public CNetException()
+            :
+            base()
+        {
+        }
 
-        SysException,
-        SocketError,
-        WrongTcpState,
-
-        ArgNull,
-        ArgOutOfRange,
-        BlockNull,
-        BlockSizeIsZero,
-        BlockSizeOutOfRange,
-        PkgTypeNoMatch,
-        PkgTypeNotSupported,
-        CliNull,
-        CliOutOfRange,
-        SendCacheFull,
-        RecvCacheFull,
-        SendCacheUsedUp,
-        RecvCacheUsedUp,
+        public CNetException(string message)
+            :
+            base(message)
+        {
+        }
+        public CNetException(string message, Exception innerException)
+            :
+            base(message, innerException)
+        {
+        }
     }
 
     public interface ITcpClientCache
@@ -73,9 +68,9 @@ namespace Nirge.Core
         }
 
         void Clear();
-        eTcpError AllocSendBuf(int count, IList<byte[]> bufs);
-        eTcpError CollectSendBuf(byte[] buf);
-        eTcpError AllocRecvBuf(out byte[] buf);
-        eTcpError CollectRecvBuf(byte[] buf);
+        void AllocSendBuf(int count, IList<byte[]> bufs);
+        void CollectSendBuf(byte[] buf);
+        void AllocRecvBuf(out byte[] buf);
+        void CollectRecvBuf(byte[] buf);
     }
 }
