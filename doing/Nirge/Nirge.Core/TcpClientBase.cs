@@ -209,7 +209,7 @@ namespace Nirge.Core
         ILog _log;
         ITcpClientCache _cache;
 
-        eTcpClientState _state;
+        protected eTcpClientState _state;
         CTcpClientConnectArgs _connectTag;
         CTcpClientCloseArgs _closeTag;
 
@@ -295,7 +295,7 @@ namespace Nirge.Core
         {
         }
 
-        public void Alloc(CTcpClientArgs args, ILog log, ITcpClientCache cache)
+        public virtual void Alloc(CTcpClientArgs args, ILog log, ITcpClientCache cache)
         {
             _args = args;
             _log = log;
@@ -321,7 +321,7 @@ namespace Nirge.Core
             Clear();
         }
 
-        public void Collect()
+        public virtual void Collect()
         {
             switch (_state)
             {
@@ -354,7 +354,7 @@ namespace Nirge.Core
             }
         }
 
-        void Clear()
+        protected virtual void Clear()
         {
             _state = eTcpClientState.Closed;
 

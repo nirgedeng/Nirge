@@ -12,6 +12,8 @@ namespace Nirge.Core
 {
     public class CTcpClient : CTcpClientBase
     {
+        ITcpClientPkg _segPkg;
+
         public CTcpClient(CTcpClientArgs args, ILog log, ITcpClientCache cache)
             :
             base(args, log, cache)
@@ -30,26 +32,46 @@ namespace Nirge.Core
         {
         }
 
+        public override void Alloc(CTcpClientArgs args, ILog log, ITcpClientCache cache)
+        {
+            base.Alloc(args, log, cache);
+
+            _segPkg = new CTcpClientPkgArraySegment();
+        }
+
+        protected override void Clear()
+        {
+            base.Clear();
+        }
+
+        public override void Collect()
+        {
+            switch (_state)
+            {
+            case eTcpClientState.Closed:
+                _segPkg = null;
+                break;
+            case eTcpClientState.Connecting:
+            case eTcpClientState.Connected:
+            case eTcpClientState.Closing:
+            case eTcpClientState.ClosingWait:
+                break;
+            }
+
+            base.Collect();
+        }
+
         protected override eTcpError Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache)
         {
             if (pkg is byte[])
             {
                 ArraySegment<byte> source = (byte[])pkg;
-                if (source.Count == 0)
-                    return eTcpError.BlockSizeIsZero;
-
-                return cache.AllocSendBuf(source.Count, target);
+                return _segPkg.Fill(source, target, cache);
             }
             else if (pkg is ArraySegment<byte>)
-            {
-                var source = (ArraySegment<byte>)pkg;
-                if (source.Count == 0)
-                    return eTcpError.BlockSizeIsZero;
+                return _segPkg.Fill(pkg, target, cache);
 
-                return cache.AllocSendBuf(source.Count, target);
-            }
-
-            return eTcpError.BlockTypeNotSupported;
+            return eTcpError.PkgTypeNotSupported;
         }
     }
 }
