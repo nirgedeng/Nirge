@@ -92,7 +92,7 @@ namespace Nirge.Core
             {
                 var count = pkgSize < i.Length
                     ? pkgSize : i.Length;
-                Buffer.BlockCopy(source.Array, offset, i, 0, count);
+                ArrayUtils.Copy(source.Array, offset, i, 0, count);
                 offset += count;
                 pkgSize -= count;
                 target.Enqueue(new ArraySegment<byte>(i, 0, count));
