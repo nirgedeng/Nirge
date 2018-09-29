@@ -126,11 +126,12 @@ namespace Nirge.Core
 
     #endregion
 
-    public class CTcpServer<T> : IObjAlloc<CTcpServerArgs, ILog, ITcpClientCache>, IObjCollect where T : CTcpClientBase, new()
+    public class CTcpServer : IObjAlloc<CTcpServerArgs, ILog, ITcpClientCache, CTcpClientPkgFill>, IObjCollect
     {
         CTcpServerArgs _args;
         ILog _log;
         ITcpClientCache _cache;
+        CTcpClientPkgFill _fill;
 
         eTcpServerState _state;
         CTcpServerCloseArgs _closeTag;
@@ -138,12 +139,12 @@ namespace Nirge.Core
         TcpListener _lis;
         bool _lising;
 
-        Queue<T> _clisPool;
+        Queue<CTcpClient> _clisPool;
         int _clisSeed;
         Queue<TcpClient> _clisPre;
         Queue<TcpClient> _clisPost;
-        List<T> _clis;
-        Dictionary<int, T> _clisDict;
+        List<CTcpClient> _clis;
+        Dictionary<int, CTcpClient> _clisDict;
 
         public eTcpServerState State
         {
@@ -153,22 +154,23 @@ namespace Nirge.Core
             }
         }
 
-        public CTcpServer(CTcpServerArgs args, ILog log, ITcpClientCache cache)
+        public CTcpServer(CTcpServerArgs args, ILog log, ITcpClientCache cache, CTcpClientPkgFill fill)
         {
-            Alloc(args, log, cache);
+            Alloc(args, log, cache, fill);
         }
 
-        public CTcpServer(ILog log)
+        public CTcpServer(ILog log, CTcpClientPkgFill fill)
             :
-            this(new CTcpServerArgs(), log, new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824), log))
+            this(new CTcpServerArgs(), log, new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824), log), fill)
         {
         }
 
-        public void Alloc(CTcpServerArgs args, ILog log, ITcpClientCache cache)
+        public void Alloc(CTcpServerArgs args, ILog log, ITcpClientCache cache, CTcpClientPkgFill fill)
         {
             _args = args;
             _log = log;
             _cache = cache;
+            _fill = fill;
 
             _state = eTcpServerState.Closed;
             _closeTag = new CTcpServerCloseArgs()
@@ -179,12 +181,12 @@ namespace Nirge.Core
 
             _lising = false;
 
-            _clisPool = new Queue<T>();
+            _clisPool = new Queue<CTcpClient>();
             _clisSeed = 0;
             _clisPre = new Queue<TcpClient>(32);
             _clisPost = new Queue<TcpClient>(32);
-            _clis = new List<T>();
-            _clisDict = new Dictionary<int, T>();
+            _clis = new List<CTcpClient>();
+            _clisDict = new Dictionary<int, CTcpClient>();
         }
 
         public void Collect()
@@ -386,7 +388,7 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpServerState.Opened:
-                T e;
+                CTcpClient e;
                 if (_clisDict.TryGetValue(cli, out e))
                     e.Close(graceful: true);
                 break;
@@ -490,7 +492,7 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpServerState.Opened:
-                T e;
+                CTcpClient e;
                 if (!_clisDict.TryGetValue(cli, out e))
                     throw new ArgumentOutOfRangeException("cli");
                 e.Send(pkg);
@@ -536,14 +538,11 @@ namespace Nirge.Core
 
                     while (_clisPost.Count > 0)
                     {
-                        T cli;
+                        CTcpClient cli;
                         if (_clisPool.Count > 0)
                             cli = _clisPool.Dequeue();
                         else
-                        {
-                            cli = new T();
-                            cli.Alloc(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.SendCacheSize, _args.RecvCacheSize), _log, _cache);
-                        }
+                            cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.SendCacheSize, _args.RecvCacheSize), _log, _cache, _fill);
 
                         var cliId = ++_clisSeed;
                         _clis.Add(cli);

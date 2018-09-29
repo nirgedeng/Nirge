@@ -11,21 +11,53 @@ using System.Runtime.CompilerServices;
 
 namespace Nirge.Core
 {
+    public class CTcpClientPkgFill
+    {
+        Dictionary<Type, ITcpClientPkg> _pkgs;
+        List<byte[]> _segs;
+
+        public CTcpClientPkgFill()
+        {
+            _pkgs = new Dictionary<Type, ITcpClientPkg>();
+            _segs = new List<byte[]>();
+        }
+
+        public void Register(Type pkgType, ITcpClientPkg pkg)
+        {
+            if (pkgType == null)
+                throw new ArgumentNullException("pkgType");
+            if (pkg == null)
+                throw new ArgumentNullException("pkg");
+
+            _pkgs.Add(pkgType, pkg);
+        }
+
+        public void Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache)
+        {
+            if (pkg == null)
+                throw new ArgumentNullException("pkg");
+            if (target == null)
+                throw new ArgumentNullException("target");
+            if (cache == null)
+                throw new ArgumentNullException("cache");
+
+            ITcpClientPkg i;
+            if (_pkgs.TryGetValue(pkg.GetType(), out i))
+                i.Fill(pkg, target, cache, _segs);
+            else
+                throw new ArgumentOutOfRangeException("pkg");
+        }
+
+    }
+
     public interface ITcpClientPkg
     {
-        void Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache);
+        void Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache, IList<byte[]> segs);
     }
 
     public class CTcpClientArraySegment : ITcpClientPkg
     {
-        List<byte[]> _segs;
-
-        public CTcpClientArraySegment()
-        {
-            _segs = new List<byte[]>();
-        }
-
-        public void Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache)
+        public void Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache, IList<byte[]> segs)
         {
             if (pkg == null)
                 throw new ArgumentNullException("pkg");
@@ -40,23 +72,23 @@ namespace Nirge.Core
                 throw new ArgumentNullException("cache");
 
             var pkgSize = source.Count;
-            cache.AllocSendBuf(pkgSize, _segs);
+            cache.AllocSendBuf(pkgSize, segs);
 
-            if (_segs.Count == 0)
+            if (segs.Count == 0)
                 throw new CNetException("zero alloc send buf");
             var pkgSizeTmp = 0;
-            foreach (var i in _segs)
+            foreach (var i in segs)
                 pkgSizeTmp += i.Length;
             if (pkgSizeTmp < pkgSize)
             {
-                foreach (var i in _segs)
+                foreach (var i in segs)
                     cache.CollectSendBuf(i);
-                _segs.Clear();
+                segs.Clear();
                 throw new CNetException("alloc send buf not encough");
             }
 
             var offset = source.Offset;
-            foreach (var i in _segs)
+            foreach (var i in segs)
             {
                 var count = pkgSize < i.Length
                     ? pkgSize : i.Length;
@@ -65,7 +97,7 @@ namespace Nirge.Core
                 pkgSize -= count;
                 target.Enqueue(new ArraySegment<byte>(i, 0, count));
             }
-            _segs.Clear();
+            segs.Clear();
         }
     }
 }

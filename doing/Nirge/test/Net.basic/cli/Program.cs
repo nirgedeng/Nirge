@@ -16,14 +16,17 @@ namespace cli
         {
             XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.basic.log.cli.xml"));
             var cache = new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824), LogManager.Exists("cli", "all"));
+            var fill = new CTcpClientPkgFill();
+            fill.Register(typeof(byte[]), new CTcpClientArraySegment());
+            fill.Register(typeof(ArraySegment<byte>), new CTcpClientArraySegment());
 
             const int gCapacity = 1000;
             var pkg = new byte[512];
 
-            var clis = new CTcpClientBase[gCapacity];
+            var clis = new CTcpClient[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
             {
-                var cli = new CTcpClient(new CTcpClientArgs(), LogManager.Exists("cli", "all"), cache);
+                var cli = new CTcpClient(new CTcpClientArgs(), LogManager.Exists("cli", "all"), cache, fill);
                 cli.Connected += Cli_Connected;
                 cli.Closed += Cli_Closed;
                 cli.Recved += Cli_Recved;
@@ -62,7 +65,7 @@ namespace cli
                     Console.WriteLine(cache.Stat);
                 }
 
-                Thread.Sleep(20);
+                Thread.Sleep(50);
             }
         }
 
