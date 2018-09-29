@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Net;
 using System;
 using System.Threading;
+using log4net;
 
 namespace Nirge.Core
 {
@@ -163,7 +164,7 @@ namespace Nirge.Core
 
         #region 
 
-        public eTcpError AllocSendBuf(int count, Queue<ArraySegment<byte>> bufs)
+        public eTcpError AllocSendBuf(int count, IList<byte[]> bufs)
         {
             if (count == 0)
                 return eTcpError.BlockSizeIsZero;
@@ -173,7 +174,7 @@ namespace Nirge.Core
                 return eTcpError.ArgOutOfRange;
 
             var buf = new byte[count];
-            bufs.Enqueue(buf);
+            bufs.Add(buf);
             return eTcpError.Success;
         }
 
@@ -215,6 +216,7 @@ namespace Nirge.Core
         static readonly int[] gTcpClientBufSize = { 64, 128, 256, 512, 1024, 2048 };
 
         CTcpClientCacheArgs _args;
+        ILog _log;
 
         int _sendCacheSize;
         int _sendCacheSizeAlloc;
@@ -308,9 +310,10 @@ namespace Nirge.Core
             }
         }
 
-        public CTcpClientCache(CTcpClientCacheArgs args)
+        public CTcpClientCache(CTcpClientCacheArgs args, ILog log)
         {
             _args = args;
+            _log = log;
 
             _sends = new ConcurrentQueue<byte[]>[gTcpClientBufSize.Length];
             for (var i = 0; i < _sends.Length; ++i)
@@ -340,7 +343,7 @@ namespace Nirge.Core
 
         #region 
 
-        public eTcpError AllocSendBuf(int count, Queue<ArraySegment<byte>> bufs)
+        public eTcpError AllocSendBuf(int count, IList<byte[]> bufs)
         {
             if (count == 0)
                 return eTcpError.BlockSizeIsZero;
@@ -360,7 +363,7 @@ namespace Nirge.Core
 
                     if (_sends[i].TryDequeue(out buf))
                     {
-                        bufs.Enqueue(buf);
+                        bufs.Add(buf);
                         Interlocked.Add(ref _sendCacheSize, -buf.Length);
                         Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
                         return eTcpError.Success;
@@ -374,7 +377,7 @@ namespace Nirge.Core
                     if (_sends[i].Count > 0
                         && _sends[i].TryDequeue(out buf))
                     {
-                        bufs.Enqueue(buf);
+                        bufs.Add(buf);
                         Interlocked.Add(ref _sendCacheSize, -buf.Length);
                         Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
                         if ((count -= buf.Length) <= 0)
@@ -386,14 +389,14 @@ namespace Nirge.Core
                 for (var i = 0; i < gTcpClientBufSize.Length; ++i)
                 {
                     buf = new byte[gTcpClientBufSize[i]];
-                    bufs.Enqueue(buf);
+                    bufs.Add(buf);
                     Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
                     if ((count -= buf.Length) <= 0)
                         return eTcpError.Success;
                 }
             }
 
-            return eTcpError.Unknown;
+            return eTcpError.BlockSizeOutOfRange;
         }
 
         public eTcpError CollectSendBuf(byte[] buf)

@@ -18,6 +18,13 @@ namespace Nirge.Core
 
     public class CTcpClientArraySegment : ITcpClientPkg
     {
+        List<byte[]> _segs;
+
+        public CTcpClientArraySegment()
+        {
+            _segs = new List<byte[]>();
+        }
+
         public eTcpError Fill(object pkg, Queue<ArraySegment<byte>> target, ITcpClientCache cache)
         {
             if (pkg == null)
@@ -32,7 +39,17 @@ namespace Nirge.Core
             if (cache == null)
                 return eTcpError.ArgNull;
 
-            return cache.AllocSendBuf(source.Count, target);
+            var result = cache.AllocSendBuf(source.Count, _segs);
+            if (result != eTcpError.Success)
+                return result;
+            if (_segs.Count == 0)
+                return eTcpError.BlockSizeIsZero;
+
+            foreach (var i in _segs)
+                target.Enqueue(i);
+            _segs.Clear();
+
+            return eTcpError.Success;
         }
     }
 }

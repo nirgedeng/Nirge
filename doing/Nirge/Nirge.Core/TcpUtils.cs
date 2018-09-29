@@ -73,7 +73,7 @@ namespace Nirge.Core
         }
 
         void Clear();
-        eTcpError AllocSendBuf(int count, Queue<ArraySegment<byte>> bufs);
+        eTcpError AllocSendBuf(int count, IList<byte[]> bufs);
         eTcpError CollectSendBuf(byte[] buf);
         eTcpError AllocRecvBuf(out byte[] buf);
         eTcpError CollectRecvBuf(byte[] buf);
