@@ -39,15 +39,32 @@ namespace Nirge.Core
             if (cache == null)
                 throw new ArgumentNullException("cache");
 
-            var count = source.Count;
-
-            cache.AllocSendBuf(source.Count, _segs);
+            var pkgSize = source.Count;
+            cache.AllocSendBuf(pkgSize, _segs);
 
             if (_segs.Count == 0)
                 throw new CNetException("zero alloc send buf");
-
+            var pkgSizeTmp = 0;
             foreach (var i in _segs)
-                target.Enqueue(i);
+                pkgSizeTmp += i.Length;
+            if (pkgSizeTmp < pkgSize)
+            {
+                foreach (var i in _segs)
+                    cache.CollectSendBuf(i);
+                _segs.Clear();
+                throw new CNetException("alloc send buf not encough");
+            }
+
+            var offset = source.Offset;
+            foreach (var i in _segs)
+            {
+                var count = pkgSize < i.Length
+                    ? pkgSize : i.Length;
+                Buffer.BlockCopy(source.Array, offset, i, 0, count);
+                offset += count;
+                pkgSize -= count;
+                target.Enqueue(new ArraySegment<byte>(i, 0, count));
+            }
             _segs.Clear();
         }
     }

@@ -17,7 +17,7 @@ namespace cli
             XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.basic.log.cli.xml"));
             var cache = new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824), LogManager.Exists("cli", "all"));
 
-            const int gCapacity = 100;
+            const int gCapacity = 1000;
             var pkg = new byte[512];
 
             var clis = new CTcpClientBase[gCapacity];
@@ -62,7 +62,7 @@ namespace cli
                     Console.WriteLine(cache.Stat);
                 }
 
-                Thread.Sleep(1);
+                Thread.Sleep(20);
             }
         }
 

@@ -881,7 +881,7 @@ namespace Nirge.Core
                 case eTcpClientConnectResult.Fail:
                     eClose();
 
-                    var e = new CTcpClientConnectArgs(_connectTag.Result, null, _connectTag.SocketError);
+                    var e = new CTcpClientConnectArgs(_connectTag.Result, _connectTag.Exception, _connectTag.SocketError);
 
                     _connectTag.Set(eTcpClientConnectResult.None, null, SocketError.Success);
                     _state = eTcpClientState.Closed;
