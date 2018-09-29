@@ -39,7 +39,12 @@ namespace Nirge.Core
             if (cache == null)
                 throw new ArgumentNullException("cache");
 
+            var count = source.Count;
+
             cache.AllocSendBuf(source.Count, _segs);
+
+            if (_segs.Count == 0)
+                throw new CNetException("zero alloc send buf");
 
             foreach (var i in _segs)
                 target.Enqueue(i);

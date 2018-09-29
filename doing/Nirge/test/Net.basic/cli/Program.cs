@@ -44,7 +44,14 @@ namespace cli
                     switch (cli.State)
                     {
                     case eTcpClientState.Connected:
-                        cli.Send(new ArraySegment<byte>(pkg, 0, rng.Next(1, pkg.Length)));
+                        try
+                        {
+                            cli.Send(new ArraySegment<byte>(pkg, 0, rng.Next(1, pkg.Length)));
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine(exception);
+                        }
                         break;
                     }
                 }

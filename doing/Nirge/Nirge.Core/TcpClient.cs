@@ -67,8 +67,8 @@ namespace Nirge.Core
                 _segPkg.Fill(pkg, target, cache);
             else if (pkg is ArraySegment<byte>)
                 _segPkg.Fill(pkg, target, cache);
-
-            throw new CNetException("pkg type not supported");
+            else
+                throw new ArgumentOutOfRangeException("pkg");
         }
     }
 }

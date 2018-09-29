@@ -389,8 +389,6 @@ namespace Nirge.Core
                         return;
                 }
             }
-
-            throw new CNetException("Unknown");
         }
 
         public void CollectSendBuf(byte[] buf)
