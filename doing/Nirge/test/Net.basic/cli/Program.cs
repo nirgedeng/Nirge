@@ -21,7 +21,7 @@ namespace cli
             fill.Register(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
 
             const int gCapacity = 2000;
-            var pkg = new byte[1024];
+            var pkg = new byte[2048];
 
             var clis = new CTcpClient[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
