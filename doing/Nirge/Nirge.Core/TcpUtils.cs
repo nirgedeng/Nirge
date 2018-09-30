@@ -39,10 +39,6 @@ namespace Nirge.Core
         {
             get;
         }
-        int RecvBufSize
-        {
-            get;
-        }
         int RecvCacheSize
         {
             get;
@@ -70,7 +66,7 @@ namespace Nirge.Core
         void Clear();
         byte[] AllocSendBuf(int count);
         void CollectSendBuf(byte[] buf);
-        byte[] AllocRecvBuf();
+        byte[] AllocRecvBuf(int count);
         void CollectRecvBuf(byte[] buf);
     }
 
@@ -80,23 +76,51 @@ namespace Nirge.Core
         {
             get;
         }
-        int PkgLen
+        byte[] RecvPkgHeadBuf
+        {
+            get;
+        }
+        int SendPkgType
+        {
+            get;
+            set;
+        }
+        int SendPkgSize
+        {
+            get;
+            set;
+        }
+        int RecvPkgType
+        {
+            get;
+            set;
+        }
+        int RecvPkgSize
         {
             get;
             set;
         }
         void Clear();
         void Fill(byte[] buf);
+        void UnFill();
+    }
+
+    public enum eTcpClientPkgType
+    {
+        None,
+        ArraySegment,
     }
 
     public interface ITcpClientPkg
     {
-        ArraySegment<byte> Fill(int pkgHeadSize, object pkg, ITcpClientCache cache);
+        ArraySegment<byte> Fill(ITcpClientPkgHead pkgHead, int pkgSize, object pkg, ITcpClientCache cache);
+        object UnFill(ArraySegment<byte> source, ITcpClientCache cache);
     }
 
     public interface ITcpClientPkgFill
     {
-        void Register(Type pkgType, ITcpClientPkg pkg);
-        ArraySegment<byte> Fill(int pkgHeadSize, object pkg, ITcpClientCache cache);
+        void Register(Type pkgType, int pkgTypeV, ITcpClientPkg pkg);
+        ArraySegment<byte> Fill(ITcpClientPkgHead pkgHead, int pkgSize, object pkg, ITcpClientCache cache);
+        object UnFill(int pkgType, ArraySegment<byte> source, ITcpClientCache cache);
     }
 }

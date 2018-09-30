@@ -17,6 +17,7 @@ namespace Nirge.Core
     {
         int _sendBufSize;
         int _recvBufSize;
+        int _pkgSize;
         int _sendCacheSize;
         int _recvCacheSize;
 
@@ -36,6 +37,14 @@ namespace Nirge.Core
             }
         }
 
+        public int PkgSize
+        {
+            get
+            {
+                return _pkgSize;
+            }
+        }
+
         public int SendCacheSize
         {
             get
@@ -52,10 +61,11 @@ namespace Nirge.Core
             }
         }
 
-        public CTcpClientArgs(int sendBufSize = 0, int recvBufSize = 0, int sendCacheSize = 0, int recvCacheSize = 0)
+        public CTcpClientArgs(int sendBufSize = 0, int recvBufSize = 0, int pkgSize = 0, int sendCacheSize = 0, int recvCacheSize = 0)
         {
             _sendBufSize = sendBufSize;
             _recvBufSize = recvBufSize;
+            _pkgSize = pkgSize;
             _sendCacheSize = sendCacheSize;
             _recvCacheSize = recvCacheSize;
 
@@ -63,10 +73,14 @@ namespace Nirge.Core
                 _sendBufSize = 8192;
             if (_recvBufSize < 8192)
                 _recvBufSize = 8192;
-            if (_sendCacheSize < 1048576)
-                _sendCacheSize = 1048576;
-            if (_recvCacheSize < 1048576)
-                _recvCacheSize = 1048576;
+            if (_pkgSize < 8192)
+                _pkgSize = 8192;
+            if (_pkgSize > 1048576)
+                _pkgSize = 1048576;
+            if (_sendCacheSize < 2097152)
+                _sendCacheSize = 2097152;
+            if (_recvCacheSize < 2097152)
+                _recvCacheSize = 2097152;
         }
     }
 
@@ -207,8 +221,9 @@ namespace Nirge.Core
         byte[] _recv;
         SocketAsyncEventArgs _recvArgs;
         CRingArraySegment _recvSeg;
-        Queue<ArraySegment<byte>> _recvs;
-        Queue<ArraySegment<byte>> _recvsPost;
+        Queue<ValueTuple<int, ArraySegment<byte>>> _recvsPre;
+        Queue<ValueTuple<int, ArraySegment<byte>>> _recvs;
+        Queue<ValueTuple<int, ArraySegment<byte>>> _recvsPost;
         bool _recving;
         int _recvCacheSize;
         ulong _recvBlockSize;
@@ -268,7 +283,7 @@ namespace Nirge.Core
 
         public CTcpClient(ILog log, CTcpClientPkgFill fill)
             :
-            this(new CTcpClientArgs(), log, new CTcpClientCache(new CTcpClientCacheArgs(8192, 10485760, 10485760), log), fill)
+            this(new CTcpClientArgs(), log, new CTcpClientCache(new CTcpClientCacheArgs(10485760, 10485760), log), fill)
         {
         }
 
@@ -305,9 +320,10 @@ namespace Nirge.Core
             {
                 EndRecv(_recvArgs);
             };
-            _recvSeg = new CRingArraySegment(_args.SendBufSize + _args.RecvBufSize);
-            _recvs = new Queue<ArraySegment<byte>>();
-            _recvsPost = new Queue<ArraySegment<byte>>();
+            _recvSeg = new CRingArraySegment(_args.PkgSize + _args.RecvBufSize);
+            _recvsPre = new Queue<ValueTuple<int, ArraySegment<byte>>>();
+            _recvs = new Queue<ValueTuple<int, ArraySegment<byte>>>();
+            _recvsPost = new Queue<ValueTuple<int, ArraySegment<byte>>>();
 
             Clear();
         }
@@ -337,6 +353,7 @@ namespace Nirge.Core
                 _recvArgs.Dispose();
                 _recvArgs = null;
                 _recvSeg = null;
+                _recvsPre = null;
                 _recvs = null;
                 _recvsPost = null;
                 break;
@@ -383,10 +400,12 @@ namespace Nirge.Core
 
             _recvArgs.AcceptSocket = null;
             _recvSeg.Clear();
+            while (_recvsPre.Count > 0)
+                _cache.CollectRecvBuf(_recvsPre.Dequeue().Item2.Array);
             while (_recvs.Count > 0)
-                _cache.CollectRecvBuf(_recvs.Dequeue().Array);
+                _cache.CollectRecvBuf(_recvs.Dequeue().Item2.Array);
             while (_recvsPost.Count > 0)
-                _cache.CollectRecvBuf(_recvsPost.Dequeue().Array);
+                _cache.CollectRecvBuf(_recvsPost.Dequeue().Item2.Array);
             _recving = false;
             _recvCacheSize = 0;
             _recvBlockSize = 0;
@@ -463,11 +482,9 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _log.WriteLine(eLogPattern.Error, string.Format("NET cli OnConnected exception addr {0} {1} connectArgs {2} {3}"
+                    _log.WriteLine(eLogPattern.Error, string.Format("NET cli OnConnected exception addr {0} {1}"
                         , _cli.Client.LocalEndPoint
-                        , _cli.Client.RemoteEndPoint
-                        , e.Result
-                        , e.SocketError), exception);
+                        , _cli.Client.RemoteEndPoint), exception);
                 }
 
                 if (PreRecv())
@@ -582,7 +599,7 @@ namespace Nirge.Core
                 if (!_cache.CanAllocSendBuf)
                     throw new CNetException(string.Format("NET g send cache used up {0} over {1}", _cache.SendCacheSizeAlloc, _cache.SendCacheSize));
 
-                var i = _fill.Fill(_head.PkgHeadSize, pkg, _cache);
+                var i = _fill.Fill(_head, _args.PkgSize, pkg, _cache);
                 _head.Fill(i.Array);
 
                 if (_sending)
@@ -745,7 +762,7 @@ namespace Nirge.Core
 
         #region
 
-        public event Action<object, byte[], int, int> Recved;
+        public event Action<object, object> Recved;
 
         bool PreRecv()
         {
@@ -798,15 +815,52 @@ namespace Nirge.Core
                 case SocketError.Success:
                     if (e.BytesTransferred > 0)
                     {
-                        lock (_recvs)
+                        try
                         {
-                            var pkg = new ArraySegment<byte>(e.Buffer, 0, e.BytesTransferred);
-                            _recvs.Enqueue(pkg);
-                            _recvCacheSize += pkg.Count;
-                            _recvBlockSize += (ulong)pkg.Count;
+                            _recvSeg.Write(_recv, 0, e.BytesTransferred);
+
+                            for (; _recvSeg.UsedSize > _head.PkgHeadSize;)
+                            {
+                                _recvSeg.Peek(_head.RecvPkgHeadBuf, 0, _head.PkgHeadSize);
+                                _head.UnFill();
+
+                                if (_head.RecvPkgSize > _args.PkgSize)
+                                    throw new CNetException("pkg size overflow");
+                                if (_recvSeg.UsedSize < (_head.PkgHeadSize + _head.RecvPkgSize))
+                                    break;
+
+                                _recvSeg.Read(_head.RecvPkgHeadBuf, 0, _head.PkgHeadSize);
+                                var pkg = _cache.AllocRecvBuf(_head.RecvPkgSize);
+                                _recvSeg.Read(pkg, 0, _head.RecvPkgSize);
+
+                                _recvsPre.Enqueue(ValueTuple.Create(_head.RecvPkgType, new ArraySegment<byte>(pkg, 0, _head.RecvPkgSize)));
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            lock (_closeTag)
+                            {
+                                if (_closeTag.Reason == eTcpClientCloseReason.None)
+                                    _closeTag.Set(eTcpClientCloseReason.Exception, exception, SocketError.Success);
+                            }
+
+                            _recving = false;
+                            break;
                         }
 
-                        _recvArgs.SetBuffer(null, 0, 0);
+                        if (_recvsPre.Count > 0)
+                        {
+                            lock (_recvs)
+                            {
+                                while (_recvsPre.Count > 0)
+                                {
+                                    var pkg = _recvsPre.Dequeue();
+                                    _recvCacheSize += pkg.Item2.Count;
+                                    _recvBlockSize += (ulong)pkg.Item2.Count;
+                                    _recvs.Enqueue(pkg);
+                                }
+                            }
+                        }
 
                         if (PreRecv())
                             BeginRecv();
@@ -886,11 +940,9 @@ namespace Nirge.Core
                     }
                     catch (Exception exception)
                     {
-                        _log.WriteLine(eLogPattern.Error, string.Format("NET cli OnConnected exception addr {0} {1} connectArgs {2} {3}"
+                        _log.WriteLine(eLogPattern.Error, string.Format("NET cli OnConnected exception addr {0} {1}"
                                 , _cli.Client.LocalEndPoint
-                                , _cli.Client.RemoteEndPoint
-                                , _connectTag.Result
-                                , _connectTag.SocketError), exception);
+                                , _cli.Client.RemoteEndPoint), exception);
                     }
 
                     _connectTag.Set(eTcpClientConnectResult.None, null, SocketError.Success);
@@ -937,18 +989,34 @@ namespace Nirge.Core
 
                     while (_recvsPost.Count > 0)
                     {
-                        var pkg = _recvsPost.Dequeue();
+                        var source = _recvsPost.Dequeue();
 
+                        object pkg = null;
                         try
                         {
-                            if (Recved != null)
-                                Recved(this, pkg.Array, pkg.Offset, pkg.Count);
+                            pkg = _fill.UnFill(source.Item1, source.Item2, _cache);
                         }
-                        catch
+                        catch (Exception exception)
                         {
+                            _log.WriteLine(eLogPattern.Error, string.Format("NET cli UnFill exception pkg {0}"
+                                , source.Item2.Count), exception);
                         }
 
-                        _cache.CollectRecvBuf(pkg.Array);
+                        if (pkg != null)
+                        {
+                            try
+                            {
+                                if (Recved != null)
+                                    Recved(this, pkg);
+                            }
+                            catch (Exception exception)
+                            {
+                                _log.WriteLine(eLogPattern.Error, string.Format("NET cli Recved exception pkg {0}"
+                                    , pkg), exception);
+                            }
+                        }
+
+                        _cache.CollectRecvBuf(source.Item2.Array);
                     }
                     break;
                 case eTcpClientCloseReason.Active:

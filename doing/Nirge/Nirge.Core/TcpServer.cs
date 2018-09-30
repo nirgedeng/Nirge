@@ -17,6 +17,7 @@ namespace Nirge.Core
     {
         int _sendBufSize;
         int _recvBufSize;
+        int _pkgSize;
         int _sendCacheSize;
         int _recvCacheSize;
 
@@ -33,6 +34,14 @@ namespace Nirge.Core
             get
             {
                 return _recvBufSize;
+            }
+        }
+
+        public int PkgSize
+        {
+            get
+            {
+                return _pkgSize;
             }
         }
 
@@ -53,21 +62,26 @@ namespace Nirge.Core
         }
 
 
-        public CTcpServerArgs(int sendBufSize = 0, int recvBufSize = 0, int sendCacheSize = 0, int recvCacheSize = 0)
+        public CTcpServerArgs(int sendBufSize = 0, int recvBufSize = 0, int pkgSize = 0, int sendCacheSize = 0, int recvCacheSize = 0)
         {
             _sendBufSize = sendBufSize;
             _recvBufSize = recvBufSize;
-            _sendCacheSize = sendCacheSize;
+            _pkgSize = pkgSize;
+            _sendCacheSize = sendCacheSize; 
             _recvCacheSize = recvCacheSize;
 
             if (_sendBufSize < 8192)
                 _sendBufSize = 8192;
             if (_recvBufSize < 8192)
                 _recvBufSize = 8192;
-            if (_sendCacheSize < 1048576)
-                _sendCacheSize = 1048576;
-            if (_recvCacheSize < 1048576)
-                _recvCacheSize = 1048576;
+            if (_pkgSize < 8192)
+                _pkgSize = 8192;
+            if (_pkgSize > 1048576)
+                _pkgSize = 1048576;
+            if (_sendCacheSize < 2097152)
+                _sendCacheSize = 2097152;
+            if (_recvCacheSize < 2097152)
+                _recvCacheSize = 2097152;
         }
     }
 
@@ -161,7 +175,7 @@ namespace Nirge.Core
 
         public CTcpServer(ILog log, CTcpClientPkgFill fill)
             :
-            this(new CTcpServerArgs(), log, new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824), log), fill)
+            this(new CTcpServerArgs(), log, new CTcpClientCache(new CTcpClientCacheArgs(1073741824, 1073741824), log), fill)
         {
         }
 
@@ -510,7 +524,7 @@ namespace Nirge.Core
 
         #region
 
-        public event Action<object, int, byte[], int, int> CliRecved;
+        public event Action<object, int, object> CliRecved;
 
         #endregion
 
@@ -542,7 +556,7 @@ namespace Nirge.Core
                         if (_clisPool.Count > 0)
                             cli = _clisPool.Dequeue();
                         else
-                            cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.SendCacheSize, _args.RecvCacheSize), _log, _cache, _fill);
+                            cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.PkgSize, _args.SendCacheSize, _args.RecvCacheSize), _log, _cache, _fill);
 
                         var cliId = ++_clisSeed;
                         _clis.Add(cli);
@@ -550,7 +564,7 @@ namespace Nirge.Core
 
                         EventHandler<CDataEventArgs<CTcpClientConnectArgs>> cbCliConnected = null;
                         EventHandler<CDataEventArgs<CTcpClientCloseArgs>> cbCliClosed = null;
-                        Action<object, byte[], int, int> cbCliRecved = null;
+                        Action<object, object> cbCliRecved = null;
 
                         cbCliConnected = (sender, e) =>
                         {
@@ -589,18 +603,17 @@ namespace Nirge.Core
                                     , e.Arg1.SocketError), exception);
                             }
                         };
-                        cbCliRecved = (sender, buf, offset, count) =>
+                        cbCliRecved = (sender, pkg) =>
                         {
                             try
                             {
                                 if (CliRecved != null)
-                                    CliRecved(this, cliId, buf, offset, count);
+                                    CliRecved(this, cliId, pkg);
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[TcpServer]CliRecved exception, cli:\"{0}\", pkg:\"{1}\""
-                                    , cliId
-                                    , count), exception);
+                                _log.Error(string.Format("[TcpServer]CliRecved exception, cli:\"{0}\""
+                                    , cliId), exception);
                             }
                         };
 

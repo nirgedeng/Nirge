@@ -15,12 +15,12 @@ namespace cli
         static void Main(string[] args)
         {
             XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.basic.log.cli.xml"));
-            var cache = new CTcpClientCache(new CTcpClientCacheArgs(8192, 1073741824, 1073741824), LogManager.Exists("cli", "all"));
+            var cache = new CTcpClientCache(new CTcpClientCacheArgs(1073741824, 1073741824), LogManager.Exists("cli", "all"));
             var fill = new CTcpClientPkgFill();
-            fill.Register(typeof(byte[]), new CTcpClientArraySegment());
-            fill.Register(typeof(ArraySegment<byte>), new CTcpClientArraySegment());
+            fill.Register(typeof(byte[]), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
+            fill.Register(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
 
-            const int gCapacity = 1000;
+            const int gCapacity = 2000;
             var pkg = new byte[1024];
 
             var clis = new CTcpClient[gCapacity];
@@ -31,7 +31,7 @@ namespace cli
                 cli.Closed += Cli_Closed;
                 cli.Recved += Cli_Recved;
                 clis[i] = cli;
-                cli.Connect(new IPEndPoint(IPAddress.Parse("10.8.26.15"), 9527));
+                cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
             }
 
             var rng = new Random();
@@ -49,6 +49,7 @@ namespace cli
                     case eTcpClientState.Connected:
                         try
                         {
+                            cli.Send(new ArraySegment<byte>(pkg, 0, rng.Next(1, pkg.Length)));
                             cli.Send(new ArraySegment<byte>(pkg, 0, rng.Next(1, pkg.Length)));
                         }
                         catch (Exception exception)
@@ -69,7 +70,7 @@ namespace cli
             }
         }
 
-        private static void Cli_Recved(object arg1, byte[] arg2, int arg3, int arg4)
+        private static void Cli_Recved(object arg1, object pkg)
         {
         }
 
