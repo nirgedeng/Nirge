@@ -64,6 +64,7 @@ namespace Nirge.Core
     public class CTcpClientCacheEmpty : ITcpClientCache
     {
         CTcpClientCacheArgs _args;
+        ILog _log;
 
         int _sendCacheSize;
         int _sendCacheSizeAlloc;
@@ -146,9 +147,15 @@ namespace Nirge.Core
             }
         }
 
-        public CTcpClientCacheEmpty(CTcpClientCacheArgs args)
+        public CTcpClientCacheEmpty(CTcpClientCacheArgs args, ILog log)
         {
+            if (args == null)
+                throw new ArgumentNullException("args");
+            if (log == null)
+                throw new ArgumentNullException("log");
+
             _args = args;
+            _log = log;
 
             Clear();
         }
