@@ -68,9 +68,35 @@ namespace Nirge.Core
         }
 
         void Clear();
-        void AllocSendBuf(int count, IList<byte[]> bufs);
+        byte[] AllocSendBuf(int count);
         void CollectSendBuf(byte[] buf);
-        void AllocRecvBuf(out byte[] buf);
+        byte[] AllocRecvBuf();
         void CollectRecvBuf(byte[] buf);
+    }
+
+    public interface ITcpClientPkgHead
+    {
+        int PkgHeadSize
+        {
+            get;
+        }
+        int PkgLen
+        {
+            get;
+            set;
+        }
+        void Clear();
+        void Fill(byte[] buf);
+    }
+
+    public interface ITcpClientPkg
+    {
+        ArraySegment<byte> Fill(int pkgHeadSize, object pkg, ITcpClientCache cache);
+    }
+
+    public interface ITcpClientPkgFill
+    {
+        void Register(Type pkgType, ITcpClientPkg pkg);
+        ArraySegment<byte> Fill(int pkgHeadSize, object pkg, ITcpClientCache cache);
     }
 }

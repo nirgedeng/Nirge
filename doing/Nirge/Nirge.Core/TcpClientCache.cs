@@ -171,17 +171,12 @@ namespace Nirge.Core
 
         #region 
 
-        public void AllocSendBuf(int count, IList<byte[]> bufs)
+        public byte[] AllocSendBuf(int count)
         {
             if (count == 0)
                 throw new ArgumentOutOfRangeException("count");
-            if (bufs == null)
-                throw new ArgumentNullException("bufs");
-            if (bufs.Count > 0)
-                throw new ArgumentOutOfRangeException("bufs");
 
-            var buf = new byte[count];
-            bufs.Add(buf);
+            return new byte[count];
         }
 
         public void CollectSendBuf(byte[] buf)
@@ -196,9 +191,9 @@ namespace Nirge.Core
 
         #region 
 
-        public void AllocRecvBuf(out byte[] buf)
+        public byte[] AllocRecvBuf()
         {
-            buf = new byte[_args.RecvBufSize];
+            return new byte[_args.RecvBufSize];
         }
 
         public void CollectRecvBuf(byte[] buf)
@@ -214,7 +209,7 @@ namespace Nirge.Core
 
     public class CTcpClientCache : ITcpClientCache
     {
-        static readonly int[] gTcpClientBufSize = { 64, 128, 256, 512, 1024, 2048 };
+        static readonly int[] gTcpClientBufSize = { 32, 64, 128, 256, 512, 1024, 2048 };
 
         CTcpClientCacheArgs _args;
         ILog _log;
@@ -298,7 +293,7 @@ namespace Nirge.Core
         {
             get
             {
-                return string.Format("STAT CACHE {0} {1} ALLOC {2} {3} S{4} {5} S{6} {7} S{8} {9} S{10} {11} S{12} {13} S{14} {15} R{16} {17}"
+                return string.Format("STAT CACHE {0} {1} ALLOC {2} {3} S{4} {5} S{6} {7} S{8} {9} S{10} {11} S{12} {13} S{14} {15} S{16} {17} R{18} {19}"
                     , _sendCacheSize, _recvCacheSize
                     , _sendCacheSizeAlloc, _recvCacheSizeAlloc
                     , gTcpClientBufSize[0], _sends[0].Count
@@ -307,6 +302,7 @@ namespace Nirge.Core
                     , gTcpClientBufSize[3], _sends[3].Count
                     , gTcpClientBufSize[4], _sends[4].Count
                     , gTcpClientBufSize[5], _sends[5].Count
+                    , gTcpClientBufSize[6], _sends[6].Count
                     , _args.RecvBufSize, _recvs.Count);
             }
         }
@@ -349,58 +345,26 @@ namespace Nirge.Core
 
         #region 
 
-        public void AllocSendBuf(int count, IList<byte[]> bufs)
+        public byte[] AllocSendBuf(int count)
         {
             if (count == 0)
                 throw new ArgumentOutOfRangeException("count");
-            if (bufs == null)
-                throw new ArgumentNullException("bufs");
-            if (bufs.Count > 0)
-                throw new ArgumentOutOfRangeException("bufs");
 
             byte[] buf;
-
-            if (_sendCacheSize > count)
+            for (var i = 0; i < gTcpClientBufSize.Length; ++i)
             {
-                for (var i = 0; i < gTcpClientBufSize.Length; ++i)
-                {
-                    if (count > gTcpClientBufSize[i])
-                        continue;
+                if (count > gTcpClientBufSize[i])
+                    continue;
 
-                    if (_sends[i].TryDequeue(out buf))
-                    {
-                        bufs.Add(buf);
-                        Interlocked.Add(ref _sendCacheSize, -buf.Length);
-                        Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
-                        return;
-                    }
-                }
-            }
-
-            for (; _sendCacheSize > 0;)
-                for (var i = 0; i < _sends.Length; ++i)
-                {
-                    if (_sends[i].Count > 0
-                        && _sends[i].TryDequeue(out buf))
-                    {
-                        bufs.Add(buf);
-                        Interlocked.Add(ref _sendCacheSize, -buf.Length);
-                        Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
-                        if ((count -= buf.Length) <= 0)
-                            return;
-                    }
-                }
-            for (; count > 0;)
-            {
-                for (var i = 0; i < gTcpClientBufSize.Length; ++i)
-                {
+                if (_sends[i].TryDequeue(out buf))
+                    Interlocked.Add(ref _sendCacheSize, -buf.Length);
+                else
                     buf = new byte[gTcpClientBufSize[i]];
-                    bufs.Add(buf);
-                    Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
-                    if ((count -= buf.Length) <= 0)
-                        return;
-                }
+                Interlocked.Add(ref _sendCacheSizeAlloc, buf.Length);
+                return buf;
             }
+
+            throw new ArgumentOutOfRangeException("count");
         }
 
         public void CollectSendBuf(byte[] buf)
@@ -428,13 +392,15 @@ namespace Nirge.Core
 
         #region 
 
-        public void AllocRecvBuf(out byte[] buf)
+        public byte[] AllocRecvBuf()
         {
+            byte[] buf;
             if (_recvs.TryDequeue(out buf))
                 Interlocked.Add(ref _recvCacheSize, -buf.Length);
             else
                 buf = new byte[_args.RecvBufSize];
             Interlocked.Add(ref _recvCacheSizeAlloc, buf.Length);
+            return buf;
         }
 
         public void CollectRecvBuf(byte[] buf)

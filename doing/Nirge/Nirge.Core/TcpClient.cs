@@ -188,23 +188,25 @@ namespace Nirge.Core
         CTcpClientArgs _args;
         ILog _log;
         ITcpClientCache _cache;
-        CTcpClientPkgFill _fill;
+        ITcpClientPkgFill _fill;
 
         eTcpClientState _state;
         CTcpClientConnectArgs _connectTag;
         CTcpClientCloseArgs _closeTag;
 
         TcpClient _cli;
+        ITcpClientPkgHead _head;
 
         SocketAsyncEventArgs _sendArgs;
-        Queue<ArraySegment<byte>> _sendsPre;
         Queue<ArraySegment<byte>> _sends;
         List<ArraySegment<byte>> _sendsPost;
         bool _sending;
         int _sendCacheSize;
         ulong _sendBlockSize;
 
+        byte[] _recv;
         SocketAsyncEventArgs _recvArgs;
+        CRingArraySegment _recvSeg;
         Queue<ArraySegment<byte>> _recvs;
         Queue<ArraySegment<byte>> _recvsPost;
         bool _recving;
@@ -286,20 +288,24 @@ namespace Nirge.Core
             _cache = cache;
             _fill = fill;
 
+            _head = new CTcpClientPkgHead();
+
             _sendArgs = new SocketAsyncEventArgs();
             _sendArgs.Completed += (sender, e) =>
             {
                 EndSend(_sendArgs);
             };
-            _sendsPre = new Queue<ArraySegment<byte>>();
             _sends = new Queue<ArraySegment<byte>>();
             _sendsPost = new List<ArraySegment<byte>>();
 
+            _recv = new byte[_args.RecvBufSize];
             _recvArgs = new SocketAsyncEventArgs();
+            _recvArgs.SetBuffer(_recv, 0, _recv.Length);
             _recvArgs.Completed += (sender, e) =>
             {
                 EndRecv(_recvArgs);
             };
+            _recvSeg = new CRingArraySegment(_args.SendBufSize + _args.RecvBufSize);
             _recvs = new Queue<ArraySegment<byte>>();
             _recvsPost = new Queue<ArraySegment<byte>>();
 
@@ -320,15 +326,17 @@ namespace Nirge.Core
                 _closeTag = null;
 
                 _cli = null;
+                _head = null;
 
                 _sendArgs.Dispose();
                 _sendArgs = null;
-                _sendsPre = null;
                 _sends = null;
                 _sendsPost = null;
 
+                _recv = null;
                 _recvArgs.Dispose();
                 _recvArgs = null;
+                _recvSeg = null;
                 _recvs = null;
                 _recvsPost = null;
                 break;
@@ -348,6 +356,7 @@ namespace Nirge.Core
             _closeTag = new CTcpClientCloseArgs(eTcpClientCloseReason.None, null, SocketError.Success);
 
             _cli = null;
+            _head.Clear();
 
             _sendArgs.AcceptSocket = null;
             if (_sendArgs.BufferList != null)
@@ -360,8 +369,6 @@ namespace Nirge.Core
                 _sendArgs.BufferList.Clear();
                 _sendArgs.BufferList = null;
             }
-            while (_sendsPre.Count > 0)
-                _cache.CollectSendBuf(_sendsPre.Dequeue().Array);
             while (_sends.Count > 0)
                 _cache.CollectSendBuf(_sends.Dequeue().Array);
             if (_sendsPost.Count > 0)
@@ -375,11 +382,7 @@ namespace Nirge.Core
             _sendBlockSize = 0;
 
             _recvArgs.AcceptSocket = null;
-            if (_recvArgs.Buffer != null)
-            {
-                _cache.CollectRecvBuf(_recvArgs.Buffer);
-                _recvArgs.SetBuffer(null, 0, 0);
-            }
+            _recvSeg.Clear();
             while (_recvs.Count > 0)
                 _cache.CollectRecvBuf(_recvs.Dequeue().Array);
             while (_recvsPost.Count > 0)
@@ -467,11 +470,10 @@ namespace Nirge.Core
                         , e.SocketError), exception);
                 }
 
-                byte[] buf;
-                if (PreRecv(out buf))
+                if (PreRecv())
                 {
                     _recving = true;
-                    BeginRecv(buf);
+                    BeginRecv();
                 }
                 break;
             case eTcpClientState.Connecting:
@@ -580,24 +582,20 @@ namespace Nirge.Core
                 if (!_cache.CanAllocSendBuf)
                     throw new CNetException(string.Format("NET g send cache used up {0} over {1}", _cache.SendCacheSizeAlloc, _cache.SendCacheSize));
 
-                _fill.Fill(pkg, _sendsPre, _cache);
+                var i = _fill.Fill(_head.PkgHeadSize, pkg, _cache);
+                _head.Fill(i.Array);
 
                 if (_sending)
                 {
                     lock (_sends)
                     {
-                        while (_sendsPre.Count > 0)
-                        {
-                            var i = _sendsPre.Dequeue();
-                            _sendCacheSize += i.Count;
-                            _sends.Enqueue(i);
-                        }
+                        _sendCacheSize += i.Count;
+                        _sends.Enqueue(i);
                     }
                 }
                 else
                 {
-                    while (_sendsPre.Count > 0)
-                        _sendsPost.Add(_sendsPre.Dequeue());
+                    _sendsPost.Add(i);
 
                     var pass = false;
                     try
@@ -749,47 +747,28 @@ namespace Nirge.Core
 
         public event Action<object, byte[], int, int> Recved;
 
-        bool PreRecv(out byte[] buf)
+        bool PreRecv()
         {
             if (_recvCacheSize > _args.RecvCacheSize)
             {
                 _log.WriteLine(eLogPattern.Warn, string.Format("NET cli recv cache full {0} over {1}", _recvCacheSize, _args.RecvCacheSize));
-                buf = null;
                 return false;
             }
 
             if (!_cache.CanAllocRecvBuf)
             {
                 _log.WriteLine(eLogPattern.Warn, string.Format("NET g recv cache used up {0} over {1}", _cache.RecvCacheSizeAlloc, _cache.RecvCacheSize));
-                buf = null;
-                return false;
-            }
-
-            try
-            {
-                _cache.AllocRecvBuf(out buf);
-            }
-            catch (Exception exception)
-            {
-                _log.WriteLine(eLogPattern.Error, string.Format("NET g failed to alloc recv buf {0}", _cache.RecvBufSize), exception);
-                buf = null;
                 return false;
             }
 
             return true;
         }
 
-        void BeginRecv(byte[] buf)
+        void BeginRecv()
         {
             var pass = false;
             try
             {
-                if (_recvArgs.Buffer != null)
-                {
-                    _cache.CollectRecvBuf(_recvArgs.Buffer);
-                    _recvArgs.SetBuffer(null, 0, 0);
-                }
-                _recvArgs.SetBuffer(buf, 0, buf.Length);
                 if (_cli.Client.ReceiveAsync(_recvArgs))
                     return;
                 pass = true;
@@ -829,9 +808,8 @@ namespace Nirge.Core
 
                         _recvArgs.SetBuffer(null, 0, 0);
 
-                        byte[] buf;
-                        if (PreRecv(out buf))
-                            BeginRecv(buf);
+                        if (PreRecv())
+                            BeginRecv();
                         else
                             _recving = false;
                     }
@@ -917,11 +895,10 @@ namespace Nirge.Core
 
                     _connectTag.Set(eTcpClientConnectResult.None, null, SocketError.Success);
 
-                    byte[] buf;
-                    if (PreRecv(out buf))
+                    if (PreRecv())
                     {
                         _recving = true;
-                        BeginRecv(buf);
+                        BeginRecv();
                     }
                     break;
                 }
@@ -941,11 +918,10 @@ namespace Nirge.Core
 
                     if (!_recving)
                     {
-                        byte[] buf;
-                        if (PreRecv(out buf))
+                        if (PreRecv())
                         {
                             _recving = true;
-                            BeginRecv(buf);
+                            BeginRecv();
                         }
                     }
 
