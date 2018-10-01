@@ -244,6 +244,15 @@ namespace Nirge.Core
 
         public void Alloc(CTcpServerArgs args, ILog log, ITcpClientCache cache, CTcpClientPkgFill fill)
         {
+            if (args == null)
+                throw new ArgumentNullException("args");
+            if (log == null)
+                throw new ArgumentNullException("log");
+            if (cache == null)
+                throw new ArgumentNullException("cache");
+            if (fill == null)
+                throw new ArgumentNullException("fill");
+
             _args = args;
             _log = log;
             _cache = cache;
@@ -363,45 +372,27 @@ namespace Nirge.Core
             RaiseCliClosed(CDataEventArgs.Create(cli, args));
         }
 
-        public CTcpServerOpenArgs Open(IPEndPoint endPoint)
+        public void Open(IPEndPoint endPoint)
         {
+            if (endPoint == null)
+                throw new ArgumentNullException("endPoint");
+
             switch (_state)
             {
             case eTcpServerState.Closed:
                 _state = eTcpServerState.Opening;
-
-                var e = new CTcpServerOpenArgs(eTcpServerOpenResult.Success, null, SocketError.Success);
-
                 _lis = new TcpListener(endPoint);
-                try
-                {
-                    _lis.Start();
-                }
-                catch (Exception exception)
-                {
-                    e.Set(eTcpServerOpenResult.Fail, exception, SocketError.Success);
-                }
-
-                switch (e.Result)
-                {
-                case eTcpServerOpenResult.Fail:
-                    eClose();
-                    _state = eTcpServerState.Closed;
-                    break;
-                case eTcpServerOpenResult.Success:
-                    _state = eTcpServerState.Opened;
-                    _lising = true;
-                    LisAsync();
-                    break;
-                }
-
-                return e;
+                _lis.Start();
+                _state = eTcpServerState.Opened;
+                _lising = true;
+                LisAsync();
+                break;
             case eTcpServerState.Opening:
             case eTcpServerState.Opened:
             case eTcpServerState.Closing:
             case eTcpServerState.ClosingWait:
             default:
-                return new CTcpServerOpenArgs(eTcpServerOpenResult.Fail, null, SocketError.Success);
+                throw new CNetException(string.Format("NET ser tcp state {0} expected {1}", _state, eTcpServerState.Closed));
             }
         }
 
@@ -460,12 +451,9 @@ namespace Nirge.Core
         async void LisAsync()
         {
             TcpClient cli = null;
-
-            var pass = false;
             try
             {
                 cli = await _lis.AcceptTcpClientAsync();
-                pass = true;
             }
             catch (Exception exception)
             {
@@ -476,7 +464,7 @@ namespace Nirge.Core
                 }
             }
 
-            if (pass)
+            if (cli != null)
             {
                 switch (_state)
                 {
@@ -504,18 +492,6 @@ namespace Nirge.Core
                     break;
                 }
             }
-            else
-            {
-                try
-                {
-                    cli.Close();
-                }
-                catch
-                {
-                }
-
-                _lising = false;
-            }
         }
 
         #endregion
@@ -524,6 +500,9 @@ namespace Nirge.Core
 
         public void Send(int cli, object pkg)
         {
+            if (pkg == null)
+                throw new ArgumentNullException("pkg");
+
             switch (_state)
             {
             case eTcpServerState.Opened:
