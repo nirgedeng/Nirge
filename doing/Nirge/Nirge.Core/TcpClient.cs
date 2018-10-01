@@ -989,17 +989,17 @@ namespace Nirge.Core
 
                     while (_recvsPost.Count > 0)
                     {
-                        var source = _recvsPost.Dequeue();
+                        var i = _recvsPost.Dequeue();
 
                         object pkg = null;
                         try
                         {
-                            pkg = _fill.UnFill(source.Item1, source.Item2, _cache);
+                            pkg = _fill.UnFill(i.Item1, i.Item2, _cache);
                         }
                         catch (Exception exception)
                         {
                             _log.WriteLine(eLogPattern.Error, string.Format("NET cli UnFill exception pkg {0}"
-                                , source.Item2.Count), exception);
+                                , i.Item2.Count), exception);
                         }
 
                         if (pkg != null)
@@ -1016,7 +1016,7 @@ namespace Nirge.Core
                             }
                         }
 
-                        _cache.CollectRecvBuf(source.Item2.Array);
+                        _cache.CollectRecvBuf(i.Item2.Array);
                     }
                     break;
                 case eTcpClientCloseReason.Active:

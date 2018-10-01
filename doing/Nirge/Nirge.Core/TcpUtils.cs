@@ -76,10 +76,6 @@ namespace Nirge.Core
         {
             get;
         }
-        byte[] RecvPkgHeadBuf
-        {
-            get;
-        }
         int SendPkgType
         {
             get;
@@ -89,6 +85,10 @@ namespace Nirge.Core
         {
             get;
             set;
+        }
+        byte[] RecvPkgHeadBuf
+        {
+            get;
         }
         int RecvPkgType
         {

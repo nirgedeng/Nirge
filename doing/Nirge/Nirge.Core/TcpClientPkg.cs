@@ -29,14 +29,6 @@ namespace Nirge.Core
             }
         }
 
-        public byte[] RecvPkgHeadBuf
-        {
-            get
-            {
-                return _recvPkgHeadBuf;
-            }
-        }
-
         public int SendPkgType
         {
             get
@@ -58,6 +50,14 @@ namespace Nirge.Core
             set
             {
                 _sendPkgSize = value;
+            }
+        }
+
+        public byte[] RecvPkgHeadBuf
+        {
+            get
+            {
+                return _recvPkgHeadBuf;
             }
         }
 
@@ -147,7 +147,7 @@ namespace Nirge.Core
             ArrayUtils.Copy(source.Array, source.Offset, buf, pkgHead.PkgHeadSize, source.Count);
             pkgHead.SendPkgSize = source.Count;
             pkgHead.SendPkgType = (int)eTcpClientPkgType.ArraySegment;
-            return new ArraySegment<byte>(buf, 0, pkgHead.PkgHeadSize + source.Count);
+            return new ArraySegment<byte>(buf, 0, pkgHead.PkgHeadSize + pkgHead.SendPkgSize);
         }
 
         public object UnFill(ArraySegment<byte> source, ITcpClientCache cache)
@@ -156,6 +156,8 @@ namespace Nirge.Core
                 throw new ArgumentNullException("source");
             if (source.Count == 0)
                 throw new ArgumentOutOfRangeException("source");
+            if (cache == null)
+                throw new ArgumentNullException("cache");
 
             return source;
         }
@@ -177,7 +179,7 @@ namespace Nirge.Core
             if (pkgType == null)
                 throw new ArgumentNullException("pkgType");
             if (pkgTypeV == 0)
-                throw new ArgumentNullException("pkgTypeV");
+                throw new ArgumentOutOfRangeException("pkgTypeV");
             if (pkg == null)
                 throw new ArgumentNullException("pkg");
 
@@ -209,10 +211,14 @@ namespace Nirge.Core
 
         public object UnFill(int pkgType, ArraySegment<byte> source, ITcpClientCache cache)
         {
+            if (pkgType == 0)
+                throw new ArgumentOutOfRangeException("pkgType");
             if (source == null)
                 throw new ArgumentNullException("source");
             if (source.Count == 0)
                 throw new ArgumentOutOfRangeException("source");
+            if (cache == null)
+                throw new ArgumentNullException("cache");
 
             foreach (var i in _pkgsV)
             {

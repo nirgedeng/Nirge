@@ -67,6 +67,8 @@ namespace Nirge.Core
         {
             if (buf == null)
                 throw new ArgumentNullException("buf");
+            if (offset < 0)
+                throw new ArgumentOutOfRangeException("offset");
             if (count == 0)
                 throw new ArgumentOutOfRangeException("count");
             if (UnusedSize < count)
@@ -101,6 +103,8 @@ namespace Nirge.Core
         {
             if (buf == null)
                 throw new ArgumentNullException("buf");
+            if (offset < 0)
+                throw new ArgumentOutOfRangeException("offset");
             if (count == 0)
                 throw new ArgumentOutOfRangeException("count");
             if (count > UsedSize)
@@ -114,6 +118,8 @@ namespace Nirge.Core
         {
             if (buf == null)
                 throw new ArgumentNullException("buf");
+            if (offset < 0)
+                throw new ArgumentOutOfRangeException("offset");
             if (count == 0)
                 throw new ArgumentOutOfRangeException("count");
             if (count > UsedSize)
