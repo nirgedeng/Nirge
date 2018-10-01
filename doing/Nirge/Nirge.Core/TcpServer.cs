@@ -61,7 +61,6 @@ namespace Nirge.Core
             }
         }
 
-
         public CTcpServerArgs(int sendBufSize = 0, int recvBufSize = 0, int pkgSize = 0, int sendCacheSize = 0, int recvCacheSize = 0)
         {
             _sendBufSize = sendBufSize;
@@ -103,16 +102,44 @@ namespace Nirge.Core
 
     public class CTcpServerOpenArgs
     {
+        eTcpServerOpenResult _result;
+        Exception _exception;
+        SocketError _socketError;
+
         public eTcpServerOpenResult Result
         {
-            get;
-            set;
+            get
+            {
+                return _result;
+            }
+        }
+
+        public Exception Exception
+        {
+            get
+            {
+                return _exception;
+            }
         }
 
         public SocketError SocketError
         {
-            get;
-            set;
+            get
+            {
+                return _socketError;
+            }
+        }
+
+        public void Set(eTcpServerOpenResult result, Exception exception, SocketError socketError)
+        {
+            _result = result;
+            _exception = exception;
+            _socketError = socketError;
+        }
+
+        public CTcpServerOpenArgs(eTcpServerOpenResult result, Exception exception, SocketError socketError)
+        {
+            Set(result, exception, socketError);
         }
     }
 
@@ -125,16 +152,44 @@ namespace Nirge.Core
 
     public class CTcpServerCloseArgs
     {
+        eTcpServerCloseReason _reason;
+        Exception _exception;
+        SocketError _socketError;
+
         public eTcpServerCloseReason Reason
         {
-            get;
-            set;
+            get
+            {
+                return _reason;
+            }
+        }
+
+        public Exception Exception
+        {
+            get
+            {
+                return _exception;
+            }
         }
 
         public SocketError SocketError
         {
-            get;
-            set;
+            get
+            {
+                return _socketError;
+            }
+        }
+
+        public void Set(eTcpServerCloseReason reason, Exception exception, SocketError socketError)
+        {
+            _reason = reason;
+            _exception = exception;
+            _socketError = socketError;
+        }
+
+        public CTcpServerCloseArgs(eTcpServerCloseReason reason, Exception exception, SocketError socketError)
+        {
+            Set(reason, exception, socketError);
         }
     }
 
@@ -159,6 +214,14 @@ namespace Nirge.Core
         Queue<TcpClient> _clisPost;
         List<CTcpClient> _clis;
         Dictionary<int, CTcpClient> _clisDict;
+
+        public CTcpServerArgs Args
+        {
+            get
+            {
+                return _args;
+            }
+        }
 
         public eTcpServerState State
         {
@@ -187,18 +250,14 @@ namespace Nirge.Core
             _fill = fill;
 
             _state = eTcpServerState.Closed;
-            _closeTag = new CTcpServerCloseArgs()
-            {
-                Reason = eTcpServerCloseReason.None,
-                SocketError = SocketError.Success,
-            };
+            _closeTag = new CTcpServerCloseArgs(eTcpServerCloseReason.None, null, SocketError.Success);
 
             _lising = false;
 
             _clisPool = new Queue<CTcpClient>();
             _clisSeed = 0;
-            _clisPre = new Queue<TcpClient>(32);
-            _clisPost = new Queue<TcpClient>(32);
+            _clisPre = new Queue<TcpClient>();
+            _clisPost = new Queue<TcpClient>();
             _clis = new List<CTcpClient>();
             _clisDict = new Dictionary<int, CTcpClient>();
         }
@@ -212,6 +271,7 @@ namespace Nirge.Core
                 _log = null;
                 _cache.Clear();
                 _cache = null;
+                _fill = null;
 
                 _closeTag = null;
 
@@ -233,8 +293,7 @@ namespace Nirge.Core
         {
             _state = eTcpServerState.Closed;
 
-            _closeTag.Reason = eTcpServerCloseReason.None;
-            _closeTag.SocketError = SocketError.Success;
+            _closeTag = new CTcpServerCloseArgs(eTcpServerCloseReason.None, null, SocketError.Success);
 
             _lis = null;
 
@@ -245,7 +304,6 @@ namespace Nirge.Core
             while (_clisPre.Count > 0)
             {
                 var cli = _clisPre.Dequeue();
-
                 try
                 {
                     cli.Close();
@@ -312,26 +370,16 @@ namespace Nirge.Core
             case eTcpServerState.Closed:
                 _state = eTcpServerState.Opening;
 
-                var e = new CTcpServerOpenArgs()
-                {
-                    Result = eTcpServerOpenResult.Success,
-                    SocketError = SocketError.Success,
-                };
+                var e = new CTcpServerOpenArgs(eTcpServerOpenResult.Success, null, SocketError.Success);
 
                 _lis = new TcpListener(endPoint);
                 try
                 {
                     _lis.Start();
                 }
-                catch (SocketException exception)
+                catch (Exception exception)
                 {
-                    e.Result = eTcpServerOpenResult.Fail;
-                    e.SocketError = exception.SocketErrorCode;
-                }
-                catch
-                {
-                    e.Result = eTcpServerOpenResult.Fail;
-                    e.SocketError = SocketError.Success;
+                    e.Set(eTcpServerOpenResult.Fail, exception, SocketError.Success);
                 }
 
                 switch (e.Result)
@@ -353,11 +401,7 @@ namespace Nirge.Core
             case eTcpServerState.Closing:
             case eTcpServerState.ClosingWait:
             default:
-                return new CTcpServerOpenArgs()
-                {
-                    Result = eTcpServerOpenResult.Fail,
-                    SocketError = SocketError.Success,
-                };
+                return new CTcpServerOpenArgs(eTcpServerOpenResult.Fail, null, SocketError.Success);
             }
         }
 
@@ -369,13 +413,8 @@ namespace Nirge.Core
                 _state = eTcpServerState.Closing;
                 lock (_closeTag)
                 {
-                    switch (_closeTag.Reason)
-                    {
-                    case eTcpServerCloseReason.None:
-                        _closeTag.Reason = eTcpServerCloseReason.Active;
-                        _closeTag.SocketError = SocketError.Success;
-                        break;
-                    }
+                    if (_closeTag.Reason == eTcpServerCloseReason.None)
+                        _closeTag.Set(eTcpServerCloseReason.Active, null, SocketError.Success);
                 }
                 break;
             case eTcpServerState.Closed:
@@ -428,30 +467,12 @@ namespace Nirge.Core
                 cli = await _lis.AcceptTcpClientAsync();
                 pass = true;
             }
-            catch (SocketException exception)
+            catch (Exception exception)
             {
                 lock (_closeTag)
                 {
-                    switch (_closeTag.Reason)
-                    {
-                    case eTcpServerCloseReason.None:
-                        _closeTag.Reason = eTcpServerCloseReason.Exception;
-                        _closeTag.SocketError = exception.SocketErrorCode;
-                        break;
-                    }
-                }
-            }
-            catch
-            {
-                lock (_closeTag)
-                {
-                    switch (_closeTag.Reason)
-                    {
-                    case eTcpServerCloseReason.None:
-                        _closeTag.Reason = eTcpServerCloseReason.Exception;
-                        _closeTag.SocketError = SocketError.Success;
-                        break;
-                    }
+                    if (_closeTag.Reason == eTcpServerCloseReason.None)
+                        _closeTag.Set(eTcpServerCloseReason.Exception, exception, SocketError.Success);
                 }
             }
 
@@ -662,11 +683,7 @@ namespace Nirge.Core
                 {
                     if (_clis.Count == 0)
                     {
-                        var e = new CTcpServerCloseArgs()
-                        {
-                            Reason = _closeTag.Reason,
-                            SocketError = _closeTag.SocketError,
-                        };
+                        var e = new CTcpServerCloseArgs(_closeTag.Reason, _closeTag.Exception, _closeTag.SocketError);
 
                         Clear();
                         _state = eTcpServerState.Closed;

@@ -103,8 +103,8 @@ namespace Nirge.Core
     public class CTcpClientConnectArgs
     {
         eTcpClientConnectResult _result;
-        SocketError _socketError;
         Exception _exception;
+        SocketError _socketError;
 
         public eTcpClientConnectResult Result
         {
@@ -114,19 +114,19 @@ namespace Nirge.Core
             }
         }
 
-        public SocketError SocketError
-        {
-            get
-            {
-                return _socketError;
-            }
-        }
-
         public Exception Exception
         {
             get
             {
                 return _exception;
+            }
+        }
+
+        public SocketError SocketError
+        {
+            get
+            {
+                return _socketError;
             }
         }
 
@@ -1065,7 +1065,7 @@ namespace Nirge.Core
                 if (!_sending)
                     if (!_recving)
                     {
-                        var e = new CTcpClientCloseArgs(_closeTag.Reason, null, _closeTag.SocketError);
+                        var e = new CTcpClientCloseArgs(_closeTag.Reason, _closeTag.Exception, _closeTag.SocketError);
                         Clear();
                         _state = eTcpClientState.Closed;
 
