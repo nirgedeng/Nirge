@@ -768,13 +768,13 @@ namespace Nirge.Core
         {
             if (_recvCacheSize > _args.RecvCacheSize)
             {
-                _log.WriteLine(eLogPattern.Warn, string.Format("NET cli recv cache full {0} over {1}", _recvCacheSize, _args.RecvCacheSize));
+                _log.WriteLine(eLogPattern.Warn, string.Format("NET cli recv cache full {0} overflow {1}", _recvCacheSize, _args.RecvCacheSize));
                 return false;
             }
 
             if (!_cache.CanAllocRecvBuf)
             {
-                _log.WriteLine(eLogPattern.Warn, string.Format("NET cli g recv cache used up {0} over {1}", _cache.RecvCacheSizeAlloc, _cache.RecvCacheSize));
+                _log.WriteLine(eLogPattern.Warn, string.Format("NET cli g recv cache used up {0} overflow {1}", _cache.RecvCacheSizeAlloc, _cache.RecvCacheSize));
                 return false;
             }
 
