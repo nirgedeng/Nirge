@@ -67,7 +67,7 @@ namespace Nirge.Core
             _sendBufSize = sendBufSize;
             _recvBufSize = recvBufSize;
             _pkgSize = pkgSize;
-            _sendCacheSize = sendCacheSize; 
+            _sendCacheSize = sendCacheSize;
             _recvCacheSize = recvCacheSize;
 
             if (_sendBufSize < 8192)
@@ -516,7 +516,7 @@ namespace Nirge.Core
             case eTcpServerState.Closing:
             case eTcpServerState.ClosingWait:
             default:
-                throw new CNetException("wrong tcp state");
+                throw new CNetException(string.Format("NET ser tcp state {0} expected {1}", _state, eTcpServerState.Opened));
             }
         }
 

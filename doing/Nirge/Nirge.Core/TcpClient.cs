@@ -457,7 +457,7 @@ namespace Nirge.Core
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
             default:
-                throw new CNetException("wrong tcp state");
+                throw new CNetException(string.Format("NET cli tcp state {0} expected {1}", _state, eTcpClientState.Closed));
             }
         }
 
@@ -498,7 +498,7 @@ namespace Nirge.Core
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
             default:
-                throw new CNetException("wrong tcp state");
+                throw new CNetException(string.Format("NET cli tcp state {0} expected {1}", _state, eTcpClientState.Closed));
             }
         }
 
@@ -594,10 +594,10 @@ namespace Nirge.Core
             {
             case eTcpClientState.Connected:
                 if (_sendCacheSize > _args.SendCacheSize)
-                    throw new CNetException(string.Format("NET cli send cache full {0} over {1}", _sendCacheSize, _args.SendCacheSize));
+                    throw new CNetException(string.Format("NET cli send cache full {0} overflow {1}", _sendCacheSize, _args.SendCacheSize));
 
                 if (!_cache.CanAllocSendBuf)
-                    throw new CNetException(string.Format("NET g send cache used up {0} over {1}", _cache.SendCacheSizeAlloc, _cache.SendCacheSize));
+                    throw new CNetException(string.Format("NET cli g send cache used up {0} overflow {1}", _cache.SendCacheSizeAlloc, _cache.SendCacheSize));
 
                 var i = _fill.Fill(_head, _args.PkgSize, pkg, _cache);
                 _head.Fill(i.Array);
@@ -641,7 +641,7 @@ namespace Nirge.Core
             case eTcpClientState.Closing:
             case eTcpClientState.ClosingWait:
             default:
-                throw new CNetException("wrong tcp state");
+                throw new CNetException(string.Format("NET cli tcp state {0} expected {1}", _state, eTcpClientState.Connected));
             }
         }
 
@@ -774,7 +774,7 @@ namespace Nirge.Core
 
             if (!_cache.CanAllocRecvBuf)
             {
-                _log.WriteLine(eLogPattern.Warn, string.Format("NET g recv cache used up {0} over {1}", _cache.RecvCacheSizeAlloc, _cache.RecvCacheSize));
+                _log.WriteLine(eLogPattern.Warn, string.Format("NET cli g recv cache used up {0} over {1}", _cache.RecvCacheSizeAlloc, _cache.RecvCacheSize));
                 return false;
             }
 
@@ -825,7 +825,7 @@ namespace Nirge.Core
                                 _head.UnFill();
 
                                 if (_head.RecvPkgSize > _args.PkgSize)
-                                    throw new CNetException("pkg size overflow");
+                                    throw new CNetException(string.Format("NET cli rev pkg size {0} overflow {1}", _head.RecvPkgSize, _args.PkgSize));
                                 if (_recvSeg.UsedSize < (_head.PkgHeadSize + _head.RecvPkgSize))
                                     break;
 
@@ -998,7 +998,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _log.WriteLine(eLogPattern.Error, string.Format("NET cli UnFill exception pkg {0}"
+                            _log.WriteLine(eLogPattern.Error, string.Format("NET cli recv UnFill exception pkg {0}"
                                 , i.Item2.Count), exception);
                         }
 
