@@ -829,7 +829,7 @@ namespace Nirge.Core
                                 if (_recvSeg.UsedSize < (_head.PkgHeadSize + _head.RecvPkgSize))
                                     break;
 
-                                _recvSeg.Read(_head.RecvPkgHeadBuf, 0, _head.PkgHeadSize);
+                                _recvSeg.Skip(_head.PkgHeadSize);
                                 var pkg = _cache.AllocRecvBuf(_head.RecvPkgSize);
                                 _recvSeg.Read(pkg, 0, _head.RecvPkgSize);
 

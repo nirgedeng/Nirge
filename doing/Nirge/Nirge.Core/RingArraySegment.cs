@@ -129,11 +129,21 @@ namespace Nirge.Core
             Read(ref tail, buf, offset, count);
         }
 
+        public void Skip(int count)
+        {
+            if (count == 0)
+                throw new ArgumentOutOfRangeException("count");
+
+            Read(ref _tail, null, 0, count);
+            _usedSize -= count;
+        }
+
         void Read(ref int tail, byte[] buf, int offset, int count)
         {
             if (_head > tail)
             {
-                ArrayUtils.Copy(_buf, tail, buf, offset, count);
+                if (buf != null)
+                    ArrayUtils.Copy(_buf, tail, buf, offset, count);
                 tail += count;
             }
             else
@@ -142,13 +152,17 @@ namespace Nirge.Core
                 if (p < count)
                 {
                     var q = count - p;
-                    ArrayUtils.Copy(_buf, tail, buf, offset, p);
-                    ArrayUtils.Copy(_buf, 0, buf, offset + p, q);
+                    if (buf != null)
+                    {
+                        ArrayUtils.Copy(_buf, tail, buf, offset, p);
+                        ArrayUtils.Copy(_buf, 0, buf, offset + p, q);
+                    }
                     tail = q;
                 }
                 else
                 {
-                    ArrayUtils.Copy(_buf, tail, buf, offset, count);
+                    if (buf != null)
+                        ArrayUtils.Copy(_buf, tail, buf, offset, count);
                     tail += count;
                 }
             }
