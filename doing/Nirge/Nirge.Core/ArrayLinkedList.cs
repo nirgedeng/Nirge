@@ -213,7 +213,6 @@ namespace Nirge.Core
             throw new ArgumentOutOfRangeException("val");
         }
 
-
         void erase(int i)
         {
             if (_count == 1)

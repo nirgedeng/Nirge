@@ -674,6 +674,8 @@ namespace Nirge.Core
                         Clear();
                         _state = eTcpServerState.Closed;
 
+                        _log.WriteLine(eLogPattern.Info, "NET ser Closed");
+
                         try
                         {
                             OnClosed(e);
