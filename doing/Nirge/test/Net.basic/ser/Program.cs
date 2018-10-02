@@ -18,7 +18,7 @@ namespace ser
             var fill = new CTcpClientPkgFill();
             fill.Register(typeof(byte[]), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
             fill.Register(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
-            var ser = new CTcpServer(new CTcpServerArgs(), LogManager.Exists("ser", "all"), cache, fill);
+            var ser = new CTcpServer(new CTcpServerArgs(capacity:1024), LogManager.Exists("ser", "all"), cache, fill);
             ser.Closed += Ser_Closed;
             ser.CliConnected += Ser_CliConnected;
             ser.CliClosed += Ser_CliClosed;
