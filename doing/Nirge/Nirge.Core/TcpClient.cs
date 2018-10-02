@@ -597,7 +597,7 @@ namespace Nirge.Core
                     throw new CNetException(string.Format("NET cli send cache full {0} overflow {1}", _sendCacheSize, _args.SendCacheSize));
 
                 if (!_cache.CanAllocSendBuf)
-                    throw new CNetException(string.Format("NET cli g send cache used up {0} overflow {1}", _cache.SendCacheSizeAlloc, _cache.SendCacheSize));
+                    throw new CNetException(string.Format("NET cli g send cache used up {0} {1}", _cache.SendCacheSizeAlloc, _cache.SendCacheSize));
 
                 var i = _fill.Fill(_head, _args.PkgSize, pkg, _cache);
                 _head.Fill(i.Array);
@@ -774,7 +774,7 @@ namespace Nirge.Core
 
             if (!_cache.CanAllocRecvBuf)
             {
-                _log.WriteLine(eLogPattern.Warn, string.Format("NET cli g recv cache used up {0} overflow {1}", _cache.RecvCacheSizeAlloc, _cache.RecvCacheSize));
+                _log.WriteLine(eLogPattern.Warn, string.Format("NET cli g recv cache used up {0} {1}", _cache.RecvCacheSizeAlloc, _cache.RecvCacheSize));
                 return false;
             }
 

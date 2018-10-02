@@ -165,26 +165,23 @@ namespace Nirge.Core
 
     public class CTcpClientPkgFill : ITcpClientPkgFill
     {
-        List<Tuple<Type, ITcpClientPkg>> _pkgs;
-        List<Tuple<int, ITcpClientPkg>> _pkgsV;
+        List<Tuple<Type, int, ITcpClientPkg>> _pkgs;
 
         public CTcpClientPkgFill()
         {
-            _pkgs = new List<Tuple<Type, ITcpClientPkg>>();
-            _pkgsV = new List<Tuple<int, ITcpClientPkg>>();
+            _pkgs = new List<Tuple<Type, int, ITcpClientPkg>>();
         }
 
-        public void Register(Type pkgType, int pkgTypeV, ITcpClientPkg pkg)
+        public void Register(Type pkgType, int ePkgType, ITcpClientPkg pkg)
         {
             if (pkgType == null)
                 throw new ArgumentNullException("pkgType");
-            if (pkgTypeV == 0)
-                throw new ArgumentOutOfRangeException("pkgTypeV");
+            if (ePkgType == 0)
+                throw new ArgumentOutOfRangeException("ePkgType");
             if (pkg == null)
                 throw new ArgumentNullException("pkg");
 
-            _pkgs.Add(new Tuple<Type, ITcpClientPkg>(pkgType, pkg));
-            _pkgsV.Add(new Tuple<int, ITcpClientPkg>(pkgTypeV, pkg));
+            _pkgs.Add(Tuple.Create(pkgType, ePkgType, pkg));
         }
 
         public ArraySegment<byte> Fill(ITcpClientPkgHead pkgHead, int pkgSize, object pkg, ITcpClientCache cache)
@@ -203,7 +200,7 @@ namespace Nirge.Core
             foreach (var i in _pkgs)
             {
                 if (i.Item1 == pkg.GetType())
-                    return i.Item2.Fill(pkgHead, pkgSize, pkg, cache);
+                    return i.Item3.Fill(pkgHead, pkgSize, pkg, cache);
             }
 
             throw new ArgumentOutOfRangeException("pkg");
@@ -220,10 +217,10 @@ namespace Nirge.Core
             if (cache == null)
                 throw new ArgumentNullException("cache");
 
-            foreach (var i in _pkgsV)
+            foreach (var i in _pkgs)
             {
-                if (i.Item1 == pkgType)
-                    return i.Item2.UnFill(source, cache);
+                if (i.Item2 == pkgType)
+                    return i.Item3.UnFill(source, cache);
             }
 
             throw new ArgumentOutOfRangeException("pkg");
