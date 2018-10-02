@@ -12,6 +12,19 @@ namespace cli
 {
     class Program
     {
+        class PKG
+        {
+            byte[] pkg = new byte[2048];
+            Random rng = new Random();
+
+            public object GetPkg(int type)
+            {
+                if (type == 1)
+                    return new ArraySegment<byte>(pkg, 0, rng.Next(1, pkg.Length));
+                return null;
+            }
+        }
+
         static void Main(string[] args)
         {
             XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.basic.log.cli.xml"));
@@ -21,7 +34,7 @@ namespace cli
             fill.Register(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
 
             const int gCapacity = 200;
-            var pkg = new byte[2048];
+            var pKG = new PKG();
 
             var clis = new CTcpClient[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
@@ -34,7 +47,6 @@ namespace cli
                 cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
             }
 
-            var rng = new Random();
             var t = Environment.TickCount;
 
             while (true)
@@ -49,8 +61,7 @@ namespace cli
                     case eTcpClientState.Connected:
                         try
                         {
-                            cli.Send(new ArraySegment<byte>(pkg, 0, rng.Next(1, pkg.Length)));
-                            cli.Send(new ArraySegment<byte>(pkg, 0, rng.Next(1, pkg.Length)));
+                            cli.Send(pKG.GetPkg(1));
                         }
                         catch (Exception exception)
                         {
