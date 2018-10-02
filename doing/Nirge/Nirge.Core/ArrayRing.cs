@@ -8,7 +8,7 @@ using System;
 
 namespace Nirge.Core
 {
-    public class CRingArraySegment
+    public class CArrayRing
     {
         byte[] _buf;
         int _head;
@@ -47,7 +47,7 @@ namespace Nirge.Core
             }
         }
 
-        public CRingArraySegment(int count)
+        public CArrayRing(int count)
         {
             if (count == 0)
                 throw new ArgumentOutOfRangeException("count");

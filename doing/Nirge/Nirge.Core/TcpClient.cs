@@ -220,7 +220,7 @@ namespace Nirge.Core
 
         byte[] _recv;
         SocketAsyncEventArgs _recvArgs;
-        CRingArraySegment _recvSeg;
+        CArrayRing _recvSeg;
         Queue<ValueTuple<int, ArraySegment<byte>>> _recvsPre;
         Queue<ValueTuple<int, ArraySegment<byte>>> _recvs;
         Queue<ValueTuple<int, ArraySegment<byte>>> _recvsPost;
@@ -320,7 +320,7 @@ namespace Nirge.Core
             {
                 EndRecv(_recvArgs);
             };
-            _recvSeg = new CRingArraySegment(_args.PkgSize + _args.RecvBufSize);
+            _recvSeg = new CArrayRing(_args.PkgSize + _args.RecvBufSize);
             _recvsPre = new Queue<ValueTuple<int, ArraySegment<byte>>>();
             _recvs = new Queue<ValueTuple<int, ArraySegment<byte>>>();
             _recvsPost = new Queue<ValueTuple<int, ArraySegment<byte>>>();
