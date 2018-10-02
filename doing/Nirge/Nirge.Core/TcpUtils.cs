@@ -109,6 +109,7 @@ namespace Nirge.Core
     {
         None,
         ArraySegment,
+        Protobuf,
     }
 
     public interface ITcpClientPkg

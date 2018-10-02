@@ -510,8 +510,11 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpServerState.Opened:
-                var e = _clis.GetWithIndex(cli);
-                e.Send(pkg);
+                CTcpClient e;
+                if (_clis.TryGetWithIndex(cli, out e))
+                    e.Send(pkg);
+                else
+                    throw new ArgumentOutOfRangeException("cli");
                 break;
             case eTcpServerState.Closed:
             case eTcpServerState.Opening:

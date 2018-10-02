@@ -304,9 +304,9 @@ namespace Nirge.Core
         {
             for (int i = _head; i != -1;)
             {
-                var p = _nodes[i].Next;
+                var v = _nodes[i].Next;
                 yield return _nodes[i].Val;
-                i = p;
+                i = v;
             }
         }
 
