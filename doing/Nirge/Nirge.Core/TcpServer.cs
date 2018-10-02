@@ -416,6 +416,17 @@ namespace Nirge.Core
             }
         }
 
+        void eClose(TcpClient cli)
+        {
+            try
+            {
+                cli.Close();
+            }
+            catch
+            {
+            }
+        }
+
         void eClose()
         {
             try
@@ -480,14 +491,7 @@ namespace Nirge.Core
                 case eTcpServerState.Closed:
                 case eTcpServerState.Opening:
                 case eTcpServerState.ClosingWait:
-                    try
-                    {
-                        cli.Close();
-                    }
-                    catch
-                    {
-                    }
-
+                    eClose(cli);
                     _lising = false;
                     break;
                 }
@@ -568,16 +572,16 @@ namespace Nirge.Core
 
                         cbCliConnected = (sender, e) =>
                         {
+                            _log.WriteLine(eLogPattern.Info, string.Format("NET ser cli {0} Connected", cliId));
+
                             try
                             {
                                 OnCliConnected(cliId);
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[TcpServer]OnCliConnected exception, cli:\"{0}\", connectArgs:\"{1},{2}\""
-                                    , cliId
-                                    , e.Arg1.Result
-                                    , e.Arg1.SocketError), exception);
+                                _log.WriteLine(eLogPattern.Error, string.Format("NET ser OnCliConnected exception cli {0}"
+                                    , cliId), exception);
                             }
                         };
                         cbCliClosed = (sender, e) =>
@@ -591,13 +595,15 @@ namespace Nirge.Core
 
                             _clisPool.Enqueue(cli);
 
+                            _log.WriteLine(eLogPattern.Info, string.Format("NET ser cli {0} Closed closeArgs {1} {2}", cliId, e.Arg1.Reason, e.Arg1.SocketError));
+
                             try
                             {
                                 OnCliClosed(cliId, e.Arg1);
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[TcpServer]OnCliClosed exception, cli:\"{0}\", closeArgs:\"{1},{2}\""
+                                _log.WriteLine(eLogPattern.Error, string.Format("NET ser OnCliClosed exception cli {0} closeArgs {1} {2}"
                                     , cliId
                                     , e.Arg1.Reason
                                     , e.Arg1.SocketError), exception);
@@ -612,7 +618,7 @@ namespace Nirge.Core
                             }
                             catch (Exception exception)
                             {
-                                _log.Error(string.Format("[TcpServer]CliRecved exception, cli:\"{0}\""
+                                _log.WriteLine(eLogPattern.Error, string.Format("NET ser CliRecved exception cli {0}"
                                     , cliId), exception);
                             }
                         };
@@ -673,8 +679,7 @@ namespace Nirge.Core
                         }
                         catch (Exception exception)
                         {
-                            _log.Error(string.Format("[TcpServer]OnClosed exception, addr:\"{0}\", closeArgs:\"{1},{2}\""
-                                , ""
+                            _log.WriteLine(eLogPattern.Error, string.Format("NET ser OnClosed exception closeArgs {0} {1}"
                                 , e.Reason
                                 , e.SocketError), exception);
                         }
