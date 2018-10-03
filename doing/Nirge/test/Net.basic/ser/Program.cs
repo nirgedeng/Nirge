@@ -19,7 +19,7 @@ namespace ser
             var fill = new CTcpClientPkgFill();
             fill.Register(typeof(byte[]), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
             fill.Register(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
-            var code = new CProtobufCode();
+            var code = new CTcpClientProtobufCode();
             code.Collect(typeof(G2C_PULSE_GEMON).Assembly);
             fill.Register(typeof(IMessage), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
             var ser = new CTcpServer(new CTcpServerArgs(capacity: 1024), LogManager.Exists("ser", "all"), cache, fill);

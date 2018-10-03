@@ -171,19 +171,19 @@ namespace Nirge.Core
         }
     }
 
-    public interface IProtobufCode
+    public interface ITcpClientProtobufCode
     {
         uint GetCode(Type pkgType);
         MessageParser GetParser(uint pkgCode);
     }
 
-    public class CProtobufCode : IProtobufCode
+    public class CTcpClientProtobufCode : ITcpClientProtobufCode
     {
         HashSet<Assembly> _assemblys;
         Dictionary<int, uint> _codes;
         Dictionary<uint, MessageParser> _parsers;
 
-        public CProtobufCode()
+        public CTcpClientProtobufCode()
         {
             _assemblys = new HashSet<Assembly>();
             _codes = new Dictionary<int, uint>();
@@ -210,10 +210,9 @@ namespace Nirge.Core
                 if (i.GetInterface(typeof(IMessage<>).FullName) == null)
                     continue;
 
-                var pkgKey = i.GetHashCode();
                 var pkgCode = CHashUtils.BKDRHash(i.FullName);
                 var pkgParser = (MessageParser)i.GetProperty("Parser").GetValue(null);
-                _codes.Add(pkgKey, pkgCode);
+                _codes.Add(i.GetHashCode(), pkgCode);
                 _parsers.Add(pkgCode, pkgParser);
             }
         }
@@ -241,14 +240,14 @@ namespace Nirge.Core
 
     public class CTcpClientProtobuf : ITcpClientPkg
     {
-        const int gCodeSize = 4;
+        const int gPkgCodeSize = 4;
 
         CArrayStream _stream;
         CodedInputStream _input;
         CodedOutputStream _output;
-        IProtobufCode _code;
+        ITcpClientProtobufCode _code;
 
-        public CTcpClientProtobuf(IProtobufCode code)
+        public CTcpClientProtobuf(ITcpClientProtobufCode code)
         {
             if (code == null)
                 throw new ArgumentNullException("code");
@@ -276,17 +275,22 @@ namespace Nirge.Core
                 throw new ArgumentNullException("cache");
 
             var pbSize = CodedOutputStream.ComputeMessageSize(o);
-            var pkgSize = pkgHead.PkgHeadSize + gCodeSize + pbSize;
+            var pkgSize = pkgHead.PkgHeadSize + gPkgCodeSize + pbSize;
             var pkgCode = _code.GetCode(pkg.GetType());
-            var pkgBody = cache.AllocSendBuf(pkgSize);
-            var i = BitConverter.GetBytes(pkgCode);
-            CArrayUtils.Copy(i, 0, pkgBody, pkgHead.PkgHeadSize, gCodeSize);
-            _stream.SetBuf(pkgBody, pkgHead.PkgHeadSize + gCodeSize, pbSize);
+            var pkgSeg = cache.AllocSendBuf(pkgSize);
+            {
+                var codeSeg = BitConverter.GetBytes(pkgCode);
+                pkgSeg[pkgHead.PkgHeadSize + 0] = codeSeg[0];
+                pkgSeg[pkgHead.PkgHeadSize + 1] = codeSeg[1];
+                pkgSeg[pkgHead.PkgHeadSize + 2] = codeSeg[2];
+                pkgSeg[pkgHead.PkgHeadSize + 3] = codeSeg[3];
+            }
+            _stream.SetBuf(pkgSeg, pkgHead.PkgHeadSize + gPkgCodeSize, pbSize);
             o.WriteTo(_output);
             _output.Flush();
-            pkgHead.SendPkgSize = gCodeSize + (int)_stream.Position;
+            pkgHead.SendPkgSize = gPkgCodeSize + (int)_stream.Position;
             pkgHead.SendPkgType = (int)eTcpClientPkgType.Protobuf;
-            return new ArraySegment<byte>(pkgBody, 0, pkgHead.PkgHeadSize + pkgHead.SendPkgSize);
+            return new ArraySegment<byte>(pkgSeg, 0, pkgHead.PkgHeadSize + pkgHead.SendPkgSize);
         }
 
         public object UnFill(ArraySegment<byte> pkgSeg, ITcpClientCache cache)
@@ -295,14 +299,14 @@ namespace Nirge.Core
                 throw new ArgumentNullException("pkgSeg");
             if (pkgSeg.Count == 0)
                 throw new ArgumentOutOfRangeException("pkgSeg");
-            if (pkgSeg.Count < gCodeSize)
+            if (pkgSeg.Count < gPkgCodeSize)
                 throw new ArgumentOutOfRangeException("pkgSeg");
             if (cache == null)
                 throw new ArgumentNullException("cache");
 
-            var pkgCode = BitConverter.ToUInt32(pkgSeg.Array, 0);
+            var pkgCode = BitConverter.ToUInt32(pkgSeg.Array, pkgSeg.Offset);
             var pkgParser = _code.GetParser(pkgCode);
-            _stream.SetBuf(pkgSeg.Array, pkgSeg.Offset + gCodeSize, pkgSeg.Count - gCodeSize);
+            _stream.SetBuf(pkgSeg.Array, pkgSeg.Offset + gPkgCodeSize, pkgSeg.Count - gPkgCodeSize);
             var pkg = pkgParser.ParseFrom(_input);
 
             return pkg;
