@@ -26,6 +26,44 @@ namespace cli
                     GemSlot=1,
                     Gemid=1,
                 },
+                new SPELL_INFO()
+                {
+                    Id=1,
+                    Level = 1,
+                    BonusLevel = 1,
+                },
+                new SGEM_INFO()
+                {
+                    ResId = 1,
+                    ObjId = 1,
+                    Pos = 1,
+                    IsBind = true,
+                    IsLock = true,
+                    Level = 1,
+                    Exp = 1,
+                    TradeCooldown = 1,
+                    IsExpensive = true,
+                    Attr = new SGEM_ATTR_INFO()
+                    {
+                        Attr=1,
+                        Value=1,
+                    },
+                },
+
+                new G2C_SYNC_ROLE_DATA_BEGIN()
+                {
+                    Roleid = 1,
+                    Rolename = "dxf",
+                    Class = 1,
+                    Body = 1,
+                    Gender = 1,
+                    Level = 1,
+                    Exp = 1,
+                    StoryProgress = 1,
+                    Frame = 1,
+                    ServerTime = 1,
+                },
+
             };
 
             public object GetPkg(int type)
@@ -49,7 +87,7 @@ namespace cli
             code.Collect(typeof(G2C_PULSE_GEMON).Assembly);
             fill.Register(typeof(IMessage), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
-            const int gCapacity = 200;
+            const int gCapacity = 1;
             var pKG = new PKG();
 
             var clis = new CTcpClient[gCapacity];
