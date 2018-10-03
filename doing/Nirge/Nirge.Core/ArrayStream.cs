@@ -3,7 +3,6 @@
     Author      : 邓晓峰
 ------------------------------------------------------------------*/
 
-using System.Threading;
 using System.IO;
 using System;
 

@@ -10,7 +10,6 @@ using log4net;
 using System.Runtime.CompilerServices;
 using Google.Protobuf;
 using System.Reflection;
-using System.Linq;
 
 namespace Nirge.Core
 {
@@ -151,11 +150,11 @@ namespace Nirge.Core
                 throw new ArgumentNullException("cache");
 
             var pkgSize = pkgHead.PkgHeadSize + o.Count;
-            var pkgBody = cache.AllocSendBuf(pkgSize);
-            CArrayUtils.Copy(o.Array, o.Offset, pkgBody, pkgHead.PkgHeadSize, o.Count);
+            var pkgSeg = cache.AllocSendBuf(pkgSize);
+            CArrayUtils.Copy(o.Array, o.Offset, pkgSeg, pkgHead.PkgHeadSize, o.Count);
             pkgHead.SendPkgSize = o.Count;
             pkgHead.SendPkgType = (int)eTcpClientPkgType.ArraySegment;
-            return new ArraySegment<byte>(pkgBody, 0, pkgHead.PkgHeadSize + pkgHead.SendPkgSize);
+            return new ArraySegment<byte>(pkgSeg, 0, pkgHead.PkgHeadSize + pkgHead.SendPkgSize);
         }
 
         public object UnFill(ArraySegment<byte> pkgSeg, ITcpClientCache cache)

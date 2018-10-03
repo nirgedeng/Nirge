@@ -3,8 +3,6 @@
     Author      : 邓晓峰
 ------------------------------------------------------------------*/
 
-using System.Collections.Generic;
-using System.Net;
 using System;
 using log4net;
 using System.Runtime.CompilerServices;
