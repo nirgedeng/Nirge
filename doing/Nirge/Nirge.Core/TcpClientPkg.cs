@@ -208,9 +208,13 @@ namespace Nirge.Core
                     continue;
                 if (i.GetInterface(typeof(IMessage<>).FullName) == null)
                     continue;
-
                 var pkgCode = CHashUtils.BKDRHash(i.FullName);
+                if (_parsers.ContainsKey(pkgCode))
+                    throw new InvalidOperationException("pkgCode");
                 var pkgParser = (MessageParser)i.GetProperty("Parser").GetValue(null);
+                if (pkgParser == null)
+                    throw new InvalidOperationException("pkgParser");
+
                 _codes.Add(i.GetHashCode(), pkgCode);
                 _parsers.Add(pkgCode, pkgParser);
             }
