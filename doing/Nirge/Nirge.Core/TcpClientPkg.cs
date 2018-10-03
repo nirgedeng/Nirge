@@ -291,7 +291,7 @@ namespace Nirge.Core
             _stream.SetBuf(pkgSeg, pkgHead.PkgHeadSize + gPkgCodeSize, pbSize);
             o.WriteTo(_output);
             _output.Flush();
-            pkgHead.SendPkgSize = gPkgCodeSize + (int)_stream.Position;
+            pkgHead.SendPkgSize = gPkgCodeSize + _stream.Count;
             pkgHead.SendPkgType = (int)eTcpClientPkgType.Protobuf;
             return new ArraySegment<byte>(pkgSeg, 0, pkgHead.PkgHeadSize + pkgHead.SendPkgSize);
         }
