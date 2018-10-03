@@ -21,7 +21,7 @@ namespace Nirge.Core
         Fatal,
     }
 
-    public static class LogUtils
+    public static class CLogUtils
     {
         public static void WriteLine(this ILog log, eLogPattern pattern, object message = null, Exception exception = null, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string memberName = "")
         {

@@ -191,7 +191,7 @@ namespace Nirge.Core
             if (index < 0 || index >= Capacity)
                 throw new ArgumentOutOfRangeException("index");
             if (!_nodes[index].Use)
-                throw new ArgumentOutOfRangeException("index");
+                throw new InvalidOperationException("index");
 
             erase(index);
         }
@@ -279,7 +279,7 @@ namespace Nirge.Core
             if (index < 0 || index >= Capacity)
                 throw new ArgumentOutOfRangeException("index");
             if (!_nodes[index].Use)
-                throw new ArgumentOutOfRangeException("index");
+                throw new InvalidOperationException("index");
 
             return _nodes[index].Val;
         }

@@ -7,6 +7,7 @@ using Nirge.Core;
 using System.Net;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Google.Protobuf;
 
 namespace cli
 {
@@ -16,11 +17,23 @@ namespace cli
         {
             byte[] pkg = new byte[2048];
             Random rng = new Random();
+            IMessage[] msgs =
+            {
+                new G2C_PULSE_GEMON()
+                {
+                    Charid=1,
+                    PulseSlot=1,
+                    GemSlot=1,
+                    Gemid=1,
+                },
+            };
 
             public object GetPkg(int type)
             {
                 if (type == 1)
                     return new ArraySegment<byte>(pkg, 0, rng.Next(1, pkg.Length));
+                else if (type == 2)
+                    return msgs[rng.Next(msgs.Length)];
                 return null;
             }
         }
@@ -32,8 +45,11 @@ namespace cli
             var fill = new CTcpClientPkgFill();
             fill.Register(typeof(byte[]), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
             fill.Register(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
+            var code = new CProtobufCode();
+            code.Collect(typeof(G2C_PULSE_GEMON).Assembly);
+            fill.Register(typeof(IMessage), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
-            const int gCapacity = 200;
+            const int gCapacity = 1;
             var pKG = new PKG();
 
             var clis = new CTcpClient[gCapacity];
@@ -61,7 +77,7 @@ namespace cli
                     case eTcpClientState.Connected:
                         try
                         {
-                            cli.Send(pKG.GetPkg(1));
+                            cli.Send(pKG.GetPkg(2));
                         }
                         catch (Exception exception)
                         {

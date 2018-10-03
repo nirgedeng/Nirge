@@ -221,10 +221,10 @@ namespace Nirge.Core
         TcpListener _lis;
         bool _lising;
 
-        Queue<CTcpClient> _clisPool;
         Queue<TcpClient> _clisPre;
         Queue<TcpClient> _clisPost;
         CArrayLinkedList<CTcpClient> _clis;
+        Queue<CTcpClient> _clisPool;
 
         public CTcpServerArgs Args
         {
@@ -274,10 +274,10 @@ namespace Nirge.Core
 
             _lising = false;
 
-            _clisPool = new Queue<CTcpClient>();
             _clisPre = new Queue<TcpClient>();
             _clisPost = new Queue<TcpClient>();
             _clis = new CArrayLinkedList<CTcpClient>(_args.Capacity);
+            _clisPool = new Queue<CTcpClient>();
         }
 
         public void Collect()
@@ -293,10 +293,10 @@ namespace Nirge.Core
 
                 _closeTag = null;
 
-                _clisPool = null;
                 _clisPre = null;
                 _clisPost = null;
                 _clis = null;
+                _clisPool = null;
                 break;
             case eTcpServerState.Opening:
             case eTcpServerState.Opened:
@@ -314,18 +314,17 @@ namespace Nirge.Core
 
             _lis = null;
 
-            foreach (var i in _clisPool)
-                i.Collect();
-            _clisPool.Clear();
-
             while (_clisPre.Count > 0)
             {
                 var cli = _clisPre.Dequeue();
                 eClose(cli);
             }
-
             _clisPost.Clear();
             _clis.Clear();
+
+            foreach (var i in _clisPool)
+                i.Collect();
+            _clisPool.Clear();
         }
 
         #region
@@ -593,12 +592,11 @@ namespace Nirge.Core
                             };
                             cbCliClosed = (sender, e) =>
                             {
-                                _clis.RemoveWithIndex(cliId);
-
                                 cli.Connected -= cbCliConnected;
                                 cli.Closed -= cbCliClosed;
                                 cli.Recved -= cbCliRecved;
 
+                                _clis.RemoveWithIndex(cliId);
                                 _clisPool.Enqueue(cli);
 
                                 _log.WriteLine(eLogPattern.Info, string.Format("NET ser cli {0} Closed closeArgs {1} {2}", cliId, e.Arg1.Reason, e.Arg1.SocketError));

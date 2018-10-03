@@ -5,6 +5,7 @@ using System.IO;
 using Nirge.Core;
 using System.Net;
 using System.Threading;
+using Google.Protobuf;
 
 namespace ser
 {
@@ -18,7 +19,10 @@ namespace ser
             var fill = new CTcpClientPkgFill();
             fill.Register(typeof(byte[]), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
             fill.Register(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
-            var ser = new CTcpServer(new CTcpServerArgs(capacity:1024), LogManager.Exists("ser", "all"), cache, fill);
+            var code = new CProtobufCode();
+            code.Collect(typeof(G2C_PULSE_GEMON).Assembly);
+            fill.Register(typeof(IMessage), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
+            var ser = new CTcpServer(new CTcpServerArgs(capacity: 1024), LogManager.Exists("ser", "all"), cache, fill);
             ser.Closed += Ser_Closed;
             ser.CliConnected += Ser_CliConnected;
             ser.CliClosed += Ser_CliClosed;

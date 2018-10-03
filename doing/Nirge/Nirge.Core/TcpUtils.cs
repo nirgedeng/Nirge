@@ -114,14 +114,14 @@ namespace Nirge.Core
 
     public interface ITcpClientPkg
     {
-        ArraySegment<byte> Fill(ITcpClientPkgHead pkgHead, int pkgSize, object pkg, ITcpClientCache cache);
-        object UnFill(ArraySegment<byte> source, ITcpClientCache cache);
+        ArraySegment<byte> Fill(ITcpClientPkgHead pkgHead, int gPkgSize, object pkg, ITcpClientCache cache);
+        object UnFill(ArraySegment<byte> pkgSeg, ITcpClientCache cache);
     }
 
     public interface ITcpClientPkgFill
     {
-        void Register(Type pkgType, int pkgTypeV, ITcpClientPkg pkg);
-        ArraySegment<byte> Fill(ITcpClientPkgHead pkgHead, int pkgSize, object pkg, ITcpClientCache cache);
-        object UnFill(int pkgType, ArraySegment<byte> source, ITcpClientCache cache);
+        void Register(Type pkgType, int ePkgType, ITcpClientPkg pkg);
+        ArraySegment<byte> Fill(ITcpClientPkgHead pkgHead, int gPkgSize, object pkg, ITcpClientCache cache);
+        object UnFill(int pkgType, ArraySegment<byte> pkgSeg, ITcpClientCache cache);
     }
 }

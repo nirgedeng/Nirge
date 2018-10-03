@@ -8,7 +8,7 @@ using System;
 
 namespace Nirge.Core
 {
-    public static class ArrayUtils
+    public static class CArrayUtils
     {
         public static void Copy(byte[] src, int srcOffset, byte[] dst, int dstOffset, int count)
         {

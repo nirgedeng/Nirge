@@ -76,7 +76,7 @@ namespace Nirge.Core
 
             if (_head < _tail)
             {
-                ArrayUtils.Copy(buf, offset, _buf, _head, count);
+                CArrayUtils.Copy(buf, offset, _buf, _head, count);
                 _head += count;
             }
             else
@@ -85,13 +85,13 @@ namespace Nirge.Core
                 if (p < count)
                 {
                     var q = count - p;
-                    ArrayUtils.Copy(buf, offset, _buf, _head, p);
-                    ArrayUtils.Copy(buf, offset + p, _buf, 0, q);
+                    CArrayUtils.Copy(buf, offset, _buf, _head, p);
+                    CArrayUtils.Copy(buf, offset + p, _buf, 0, q);
                     _head = q;
                 }
                 else
                 {
-                    ArrayUtils.Copy(buf, offset, _buf, _head, count);
+                    CArrayUtils.Copy(buf, offset, _buf, _head, count);
                     _head += count;
                 }
             }
@@ -143,7 +143,7 @@ namespace Nirge.Core
             if (_head > tail)
             {
                 if (buf != null)
-                    ArrayUtils.Copy(_buf, tail, buf, offset, count);
+                    CArrayUtils.Copy(_buf, tail, buf, offset, count);
                 tail += count;
             }
             else
@@ -154,15 +154,15 @@ namespace Nirge.Core
                     var q = count - p;
                     if (buf != null)
                     {
-                        ArrayUtils.Copy(_buf, tail, buf, offset, p);
-                        ArrayUtils.Copy(_buf, 0, buf, offset + p, q);
+                        CArrayUtils.Copy(_buf, tail, buf, offset, p);
+                        CArrayUtils.Copy(_buf, 0, buf, offset + p, q);
                     }
                     tail = q;
                 }
                 else
                 {
                     if (buf != null)
-                        ArrayUtils.Copy(_buf, tail, buf, offset, count);
+                        CArrayUtils.Copy(_buf, tail, buf, offset, count);
                     tail += count;
                 }
             }
