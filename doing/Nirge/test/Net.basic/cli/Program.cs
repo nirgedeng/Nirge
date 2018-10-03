@@ -87,7 +87,7 @@ namespace cli
             code.Collect(typeof(G2C_PULSE_GEMON).Assembly);
             fill.Register(typeof(IMessage), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
-            const int gCapacity = 1;
+            const int gCapacity = 200;
             var pKG = new PKG();
 
             var clis = new CTcpClient[gCapacity];
