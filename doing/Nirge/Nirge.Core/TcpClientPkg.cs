@@ -154,7 +154,7 @@ namespace Nirge.Core
             CArrayUtils.Copy(o.Array, o.Offset, pkgSeg, pkgHead.PkgHeadSize, o.Count);
             pkgHead.SendPkgSize = o.Count;
             pkgHead.SendPkgType = (int)eTcpClientPkgType.ArraySegment;
-            return new ArraySegment<byte>(pkgSeg, 0, pkgHead.PkgHeadSize + pkgHead.SendPkgSize);
+            return new ArraySegment<byte>(pkgSeg, 0, pkgSize);
         }
 
         public object UnFill(ArraySegment<byte> pkgSeg, ITcpClientCache cache)
@@ -277,7 +277,7 @@ namespace Nirge.Core
             if (cache == null)
                 throw new ArgumentNullException("cache");
 
-            var pbSize = CodedOutputStream.ComputeMessageSize(o);
+            var pbSize = o.CalculateSize();
             var pkgSize = pkgHead.PkgHeadSize + gPkgCodeSize + pbSize;
             var pkgCode = _code.GetCode(pkg.GetType());
             var pkgSeg = cache.AllocSendBuf(pkgSize);
@@ -293,7 +293,7 @@ namespace Nirge.Core
             _output.Flush();
             pkgHead.SendPkgSize = gPkgCodeSize + _stream.Count;
             pkgHead.SendPkgType = (int)eTcpClientPkgType.Protobuf;
-            return new ArraySegment<byte>(pkgSeg, 0, pkgHead.PkgHeadSize + pkgHead.SendPkgSize);
+            return new ArraySegment<byte>(pkgSeg, 0, pkgSize);
         }
 
         public object UnFill(ArraySegment<byte> pkgSeg, ITcpClientCache cache)
