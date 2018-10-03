@@ -40,7 +40,7 @@ namespace Nirge.Core
                 throw new ArgumentNullException("buf");
             if (offset < 0)
                 throw new ArgumentOutOfRangeException("offset");
-            if (count == 0)
+            if (count < 0)
                 throw new ArgumentOutOfRangeException("count");
 
             _buf = buf;

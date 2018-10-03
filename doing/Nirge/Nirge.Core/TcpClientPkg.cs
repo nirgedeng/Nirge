@@ -155,7 +155,7 @@ namespace Nirge.Core
             CArrayUtils.Copy(o.Array, o.Offset, pkgBody, pkgHead.PkgHeadSize, o.Count);
             pkgHead.SendPkgSize = o.Count;
             pkgHead.SendPkgType = (int)eTcpClientPkgType.ArraySegment;
-            return new ArraySegment<byte>(pkgBody, 0, pkgSize);
+            return new ArraySegment<byte>(pkgBody, 0, pkgHead.PkgHeadSize + pkgHead.SendPkgSize);
         }
 
         public object UnFill(ArraySegment<byte> pkgSeg, ITcpClientCache cache)
@@ -284,9 +284,9 @@ namespace Nirge.Core
             _stream.SetBuf(pkgBody, pkgHead.PkgHeadSize + gCodeSize, pbSize);
             o.WriteTo(_output);
             _output.Flush();
-            pkgHead.SendPkgSize = gCodeSize + pbSize;
+            pkgHead.SendPkgSize = gCodeSize + (int)_stream.Position;
             pkgHead.SendPkgType = (int)eTcpClientPkgType.Protobuf;
-            return new ArraySegment<byte>(pkgBody, 0, pkgSize);
+            return new ArraySegment<byte>(pkgBody, 0, pkgHead.PkgHeadSize + pkgHead.SendPkgSize);
         }
 
         public object UnFill(ArraySegment<byte> pkgSeg, ITcpClientCache cache)
