@@ -272,28 +272,28 @@ namespace Nirge.Core
             get
             {
                 return $"STAT CACHE {_sendCacheSize} {_recvCacheSize} ALLOC {_sendCacheSizeAlloc} {_recvCacheSizeAlloc} " +
-                    "S{gTcpClientBufSize[0]} {_sends[0].Count} " +
-                    "S{gTcpClientBufSize[1]} {_sends[1].Count} " +
-                    "S{gTcpClientBufSize[2]} {_sends[2].Count} " +
-                    "S{gTcpClientBufSize[3]} {_sends[3].Count} " +
-                    "S{gTcpClientBufSize[4]} {_sends[4].Count} " +
-                    "S{gTcpClientBufSize[5]} {_sends[5].Count} " +
-                    "S{gTcpClientBufSize[6]} {_sends[6].Count} " +
-                    "S{gTcpClientBufSize[7]} {_sends[7].Count} " +
-                    "S{gTcpClientBufSize[8]} {_sends[8].Count} " +
-                    "S{gTcpClientBufSize[9]} {_sends[9].Count} " +
-                    "S{gTcpClientBufSize[10]} {_sends[10].Count} " +
-                    "R{gTcpClientBufSize[0]} {_recvs[0].Count} " +
-                    "R{gTcpClientBufSize[1]} {_recvs[1].Count} " +
-                    "R{gTcpClientBufSize[2]} {_recvs[2].Count} " +
-                    "R{gTcpClientBufSize[3]} {_recvs[3].Count} " +
-                    "R{gTcpClientBufSize[4]} {_recvs[4].Count} " +
-                    "R{gTcpClientBufSize[5]} {_recvs[5].Count} " +
-                    "R{gTcpClientBufSize[6]} {_recvs[6].Count} " +
-                    "R{gTcpClientBufSize[7]} {_recvs[7].Count} " +
-                    "R{gTcpClientBufSize[8]} {_recvs[8].Count} " +
-                    "R{gTcpClientBufSize[9]} {_recvs[9].Count} " +
-                    "R{gTcpClientBufSize[10]} {_recvs[10].Count} ";
+                    $"S{gTcpClientBufSize[0]} {_sends[0].Count} " +
+                    $"S{gTcpClientBufSize[1]} {_sends[1].Count} " +
+                    $"S{gTcpClientBufSize[2]} {_sends[2].Count} " +
+                    $"S{gTcpClientBufSize[3]} {_sends[3].Count} " +
+                    $"S{gTcpClientBufSize[4]} {_sends[4].Count} " +
+                    $"S{gTcpClientBufSize[5]} {_sends[5].Count} " +
+                    $"S{gTcpClientBufSize[6]} {_sends[6].Count} " +
+                    $"S{gTcpClientBufSize[7]} {_sends[7].Count} " +
+                    $"S{gTcpClientBufSize[8]} {_sends[8].Count} " +
+                    $"S{gTcpClientBufSize[9]} {_sends[9].Count} " +
+                    $"S{gTcpClientBufSize[10]} {_sends[10].Count} " +
+                    $"R{gTcpClientBufSize[0]} {_recvs[0].Count} " +
+                    $"R{gTcpClientBufSize[1]} {_recvs[1].Count} " +
+                    $"R{gTcpClientBufSize[2]} {_recvs[2].Count} " +
+                    $"R{gTcpClientBufSize[3]} {_recvs[3].Count} " +
+                    $"R{gTcpClientBufSize[4]} {_recvs[4].Count} " +
+                    $"R{gTcpClientBufSize[5]} {_recvs[5].Count} " +
+                    $"R{gTcpClientBufSize[6]} {_recvs[6].Count} " +
+                    $"R{gTcpClientBufSize[7]} {_recvs[7].Count} " +
+                    $"R{gTcpClientBufSize[8]} {_recvs[8].Count} " +
+                    $"R{gTcpClientBufSize[9]} {_recvs[9].Count} " +
+                    $"R{gTcpClientBufSize[10]} {_recvs[10].Count} ";
             }
         }
 

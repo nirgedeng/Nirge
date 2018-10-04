@@ -102,6 +102,11 @@ namespace cli
                     return msgs[rng.Next(msgs.Length)];
                 return null;
             }
+
+            public object GetPkg()
+            {
+                return GetPkg(rng.Next(1, 3));
+            }
         }
 
         static void Main(string[] args)
@@ -117,7 +122,7 @@ namespace cli
             fill.Register(typeof(IMessage<>), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
             //
-            const int gCapacity = 200;
+            const int gCapacity = 1000;
             var pKG = new PKG();
             var t = Environment.TickCount;
 
@@ -142,8 +147,7 @@ namespace cli
                     case eTcpClientState.Connected:
                         try
                         {
-                            i.Send(pKG.GetPkg(1));
-                            i.Send(pKG.GetPkg(2));
+                            i.Send(pKG.GetPkg());
                         }
                         catch (Exception exception)
                         {
