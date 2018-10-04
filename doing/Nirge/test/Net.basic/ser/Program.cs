@@ -13,15 +13,17 @@ namespace ser
     {
         static void Main(string[] args)
         {
+            //
             XmlConfigurator.Configure(LogManager.CreateRepository("ser"), new FileInfo("../../Net.basic.log.ser.xml"));
-
             var cache = new CTcpClientCache(new CTcpClientCacheArgs(104857600, 104857600), LogManager.Exists("ser", "all"));
             var fill = new CTcpClientPkgFill();
             fill.Register(typeof(byte[]), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
             fill.Register(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
             var code = new CTcpClientProtobufCode();
             code.Collect(typeof(G2C_PULSE_GEMON).Assembly);
-            fill.Register(typeof(IMessage), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
+            fill.Register(typeof(IMessage<>), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
+
+            //
             var ser = new CTcpServer(new CTcpServerArgs(capacity: 1024), LogManager.Exists("ser", "all"), cache, fill);
             ser.Closed += Ser_Closed;
             ser.CliConnected += Ser_CliConnected;

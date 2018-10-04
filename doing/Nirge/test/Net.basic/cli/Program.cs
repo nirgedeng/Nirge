@@ -13,9 +13,9 @@ namespace cli
 {
     class Program
     {
+        //
         class PKG
         {
-            //
             byte[] pkg = new byte[2048];
             Random rng = new Random();
             IMessage[] msgs =
@@ -87,11 +87,12 @@ namespace cli
             fill.Register(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
             var code = new CTcpClientProtobufCode();
             code.Collect(typeof(G2C_PULSE_GEMON).Assembly);
-            fill.Register(typeof(IMessage), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
+            fill.Register(typeof(IMessage<>), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
             //
             const int gCapacity = 200;
             var pKG = new PKG();
+            var t = Environment.TickCount;
 
             var clis = new CTcpClient[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
@@ -104,22 +105,18 @@ namespace cli
                 cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
             }
 
-            var t = Environment.TickCount;
-
             while (true)
             {
-                for (var i = 0; i < gCapacity; ++i)
+                foreach (var i in clis)
                 {
-                    var cli = clis[i];
-
-                    cli.Exec();
-                    switch (cli.State)
+                    i.Exec();
+                    switch (i.State)
                     {
                     case eTcpClientState.Connected:
                         try
                         {
-                            cli.Send(pKG.GetPkg(1));
-                            cli.Send(pKG.GetPkg(2));
+                            i.Send(pKG.GetPkg(1));
+                            i.Send(pKG.GetPkg(2));
                         }
                         catch (Exception exception)
                         {
