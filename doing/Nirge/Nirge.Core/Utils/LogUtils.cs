@@ -26,7 +26,7 @@ namespace Nirge.Core
             if (log == null)
                 return;
 
-            var s = string.Format("{0}:{1}:{2} {3}", filePath, lineNumber, memberName, message ?? "");
+            var s = $"{filePath}:{lineNumber}:{memberName} {message ?? ""}";
 
             switch (pattern)
             {
