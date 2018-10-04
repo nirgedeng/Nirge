@@ -91,6 +91,7 @@ message G2C_SYNC_ROLE_DATA_BEGIN
 	int32 server_avg_level							= 48;
 	int32 next_level_day_count						= 49;
 	 int64 overflow_exp								= 50;
+
 	uint32 online_reward							= 51;
 	uint32 online_time								= 52;
     uint32 today_online_time						= 53;
