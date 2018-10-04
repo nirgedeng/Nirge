@@ -15,7 +15,7 @@ namespace ser
         {
             //
             XmlConfigurator.Configure(LogManager.CreateRepository("ser"), new FileInfo("../../Net.basic.log.ser.xml"));
-            var cache = new CTcpClientCache(new CTcpClientCacheArgs(104857600, 104857600), LogManager.Exists("ser", "all"));
+            var cache = new CTcpClientCache(new CTcpClientCacheArgs(1048576000, 1048576000), LogManager.Exists("ser", "all"));
             var fill = new CTcpClientPkgFill();
             fill.Register(typeof(byte[]), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
             fill.Register(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
@@ -24,7 +24,7 @@ namespace ser
             fill.Register(typeof(IMessage<>), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
             //
-            var ser = new CTcpServer(new CTcpServerArgs(capacity: 1024), LogManager.Exists("ser", "all"), cache, fill);
+            var ser = new CTcpServer(new CTcpServerArgs(capacity: 10240), LogManager.Exists("ser", "all"), cache, fill);
             ser.Closed += Ser_Closed;
             ser.CliConnected += Ser_CliConnected;
             ser.CliClosed += Ser_CliClosed;

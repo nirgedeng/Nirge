@@ -41,12 +41,12 @@ namespace Nirge.Core
 
             if (_sendCacheSize < 10485760)
                 _sendCacheSize = 10485760;
-            if (_sendCacheSize > 104857600)
-                _sendCacheSize = 104857600;
+            if (_sendCacheSize > 1073741824)
+                _sendCacheSize = 1073741824;
             if (_recvCacheSize < 10485760)
                 _recvCacheSize = 10485760;
-            if (_recvCacheSize > 104857600)
-                _recvCacheSize = 104857600;
+            if (_recvCacheSize > 1073741824)
+                _recvCacheSize = 1073741824;
         }
     }
 
