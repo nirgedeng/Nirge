@@ -352,9 +352,11 @@ namespace Nirge.Core
             if (cache == null)
                 throw new ArgumentNullException("cache");
 
+            var pkgType = pkg.GetType();
             foreach (var i in _pkgs)
             {
-                if (i.Item1 == pkg.GetType()
+                if (i.Item1 == pkgType
+                    || pkgType.GetInterface(i.Item1.FullName) != null
                     || i.Item1.IsInstanceOfType(pkg))
                     return i.Item3.Fill(pkgHead, gPkgSize, pkg, cache);
             }
