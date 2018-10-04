@@ -20,6 +20,7 @@ namespace Nirge.Core
             base(message)
         {
         }
+        
         public CNetException(string message, Exception innerException)
             :
             base(message, innerException)
@@ -33,14 +34,17 @@ namespace Nirge.Core
         {
             get;
         }
+        
         int SendCacheSizeAlloc
         {
             get;
         }
+        
         int RecvCacheSize
         {
             get;
         }
+        
         int RecvCacheSizeAlloc
         {
             get;
@@ -74,30 +78,36 @@ namespace Nirge.Core
         {
             get;
         }
+        
         int SendPkgType
         {
             get;
             set;
         }
+        
         int SendPkgSize
         {
             get;
             set;
         }
+        
         byte[] RecvPkgHeadBuf
         {
             get;
         }
+        
         int RecvPkgType
         {
             get;
             set;
         }
+        
         int RecvPkgSize
         {
             get;
             set;
         }
+        
         void Clear();
         void Fill(byte[] buf);
         void UnFill();
