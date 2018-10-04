@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+message G2C_PULSE_GEMON
+{
+	uint64 charid = 1;
+	int32 pulse_slot = 2;
+	int32 gem_slot = 3;
+	int32 gemid = 4;
+}
+
+message SPELL_INFO
+{
+    int32 id					= 1;
+    int32 level				= 2;
+    int32 bonus_level			= 3;
+}
+
+message TALENT_INFO
+{
+    int32 id					= 1;
+    int32 level				= 2;
+}
+
+message VARIABLE_INFO
+{
+    int32 index				= 1;
+    int32 value				= 2;
+}
+
+message SGEM_ATTR_INFO
+{
+    int32 attr = 1;
+    int32 value = 2;
+}
+
+message SGEM_INFO
+{
+    int32  res_id = 1;
+    uint64 obj_id = 2;
+    int32  pos = 3;
+    bool is_bind = 4;
+    bool is_lock = 5;
+    int32 level = 6;
+    int32 exp = 7;
+    SGEM_ATTR_INFO attr = 8;
+    uint32 trade_cooldown = 9;
+    bool is_expensive = 10;
+}
+
+message G2C_SYNC_ROLE_DATA_BEGIN
+{
+	uint64 roleid									= 1;
+	string rolename								= 2;
+	int32 class									= 3;
+	int32 body										= 4;
+	int32 gender									= 5;
+	int32 level									= 6;
+	int32 exp										= 7;
+	int32 story_progress							= 8;
+	int32 frame									= 9;
+	uint32 server_time								= 10;
+
+	repeated SPELL_INFO spell_list							= 11;
+	int32 spell_slot_list							= 12;
+	int32 portrait									= 13;
+	int32 portrait_box								= 14;
+	int32 client_var								= 17;
+	uint64 spiritid								= 25;
+	bool is_skip_arrange							= 26;
+	uint32 activity_reward							= 27;
+	int32 elo_score								= 28;
+	int32 team_elo_score							= 29;
+	TALENT_INFO talent_list						= 30;
+	int32 talent_slot_list							= 31;
+	VARIABLE_INFO role_var_list					= 32;
+	int32 server_time_zone							= 33;
+	bool is_arena_match							= 34;
+	uint32 login_time								= 35;
+	uint64 guild_id								= 36;
+	uint32 last_check_in_time						= 37;
+	uint32 last_check_in_id						= 38;
+	uint32 check_in_count							= 39;
+	uint32 max_role_level							= 40;
+	VARIABLE_INFO daily_limit						= 41;
+	VARIABLE_INFO weekly_limit						= 42;
+    SGEM_INFO sgem									= 43;
+	uint32 story_reward							= 44;
+	int32	rush_max_level							= 45;
+	 int32	rush_defeat_times						= 46;
+	int32 server_max_level							= 47;
+	int32 server_avg_level							= 48;
+	int32 next_level_day_count						= 49;
+	 int64 overflow_exp								= 50;
+	uint32 online_reward							= 51;
+	uint32 online_time								= 52;
+    uint32 today_online_time						= 53;
+    int32	next_level								= 54;
+    uint32 limited_time_reward						= 55;
+    bool dungeon_accelerated						= 57;
+    int32 city										= 58;
+    double longitude								= 59;
+    double latitude								= 60;
+    bool lbs_flag									= 61;
+    bool is_take_first_charge_reward				= 62;
+    bool tobe_unique_master						= 63;
+    int32	pay_zone_id								= 64;
+    int32 power_level								= 65;
+    int32 reward_retrieve							= 66;
+    int32 newbie_check_in_reward_mask				= 67;
+    uint32 buy_venture_capital_time				= 68;
+    int32 venture_capital_login_count				= 69;
+    uint32 venture_capital_reward_mask				= 70;
+    uint32 group_buy_time							= 71;
+    uint32 group_buy_reward_mask					= 72;
+    int32	sycee									= 73;
+    int32 lucky_reward_id							= 74;
+    uint32 lucky_reward_endtime					= 75;
+    uint32 buy_level_reward_time					= 76;
+    bool power_invisible						    = 77;
+    fixed32 create_time							= 78;
+    int32	karma_node								= 79;
+    bool is_master_graduated						= 80;
+    bool dungeon_hosted							= 81;
+    bool is_take_single_arena_first_win_reward     = 82;
+    bool is_take_team_arena_first_win_reward		= 83;
+    int32 draw_avatar_count						= 84;
+    uint32 draw_avatar_reward_mask					= 85;
+}
