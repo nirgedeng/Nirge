@@ -15,6 +15,7 @@ namespace cli
     {
         class PKG
         {
+            //
             byte[] pkg = new byte[2048];
             Random rng = new Random();
             IMessage[] msgs =
@@ -78,6 +79,7 @@ namespace cli
 
         static void Main(string[] args)
         {
+            //
             XmlConfigurator.Configure(LogManager.CreateRepository("cli"), new FileInfo("../../Net.basic.log.cli.xml"));
             var cache = new CTcpClientCache(new CTcpClientCacheArgs(104857600, 104857600), LogManager.Exists("cli", "all"));
             var fill = new CTcpClientPkgFill();
@@ -87,6 +89,7 @@ namespace cli
             code.Collect(typeof(G2C_PULSE_GEMON).Assembly);
             fill.Register(typeof(IMessage), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
+            //
             const int gCapacity = 200;
             var pKG = new PKG();
 
@@ -132,6 +135,7 @@ namespace cli
                     Console.WriteLine(cache.Stat);
                 }
 
+                //
                 Thread.Sleep(100);
             }
         }
