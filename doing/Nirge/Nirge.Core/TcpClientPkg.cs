@@ -279,9 +279,9 @@ namespace Nirge.Core
 
             var pbSize = o.CalculateSize();
             var pkgSize = pkgHead.PkgHeadSize + gPkgCodeSize + pbSize;
-            var pkgCode = _code.GetCode(pkg.GetType());
             var pkgSeg = cache.AllocSendBuf(pkgSize);
             {
+                var pkgCode = _code.GetCode(pkg.GetType());
                 var codeSeg = BitConverter.GetBytes(pkgCode);
                 pkgSeg[pkgHead.PkgHeadSize + 0] = codeSeg[0];
                 pkgSeg[pkgHead.PkgHeadSize + 1] = codeSeg[1];
@@ -291,7 +291,7 @@ namespace Nirge.Core
             _stream.SetBuf(pkgSeg, pkgHead.PkgHeadSize + gPkgCodeSize, pbSize);
             o.WriteTo(_output);
             _output.Flush();
-            pkgHead.SendPkgSize = gPkgCodeSize + _stream.Count;
+            pkgHead.SendPkgSize = gPkgCodeSize + pbSize;
             pkgHead.SendPkgType = (int)eTcpClientPkgType.Protobuf;
             return new ArraySegment<byte>(pkgSeg, 0, pkgSize);
         }
