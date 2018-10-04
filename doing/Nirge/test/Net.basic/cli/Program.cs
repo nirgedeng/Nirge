@@ -50,7 +50,6 @@ namespace cli
                         Value=1,
                     },
                 },
-
                 new G2C_SYNC_ROLE_DATA_BEGIN()
                 {
                     Roleid = 1,
