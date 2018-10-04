@@ -49,7 +49,7 @@ namespace Nirge.Core
         public CArrayRing(int count)
         {
             if (count == 0)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             _buf = new byte[count];
             Clear();
@@ -65,13 +65,13 @@ namespace Nirge.Core
         public void Write(byte[] buf, int offset, int count)
         {
             if (buf == null)
-                throw new ArgumentNullException("buf");
+                throw new ArgumentNullException(nameof(buf));
             if (offset < 0)
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             if (count == 0)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
             if (UnusedSize < count)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             if (_head < _tail)
             {
@@ -101,13 +101,13 @@ namespace Nirge.Core
         public void Read(byte[] buf, int offset, int count)
         {
             if (buf == null)
-                throw new ArgumentNullException("buf");
+                throw new ArgumentNullException(nameof(buf));
             if (offset < 0)
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             if (count == 0)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
             if (count > UsedSize)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             Read(ref _tail, buf, offset, count);
             _usedSize -= count;
@@ -116,13 +116,13 @@ namespace Nirge.Core
         public void Peek(byte[] buf, int offset, int count)
         {
             if (buf == null)
-                throw new ArgumentNullException("buf");
+                throw new ArgumentNullException(nameof(buf));
             if (offset < 0)
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             if (count == 0)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
             if (count > UsedSize)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             var tail = _tail;
             Read(ref tail, buf, offset, count);
@@ -131,7 +131,7 @@ namespace Nirge.Core
         public void Skip(int count)
         {
             if (count == 0)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             Read(ref _tail, null, 0, count);
             _usedSize -= count;

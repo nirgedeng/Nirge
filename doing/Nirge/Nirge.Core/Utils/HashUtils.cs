@@ -12,7 +12,7 @@ namespace Nirge.Core
         public static uint BKDRHash(string s)
         {
             if (string.IsNullOrEmpty(s))
-                throw new ArgumentOutOfRangeException("s");
+                throw new ArgumentOutOfRangeException(nameof(s));
 
             const uint gSeed = 131;
 

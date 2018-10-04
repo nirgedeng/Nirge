@@ -120,7 +120,7 @@ namespace Nirge.Core
         public CArrayLinkedList(int capacity)
         {
             if (capacity == 0)
-                throw new ArgumentOutOfRangeException("capacity");
+                throw new ArgumentOutOfRangeException(nameof(capacity));
 
             _nodes = new CNode[capacity];
             for (int i = 0; i < capacity; ++i)
@@ -187,18 +187,18 @@ namespace Nirge.Core
         public void RemoveWithIndex(int index)
         {
             if (_count == 0)
-                throw new InvalidOperationException("Count");
+                throw new InvalidOperationException(nameof(index));
             if (index < 0 || index >= Capacity)
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException(nameof(index));
             if (!_nodes[index].Use)
-                throw new InvalidOperationException("index");
+                throw new InvalidOperationException(nameof(index));
 
             erase(index);
         }
         public void Remove(T val)
         {
             if (_count == 0)
-                throw new InvalidOperationException("Count");
+                throw new InvalidOperationException(nameof(val));
 
             for (int i = _head; i != -1; i = _nodes[i].Next)
             {
@@ -210,7 +210,7 @@ namespace Nirge.Core
                 }
             }
 
-            throw new ArgumentOutOfRangeException("val");
+            throw new ArgumentOutOfRangeException(nameof(val));
         }
 
         void erase(int i)
@@ -275,11 +275,11 @@ namespace Nirge.Core
         public T GetWithIndex(int index)
         {
             if (_count == 0)
-                throw new InvalidOperationException("Count");
+                throw new InvalidOperationException(nameof(index));
             if (index < 0 || index >= Capacity)
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException(nameof(index));
             if (!_nodes[index].Use)
-                throw new InvalidOperationException("index");
+                throw new InvalidOperationException(nameof(index));
 
             return _nodes[index].Val;
         }

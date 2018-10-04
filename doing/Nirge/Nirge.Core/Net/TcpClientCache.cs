@@ -133,9 +133,9 @@ namespace Nirge.Core
         public CTcpClientCacheEmpty(CTcpClientCacheArgs args, ILog log)
         {
             if (args == null)
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             if (log == null)
-                throw new ArgumentNullException("log");
+                throw new ArgumentNullException(nameof(log));
 
             _args = args;
             _log = log;
@@ -157,7 +157,7 @@ namespace Nirge.Core
         public byte[] AllocSendBuf(int count)
         {
             if (count == 0)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             return new byte[count];
         }
@@ -165,9 +165,9 @@ namespace Nirge.Core
         public void CollectSendBuf(byte[] buf)
         {
             if (buf == null)
-                throw new ArgumentNullException("buf");
+                throw new ArgumentNullException(nameof(buf));
             if (buf.Length == 0)
-                throw new ArgumentOutOfRangeException("buf");
+                throw new ArgumentOutOfRangeException(nameof(buf));
         }
 
         #endregion
@@ -177,7 +177,7 @@ namespace Nirge.Core
         public byte[] AllocRecvBuf(int count)
         {
             if (count == 0)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             return new byte[count];
         }
@@ -185,9 +185,9 @@ namespace Nirge.Core
         public void CollectRecvBuf(byte[] buf)
         {
             if (buf == null)
-                throw new ArgumentNullException("buf");
+                throw new ArgumentNullException(nameof(buf));
             if (buf.Length == 0)
-                throw new ArgumentOutOfRangeException("buf");
+                throw new ArgumentOutOfRangeException(nameof(buf));
         }
 
         #endregion
@@ -271,42 +271,38 @@ namespace Nirge.Core
         {
             get
             {
-                return string.Format("STAT CACHE {0} {1} ALLOC {2} {3} " +
-                    "S{4} {5} S{6} {7} S{8} {9} S{10} {11} S{12} {13} S{14} {15} S{16} {17} S{18} {19} S{20} {21} S{22} {23} S{24} {25} " +
-                    "R{26} {27} R{28} {29} R{30} {31} R{32} {33} R{34} {35} R{36} {36} R{38} {39} R{40} {41} R{42} {43} R{44} {45} R{46} {47}"
-                    , _sendCacheSize, _recvCacheSize
-                    , _sendCacheSizeAlloc, _recvCacheSizeAlloc
-                    , gTcpClientBufSize[0], _sends[0].Count
-                    , gTcpClientBufSize[1], _sends[1].Count
-                    , gTcpClientBufSize[2], _sends[2].Count
-                    , gTcpClientBufSize[3], _sends[3].Count
-                    , gTcpClientBufSize[4], _sends[4].Count
-                    , gTcpClientBufSize[5], _sends[5].Count
-                    , gTcpClientBufSize[6], _sends[6].Count
-                    , gTcpClientBufSize[7], _sends[7].Count
-                    , gTcpClientBufSize[8], _sends[8].Count
-                    , gTcpClientBufSize[9], _sends[9].Count
-                    , gTcpClientBufSize[10], _sends[10].Count
-                    , gTcpClientBufSize[0], _recvs[0].Count
-                    , gTcpClientBufSize[1], _recvs[1].Count
-                    , gTcpClientBufSize[2], _recvs[2].Count
-                    , gTcpClientBufSize[3], _recvs[3].Count
-                    , gTcpClientBufSize[4], _recvs[4].Count
-                    , gTcpClientBufSize[5], _recvs[5].Count
-                    , gTcpClientBufSize[6], _recvs[6].Count
-                    , gTcpClientBufSize[7], _recvs[7].Count
-                    , gTcpClientBufSize[8], _recvs[8].Count
-                    , gTcpClientBufSize[9], _recvs[9].Count
-                    , gTcpClientBufSize[10], _recvs[10].Count);
+                return $"STAT CACHE {_sendCacheSize} {_recvCacheSize} ALLOC {_sendCacheSizeAlloc} {_recvCacheSizeAlloc} " +
+                    "S{gTcpClientBufSize[0]} {_sends[0].Count} " +
+                    "S{gTcpClientBufSize[1]} {_sends[1].Count} " +
+                    "S{gTcpClientBufSize[2]} {_sends[2].Count} " +
+                    "S{gTcpClientBufSize[3]} {_sends[3].Count} " +
+                    "S{gTcpClientBufSize[4]} {_sends[4].Count} " +
+                    "S{gTcpClientBufSize[5]} {_sends[5].Count} " +
+                    "S{gTcpClientBufSize[6]} {_sends[6].Count} " +
+                    "S{gTcpClientBufSize[7]} {_sends[7].Count} " +
+                    "S{gTcpClientBufSize[8]} {_sends[8].Count} " +
+                    "S{gTcpClientBufSize[9]} {_sends[9].Count} " +
+                    "S{gTcpClientBufSize[10]} {_sends[10].Count} " +
+                    "R{gTcpClientBufSize[0]} {_recvs[0].Count} " +
+                    "R{gTcpClientBufSize[1]} {_recvs[1].Count} " +
+                    "R{gTcpClientBufSize[2]} {_recvs[2].Count} " +
+                    "R{gTcpClientBufSize[3]} {_recvs[3].Count} " +
+                    "R{gTcpClientBufSize[4]} {_recvs[4].Count} " +
+                    "R{gTcpClientBufSize[5]} {_recvs[5].Count} " +
+                    "R{gTcpClientBufSize[6]} {_recvs[6].Count} " +
+                    "R{gTcpClientBufSize[7]} {_recvs[7].Count} " +
+                    "R{gTcpClientBufSize[8]} {_recvs[8].Count} " +
+                    "R{gTcpClientBufSize[9]} {_recvs[9].Count} " +
+                    "R{gTcpClientBufSize[10]} {_recvs[10].Count} ";
             }
         }
 
         public CTcpClientCache(CTcpClientCacheArgs args, ILog log)
         {
             if (args == null)
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             if (log == null)
-                throw new ArgumentNullException("log");
+                throw new ArgumentNullException(nameof(log));
 
             _args = args;
             _log = log;
@@ -347,7 +343,7 @@ namespace Nirge.Core
         public byte[] AllocSendBuf(int count)
         {
             if (count == 0)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             byte[] buf;
             for (var i = 0; i < gTcpClientBufSize.Length; ++i)
@@ -363,15 +359,15 @@ namespace Nirge.Core
                 return buf;
             }
 
-            throw new ArgumentOutOfRangeException("count");
+            throw new ArgumentOutOfRangeException(nameof(count));
         }
 
         public void CollectSendBuf(byte[] buf)
         {
             if (buf == null)
-                throw new ArgumentNullException("buf");
+                throw new ArgumentNullException(nameof(buf));
             if (buf.Length == 0)
-                throw new ArgumentOutOfRangeException("buf");
+                throw new ArgumentOutOfRangeException(nameof(buf));
 
             for (var i = 0; i < gTcpClientBufSize.Length; ++i)
             {
@@ -384,7 +380,7 @@ namespace Nirge.Core
                 }
             }
 
-            throw new ArgumentOutOfRangeException("buf");
+            throw new ArgumentOutOfRangeException(nameof(buf));
         }
 
         #endregion
@@ -394,7 +390,7 @@ namespace Nirge.Core
         public byte[] AllocRecvBuf(int count)
         {
             if (count == 0)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             byte[] buf;
             for (var i = 0; i < gTcpClientBufSize.Length; ++i)
@@ -410,15 +406,15 @@ namespace Nirge.Core
                 return buf;
             }
 
-            throw new ArgumentOutOfRangeException("count");
+            throw new ArgumentOutOfRangeException(nameof(count));
         }
 
         public void CollectRecvBuf(byte[] buf)
         {
             if (buf == null)
-                throw new ArgumentNullException("buf");
+                throw new ArgumentNullException(nameof(buf));
             if (buf.Length == 0)
-                throw new ArgumentOutOfRangeException("buf");
+                throw new ArgumentOutOfRangeException(nameof(buf));
 
             for (var i = 0; i < gTcpClientBufSize.Length; ++i)
             {
@@ -431,7 +427,7 @@ namespace Nirge.Core
                 }
             }
 
-            throw new ArgumentOutOfRangeException("buf");
+            throw new ArgumentOutOfRangeException(nameof(buf));
         }
 
         #endregion

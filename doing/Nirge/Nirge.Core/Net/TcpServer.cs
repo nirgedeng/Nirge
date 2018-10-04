@@ -256,13 +256,13 @@ namespace Nirge.Core
         public void Alloc(CTcpServerArgs args, ILog log, ITcpClientCache cache, CTcpClientPkgFill fill)
         {
             if (args == null)
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             if (log == null)
-                throw new ArgumentNullException("log");
+                throw new ArgumentNullException(nameof(log));
             if (cache == null)
-                throw new ArgumentNullException("cache");
+                throw new ArgumentNullException(nameof(cache));
             if (fill == null)
-                throw new ArgumentNullException("fill");
+                throw new ArgumentNullException(nameof(fill));
 
             _args = args;
             _log = log;
@@ -374,7 +374,7 @@ namespace Nirge.Core
         public void Open(IPEndPoint endPoint)
         {
             if (endPoint == null)
-                throw new ArgumentNullException("endPoint");
+                throw new ArgumentNullException(nameof(endPoint));
 
             switch (_state)
             {
@@ -442,8 +442,7 @@ namespace Nirge.Core
             switch (_state)
             {
             case eTcpServerState.Opened:
-                CTcpClient e;
-                if (_clis.TryGetWithIndex(cli, out e))
+                if (_clis.TryGetWithIndex(cli, out var e))
                     e.Close(graceful: true);
                 break;
             case eTcpServerState.Closed:
@@ -504,16 +503,15 @@ namespace Nirge.Core
         public void Send(int cli, object pkg)
         {
             if (pkg == null)
-                throw new ArgumentNullException("pkg");
+                throw new ArgumentNullException(nameof(pkg));
 
             switch (_state)
             {
             case eTcpServerState.Opened:
-                CTcpClient e;
-                if (_clis.TryGetWithIndex(cli, out e))
+                if (_clis.TryGetWithIndex(cli, out var e))
                     e.Send(pkg);
                 else
-                    throw new ArgumentOutOfRangeException("cli");
+                    throw new ArgumentOutOfRangeException(nameof(cli));
                 break;
             case eTcpServerState.Closed:
             case eTcpServerState.Opening:

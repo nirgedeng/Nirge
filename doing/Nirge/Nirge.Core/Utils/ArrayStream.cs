@@ -36,11 +36,11 @@ namespace Nirge.Core
         public void SetBuf(byte[] buf, int offset, int count)
         {
             if (buf == null)
-                throw new ArgumentNullException("buf");
+                throw new ArgumentNullException(nameof(buf));
             if (offset < 0)
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             if (count < 0)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             _buf = buf;
             _l = offset;
@@ -107,7 +107,7 @@ namespace Nirge.Core
             set
             {
                 if (value < 0 || value > _len)
-                    throw new ArgumentOutOfRangeException("value");
+                    throw new ArgumentOutOfRangeException(nameof(value));
                 _pos = _l + (int)value;
             }
         }
@@ -154,11 +154,11 @@ namespace Nirge.Core
         public override int Read(byte[] buf, int offset, int count)
         {
             if (buf == null)
-                throw new ArgumentNullException("buf");
+                throw new ArgumentNullException(nameof(buf));
             if (offset < 0)
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             if (count == 0)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             if (_pos == _r)
                 return 0;
@@ -186,14 +186,14 @@ namespace Nirge.Core
         public override void Write(byte[] buf, int offset, int count)
         {
             if (buf == null)
-                throw new ArgumentNullException("buf");
+                throw new ArgumentNullException(nameof(buf));
             if (offset < 0)
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             if (count == 0)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
             var r = _pos + count;
             if (r > _r)
-                throw new ArgumentOutOfRangeException("count");
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             CArrayUtils.Copy(buf, offset, _buf, _pos, count);
             _pos = r;
@@ -204,7 +204,7 @@ namespace Nirge.Core
             if (_pos < _r)
                 _buf[_pos++] = val;
             else
-                throw new InvalidOperationException("pos");
+                throw new InvalidOperationException(nameof(val));
         }
     }
 }

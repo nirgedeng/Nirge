@@ -106,9 +106,9 @@ namespace Nirge.Core
         public void Fill(byte[] buf)
         {
             if (buf == null)
-                throw new ArgumentNullException("buf");
+                throw new ArgumentNullException(nameof(buf));
             if (buf.Length < PkgHeadSize)
-                throw new ArgumentOutOfRangeException("buf");
+                throw new ArgumentOutOfRangeException(nameof(buf));
 
             var i = BitConverter.GetBytes(_sendPkgSize);
             buf[0] = i[0];
@@ -132,27 +132,27 @@ namespace Nirge.Core
         public ArraySegment<byte> Fill(ITcpClientPkgHead pkgHead, int gPkgSize, object pkg, ITcpClientCache cache)
         {
             if (pkgHead == null)
-                throw new ArgumentNullException("pkgHead");
+                throw new ArgumentNullException(nameof(pkgHead));
             if (pkgHead.PkgHeadSize == 0)
-                throw new ArgumentOutOfRangeException("pkgHead");
+                throw new ArgumentOutOfRangeException(nameof(pkgHead));
             if (gPkgSize == 0)
-                throw new ArgumentOutOfRangeException("gPkgSize");
+                throw new ArgumentOutOfRangeException(nameof(gPkgSize));
             if (pkg == null)
-                throw new ArgumentNullException("pkg");
+                throw new ArgumentNullException(nameof(pkg));
             if (!(pkg is byte[] || pkg is ArraySegment<byte>))
-                throw new ArgumentOutOfRangeException("pkg");
-            var o = (ArraySegment<byte>)pkg;
-            if (o.Count == 0)
-                throw new ArgumentOutOfRangeException("pkg");
-            if (o.Count > gPkgSize)
-                throw new ArgumentOutOfRangeException("pkg");
+                throw new ArgumentOutOfRangeException(nameof(pkg));
+            var seg = (ArraySegment<byte>)pkg;
+            if (seg.Count == 0)
+                throw new ArgumentOutOfRangeException(nameof(pkg));
+            if (seg.Count > gPkgSize)
+                throw new ArgumentOutOfRangeException(nameof(pkg));
             if (cache == null)
-                throw new ArgumentNullException("cache");
+                throw new ArgumentNullException(nameof(cache));
 
-            var pkgSize = pkgHead.PkgHeadSize + o.Count;
+            var pkgSize = pkgHead.PkgHeadSize + seg.Count;
             var pkgSeg = cache.AllocSendBuf(pkgSize);
-            CArrayUtils.Copy(o.Array, o.Offset, pkgSeg, pkgHead.PkgHeadSize, o.Count);
-            pkgHead.SendPkgSize = o.Count;
+            CArrayUtils.Copy(seg.Array, seg.Offset, pkgSeg, pkgHead.PkgHeadSize, seg.Count);
+            pkgHead.SendPkgSize = seg.Count;
             pkgHead.SendPkgType = (int)eTcpClientPkgType.ArraySegment;
             return new ArraySegment<byte>(pkgSeg, 0, pkgSize);
         }
@@ -160,11 +160,11 @@ namespace Nirge.Core
         public object UnFill(ArraySegment<byte> pkgSeg, ITcpClientCache cache)
         {
             if (pkgSeg == null)
-                throw new ArgumentNullException("pkgSeg");
+                throw new ArgumentNullException(nameof(pkgSeg));
             if (pkgSeg.Count == 0)
-                throw new ArgumentOutOfRangeException("pkgSeg");
+                throw new ArgumentOutOfRangeException(nameof(pkgSeg));
             if (cache == null)
-                throw new ArgumentNullException("cache");
+                throw new ArgumentNullException(nameof(cache));
 
             return pkgSeg;
         }
@@ -194,9 +194,9 @@ namespace Nirge.Core
         public void Collect(Assembly assembly)
         {
             if (assembly == null)
-                throw new ArgumentNullException("assembly");
+                throw new ArgumentNullException(nameof(assembly));
             if (_assemblys.Contains(assembly))
-                throw new ArgumentOutOfRangeException("assembly");
+                throw new ArgumentOutOfRangeException(nameof(assembly));
 
             _assemblys.Add(assembly);
 
@@ -210,10 +210,10 @@ namespace Nirge.Core
                     continue;
                 var pkgCode = CHashUtils.BKDRHash(i.FullName);
                 if (_parsers.ContainsKey(pkgCode))
-                    throw new InvalidOperationException("pkgCode");
-                var pkgParser = (MessageParser)i.GetProperty("Parser").GetValue(null);
+                    throw new InvalidOperationException(nameof(pkgCode));
+                var pkgParser = (MessageParser)i.GetProperty("Parser")?.GetValue(null);
                 if (pkgParser == null)
-                    throw new InvalidOperationException("pkgParser");
+                    throw new InvalidOperationException(nameof(pkgParser));
 
                 _codes.Add(i.GetHashCode(), pkgCode);
                 _parsers.Add(pkgCode, pkgParser);
@@ -223,21 +223,19 @@ namespace Nirge.Core
         public uint GetCode(Type pkgType)
         {
             if (pkgType == null)
-                throw new ArgumentNullException("pkgType");
-            uint pkgCode;
-            if (_codes.TryGetValue(pkgType.GetHashCode(), out pkgCode))
+                throw new ArgumentNullException(nameof(pkgType));
+            if (_codes.TryGetValue(pkgType.GetHashCode(), out var pkgCode))
                 return pkgCode;
             else
-                throw new ArgumentOutOfRangeException("pkgType");
+                throw new ArgumentOutOfRangeException(nameof(pkgType));
         }
 
         public MessageParser GetParser(uint pkgCode)
         {
-            MessageParser parser;
-            if (_parsers.TryGetValue(pkgCode, out parser))
+            if (_parsers.TryGetValue(pkgCode, out var parser))
                 return parser;
             else
-                throw new ArgumentOutOfRangeException("pkgCode");
+                throw new ArgumentOutOfRangeException(nameof(pkgCode));
         }
     }
 
@@ -245,39 +243,39 @@ namespace Nirge.Core
     {
         const int gPkgCodeSize = 4;
 
+        ITcpClientProtobufCode _code;
         CArrayStream _stream;
         CodedInputStream _input;
         CodedOutputStream _output;
-        ITcpClientProtobufCode _code;
 
         public CTcpClientProtobuf(ITcpClientProtobufCode code)
         {
             if (code == null)
-                throw new ArgumentNullException("code");
+                throw new ArgumentNullException(nameof(code));
 
+            _code = code;
             _stream = new CArrayStream(0);
             _input = new CodedInputStream(_stream, true);
             _output = new CodedOutputStream(_stream, true);
-            _code = code;
         }
 
         public ArraySegment<byte> Fill(ITcpClientPkgHead pkgHead, int gPkgSize, object pkg, ITcpClientCache cache)
         {
             if (pkgHead == null)
-                throw new ArgumentNullException("pkgHead");
+                throw new ArgumentNullException(nameof(pkgHead));
             if (pkgHead.PkgHeadSize == 0)
-                throw new ArgumentOutOfRangeException("pkgHead");
+                throw new ArgumentOutOfRangeException(nameof(pkgHead));
             if (gPkgSize == 0)
-                throw new ArgumentOutOfRangeException("gPkgSize");
+                throw new ArgumentOutOfRangeException(nameof(gPkgSize));
             if (pkg == null)
-                throw new ArgumentNullException("pkg");
+                throw new ArgumentNullException(nameof(pkg));
             if (!(pkg is IMessage))
-                throw new ArgumentOutOfRangeException("pkg");
-            var o = (IMessage)pkg;
+                throw new ArgumentOutOfRangeException(nameof(pkg));
+            var seg = (IMessage)pkg;
             if (cache == null)
-                throw new ArgumentNullException("cache");
+                throw new ArgumentNullException(nameof(cache));
 
-            var pbSize = o.CalculateSize();
+            var pbSize = seg.CalculateSize();
             var pkgSize = pkgHead.PkgHeadSize + gPkgCodeSize + pbSize;
             var pkgSeg = cache.AllocSendBuf(pkgSize);
             {
@@ -289,7 +287,7 @@ namespace Nirge.Core
                 pkgSeg[pkgHead.PkgHeadSize + 3] = codeSeg[3];
             }
             _stream.SetBuf(pkgSeg, pkgHead.PkgHeadSize + gPkgCodeSize, pbSize);
-            o.WriteTo(_output);
+            seg.WriteTo(_output);
             _output.Flush();
             pkgHead.SendPkgSize = gPkgCodeSize + pbSize;
             pkgHead.SendPkgType = (int)eTcpClientPkgType.Protobuf;
@@ -299,13 +297,13 @@ namespace Nirge.Core
         public object UnFill(ArraySegment<byte> pkgSeg, ITcpClientCache cache)
         {
             if (pkgSeg == null)
-                throw new ArgumentNullException("pkgSeg");
+                throw new ArgumentNullException(nameof(pkgSeg));
             if (pkgSeg.Count == 0)
-                throw new ArgumentOutOfRangeException("pkgSeg");
+                throw new ArgumentOutOfRangeException(nameof(pkgSeg));
             if (pkgSeg.Count < gPkgCodeSize)
-                throw new ArgumentOutOfRangeException("pkgSeg");
+                throw new ArgumentOutOfRangeException(nameof(pkgSeg));
             if (cache == null)
-                throw new ArgumentNullException("cache");
+                throw new ArgumentNullException(nameof(cache));
 
             var pkgCode = BitConverter.ToUInt32(pkgSeg.Array, pkgSeg.Offset);
             var pkgParser = _code.GetParser(pkgCode);
@@ -330,11 +328,11 @@ namespace Nirge.Core
         public void Register(Type pkgType, int ePkgType, ITcpClientPkg pkg)
         {
             if (pkgType == null)
-                throw new ArgumentNullException("pkgType");
+                throw new ArgumentNullException(nameof(pkgType));
             if (ePkgType == 0)
-                throw new ArgumentOutOfRangeException("ePkgType");
+                throw new ArgumentOutOfRangeException(nameof(ePkgType));
             if (pkg == null)
-                throw new ArgumentNullException("pkg");
+                throw new ArgumentNullException(nameof(pkg));
 
             _pkgs.Add(Tuple.Create(pkgType, ePkgType, pkg));
         }
@@ -342,15 +340,15 @@ namespace Nirge.Core
         public ArraySegment<byte> Fill(ITcpClientPkgHead pkgHead, int gPkgSize, object pkg, ITcpClientCache cache)
         {
             if (pkgHead == null)
-                throw new ArgumentNullException("pkgHead");
+                throw new ArgumentNullException(nameof(pkgHead));
             if (pkgHead.PkgHeadSize == 0)
-                throw new ArgumentOutOfRangeException("pkgHead");
+                throw new ArgumentOutOfRangeException(nameof(pkgHead));
             if (gPkgSize == 0)
-                throw new ArgumentOutOfRangeException("gPkgSize");
+                throw new ArgumentOutOfRangeException(nameof(gPkgSize));
             if (pkg == null)
-                throw new ArgumentNullException("pkg");
+                throw new ArgumentNullException(nameof(pkg));
             if (cache == null)
-                throw new ArgumentNullException("cache");
+                throw new ArgumentNullException(nameof(cache));
 
             var pkgType = pkg.GetType();
             foreach (var i in _pkgs)
@@ -361,19 +359,19 @@ namespace Nirge.Core
                     return i.Item3.Fill(pkgHead, gPkgSize, pkg, cache);
             }
 
-            throw new ArgumentOutOfRangeException("pkg");
+            throw new ArgumentOutOfRangeException(nameof(pkg));
         }
 
         public object UnFill(int pkgType, ArraySegment<byte> pkgSeg, ITcpClientCache cache)
         {
             if (pkgType == 0)
-                throw new ArgumentOutOfRangeException("pkgType");
+                throw new ArgumentOutOfRangeException(nameof(pkgType));
             if (pkgSeg == null)
-                throw new ArgumentNullException("pkgSeg");
+                throw new ArgumentNullException(nameof(pkgSeg));
             if (pkgSeg.Count == 0)
-                throw new ArgumentOutOfRangeException("pkgSeg");
+                throw new ArgumentOutOfRangeException(nameof(pkgSeg));
             if (cache == null)
-                throw new ArgumentNullException("cache");
+                throw new ArgumentNullException(nameof(cache));
 
             foreach (var i in _pkgs)
             {
@@ -381,7 +379,7 @@ namespace Nirge.Core
                     return i.Item3.UnFill(pkgSeg, cache);
             }
 
-            throw new ArgumentOutOfRangeException("pkg");
+            throw new ArgumentOutOfRangeException(nameof(pkgType));
         }
     }
 

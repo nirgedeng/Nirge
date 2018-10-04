@@ -290,13 +290,13 @@ namespace Nirge.Core
         public void Alloc(CTcpClientArgs args, ILog log, ITcpClientCache cache, CTcpClientPkgFill fill)
         {
             if (args == null)
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             if (log == null)
-                throw new ArgumentNullException("log");
+                throw new ArgumentNullException(nameof(log));
             if (cache == null)
-                throw new ArgumentNullException("cache");
+                throw new ArgumentNullException(nameof(cache));
             if (fill == null)
-                throw new ArgumentNullException("fill");
+                throw new ArgumentNullException(nameof(fill));
 
             _args = args;
             _log = log;
@@ -444,7 +444,7 @@ namespace Nirge.Core
         public void Connect(IPEndPoint endPoint)
         {
             if (endPoint == null)
-                throw new ArgumentNullException("endPoint");
+                throw new ArgumentNullException(nameof(endPoint));
 
             switch (_state)
             {
@@ -464,7 +464,7 @@ namespace Nirge.Core
         public void Connect(TcpClient cli)
         {
             if (cli == null)
-                throw new ArgumentNullException("cli");
+                throw new ArgumentNullException(nameof(cli));
 
             switch (_state)
             {
@@ -588,7 +588,7 @@ namespace Nirge.Core
         public void Send(object pkg)
         {
             if (pkg == null)
-                throw new ArgumentNullException("pkg");
+                throw new ArgumentNullException(nameof(pkg));
 
             switch (_state)
             {

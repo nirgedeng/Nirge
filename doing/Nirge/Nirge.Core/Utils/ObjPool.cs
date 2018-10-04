@@ -82,8 +82,7 @@ namespace Nirge.Core
 
             public static T Alloc()
             {
-                T obj;
-                if (_objs.TryPop(out obj))
+                if (_objs.TryPop(out var obj))
                     return obj;
                 else
                     return default(T);
