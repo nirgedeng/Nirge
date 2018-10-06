@@ -144,16 +144,16 @@ namespace cli
                     i.Exec();
                     switch (i.State)
                     {
-                    case eTcpClientState.Connected:
-                        try
-                        {
-                            i.Send(pKG.GetPkg());
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
-                        }
-                        break;
+                        case eTcpClientState.Connected:
+                            try
+                            {
+                                i.Send(pKG.GetPkg());
+                            }
+                            catch (Exception exception)
+                            {
+                                Console.WriteLine(exception);
+                            }
+                            break;
                     }
                 }
 

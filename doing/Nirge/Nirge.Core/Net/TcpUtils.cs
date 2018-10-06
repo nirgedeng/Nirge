@@ -4,9 +4,21 @@
 ------------------------------------------------------------------*/
 
 using System;
+using System.Net.Sockets;
 
 namespace Nirge.Core
 {
+    public static class CTcpUtils
+    {
+        public static System.Net.Sockets.SocketError SocketError(this Exception exception)
+        {
+            if (exception is SocketException e)
+                return e.SocketErrorCode;
+            else
+                return System.Net.Sockets.SocketError.Success;
+        }
+    }
+
     public class CNetException : Exception
     {
         public CNetException()
@@ -20,7 +32,7 @@ namespace Nirge.Core
             base(message)
         {
         }
-        
+
         public CNetException(string message, Exception innerException)
             :
             base(message, innerException)
@@ -34,17 +46,17 @@ namespace Nirge.Core
         {
             get;
         }
-        
+
         int SendCacheSizeAlloc
         {
             get;
         }
-        
+
         int RecvCacheSize
         {
             get;
         }
-        
+
         int RecvCacheSizeAlloc
         {
             get;
@@ -78,36 +90,36 @@ namespace Nirge.Core
         {
             get;
         }
-        
+
         int SendPkgType
         {
             get;
             set;
         }
-        
+
         int SendPkgSize
         {
             get;
             set;
         }
-        
+
         byte[] RecvPkgHeadBuf
         {
             get;
         }
-        
+
         int RecvPkgType
         {
             get;
             set;
         }
-        
+
         int RecvPkgSize
         {
             get;
             set;
         }
-        
+
         void Clear();
         void Fill(byte[] buf);
         void UnFill();

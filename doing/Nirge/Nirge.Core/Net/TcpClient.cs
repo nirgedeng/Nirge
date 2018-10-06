@@ -623,7 +623,7 @@ namespace Nirge.Core
                             lock (_closeTag)
                             {
                                 if (_closeTag.Reason == eTcpClientCloseReason.None)
-                                    _closeTag.Set(eTcpClientCloseReason.Exception, exception, SocketError.Success);
+                                    _closeTag.Set(eTcpClientCloseReason.Exception, exception, exception.SocketError());
                             }
                         }
 
@@ -665,7 +665,7 @@ namespace Nirge.Core
                     lock (_closeTag)
                     {
                         if (_closeTag.Reason == eTcpClientCloseReason.None)
-                            _closeTag.Set(eTcpClientCloseReason.Exception, exception, SocketError.Success);
+                            _closeTag.Set(eTcpClientCloseReason.Exception, exception, exception.SocketError());
                     }
                 }
 
@@ -692,7 +692,7 @@ namespace Nirge.Core
                 lock (_closeTag)
                 {
                     if (_closeTag.Reason == eTcpClientCloseReason.None)
-                        _closeTag.Set(eTcpClientCloseReason.Exception, exception, SocketError.Success);
+                        _closeTag.Set(eTcpClientCloseReason.Exception, exception, exception.SocketError());
                 }
             }
 
@@ -793,7 +793,7 @@ namespace Nirge.Core
                 lock (_closeTag)
                 {
                     if (_closeTag.Reason == eTcpClientCloseReason.None)
-                        _closeTag.Set(eTcpClientCloseReason.Exception, exception, SocketError.Success);
+                        _closeTag.Set(eTcpClientCloseReason.Exception, exception, exception.SocketError());
                 }
             }
 
@@ -839,7 +839,7 @@ namespace Nirge.Core
                                     lock (_closeTag)
                                     {
                                         if (_closeTag.Reason == eTcpClientCloseReason.None)
-                                            _closeTag.Set(eTcpClientCloseReason.Exception, exception, SocketError.Success);
+                                            _closeTag.Set(eTcpClientCloseReason.Exception, exception, exception.SocketError());
                                     }
 
                                     _recving = false;
