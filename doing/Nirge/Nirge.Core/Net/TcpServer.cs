@@ -77,6 +77,7 @@ namespace Nirge.Core
             _pkgSize = pkgSize;
             _sendCacheSize = sendCacheSize;
             _recvCacheSize = recvCacheSize;
+            _capacity = capacity;
 
             if (_sendBufSize < 8192)
                 _sendBufSize = 8192;
