@@ -332,36 +332,36 @@ namespace Nirge.Core
         {
             switch (_state)
             {
-            case eTcpClientState.Closed:
-                _args = null;
-                _log = null;
-                _cache = null;
-                _fill = null;
+                case eTcpClientState.Closed:
+                    _args = null;
+                    _log = null;
+                    _cache = null;
+                    _fill = null;
 
-                _connectTag = null;
-                _closeTag = null;
+                    _connectTag = null;
+                    _closeTag = null;
 
-                _cli = null;
-                _head = null;
+                    _cli = null;
+                    _head = null;
 
-                _sendArgs.Dispose();
-                _sendArgs = null;
-                _sends = null;
-                _sendsPost = null;
+                    _sendArgs.Dispose();
+                    _sendArgs = null;
+                    _sends = null;
+                    _sendsPost = null;
 
-                _recv = null;
-                _recvArgs.Dispose();
-                _recvArgs = null;
-                _recvSeg = null;
-                _recvsPre = null;
-                _recvs = null;
-                _recvsPost = null;
-                break;
-            case eTcpClientState.Connecting:
-            case eTcpClientState.Connected:
-            case eTcpClientState.Closing:
-            case eTcpClientState.ClosingWait:
-                break;
+                    _recv = null;
+                    _recvArgs.Dispose();
+                    _recvArgs = null;
+                    _recvSeg = null;
+                    _recvsPre = null;
+                    _recvs = null;
+                    _recvsPost = null;
+                    break;
+                case eTcpClientState.Connecting:
+                case eTcpClientState.Connected:
+                case eTcpClientState.Closing:
+                case eTcpClientState.ClosingWait:
+                    break;
             }
         }
 
@@ -448,16 +448,16 @@ namespace Nirge.Core
 
             switch (_state)
             {
-            case eTcpClientState.Closed:
-                _state = eTcpClientState.Connecting;
-                ConnectAsync(endPoint);
-                break;
-            case eTcpClientState.Connecting:
-            case eTcpClientState.Connected:
-            case eTcpClientState.Closing:
-            case eTcpClientState.ClosingWait:
-            default:
-                throw new CNetException($"NET cli tcp state {_state} expected {eTcpClientState.Closed}");
+                case eTcpClientState.Closed:
+                    _state = eTcpClientState.Connecting;
+                    ConnectAsync(endPoint);
+                    break;
+                case eTcpClientState.Connecting:
+                case eTcpClientState.Connected:
+                case eTcpClientState.Closing:
+                case eTcpClientState.ClosingWait:
+                default:
+                    throw new CNetException($"NET cli tcp state {_state} expected {eTcpClientState.Closed}");
             }
         }
 
@@ -468,35 +468,35 @@ namespace Nirge.Core
 
             switch (_state)
             {
-            case eTcpClientState.Closed:
-                _state = eTcpClientState.Connecting;
-                _cli = cli;
-                Connect();
-                _state = eTcpClientState.Connected;
+                case eTcpClientState.Closed:
+                    _state = eTcpClientState.Connecting;
+                    _cli = cli;
+                    Connect();
+                    _state = eTcpClientState.Connected;
 
-                var e = new CTcpClientConnectArgs(eTcpClientConnectResult.Success, null, SocketError.Success);
+                    var e = new CTcpClientConnectArgs(eTcpClientConnectResult.Success, null, SocketError.Success);
 
-                try
-                {
-                    OnConnected(e);
-                }
-                catch (Exception exception)
-                {
-                    _log.WriteLine(eLogPattern.Error, $"NET cli OnConnected exception addr {_cli.Client.LocalEndPoint} {_cli.Client.RemoteEndPoint}", exception);
-                }
+                    try
+                    {
+                        OnConnected(e);
+                    }
+                    catch (Exception exception)
+                    {
+                        _log.WriteLine(eLogPattern.Error, $"NET cli OnConnected exception addr {_cli.Client.LocalEndPoint} {_cli.Client.RemoteEndPoint}", exception);
+                    }
 
-                if (PreRecv())
-                {
-                    _recving = true;
-                    BeginRecv();
-                }
-                break;
-            case eTcpClientState.Connecting:
-            case eTcpClientState.Connected:
-            case eTcpClientState.Closing:
-            case eTcpClientState.ClosingWait:
-            default:
-                throw new CNetException($"NET cli tcp state {_state} expected {eTcpClientState.Closed}");
+                    if (PreRecv())
+                    {
+                        _recving = true;
+                        BeginRecv();
+                    }
+                    break;
+                case eTcpClientState.Connecting:
+                case eTcpClientState.Connected:
+                case eTcpClientState.Closing:
+                case eTcpClientState.ClosingWait:
+                default:
+                    throw new CNetException($"NET cli tcp state {_state} expected {eTcpClientState.Closed}");
             }
         }
 
@@ -527,15 +527,15 @@ namespace Nirge.Core
             {
                 switch (_state)
                 {
-                case eTcpClientState.Connecting:
-                    if (_connectTag.Result == eTcpClientConnectResult.None)
-                        _connectTag.Set(eTcpClientConnectResult.Success, null, SocketError.Success);
-                    break;
-                case eTcpClientState.Closed:
-                case eTcpClientState.Connected:
-                case eTcpClientState.Closing:
-                case eTcpClientState.ClosingWait:
-                    break;
+                    case eTcpClientState.Connecting:
+                        if (_connectTag.Result == eTcpClientConnectResult.None)
+                            _connectTag.Set(eTcpClientConnectResult.Success, null, SocketError.Success);
+                        break;
+                    case eTcpClientState.Closed:
+                    case eTcpClientState.Connected:
+                    case eTcpClientState.Closing:
+                    case eTcpClientState.ClosingWait:
+                        break;
                 }
             }
         }
@@ -544,27 +544,27 @@ namespace Nirge.Core
         {
             switch (_state)
             {
-            case eTcpClientState.Connecting:
-                eClose();
-                break;
-            case eTcpClientState.Connected:
-                _state = eTcpClientState.Closing;
-                if (!graceful)
-                {
-                    if (_sends.Count > 0)
+                case eTcpClientState.Connecting:
+                    eClose();
+                    break;
+                case eTcpClientState.Connected:
+                    _state = eTcpClientState.Closing;
+                    if (!graceful)
                     {
-                        lock (_sends)
+                        if (_sends.Count > 0)
                         {
-                            _sends.Clear();
-                            _sendCacheSize = 0;
+                            lock (_sends)
+                            {
+                                _sends.Clear();
+                                _sendCacheSize = 0;
+                            }
                         }
                     }
-                }
-                break;
-            case eTcpClientState.Closed:
-            case eTcpClientState.Closing:
-            case eTcpClientState.ClosingWait:
-                break;
+                    break;
+                case eTcpClientState.Closed:
+                case eTcpClientState.Closing:
+                case eTcpClientState.ClosingWait:
+                    break;
             }
         }
 
@@ -590,56 +590,56 @@ namespace Nirge.Core
 
             switch (_state)
             {
-            case eTcpClientState.Connected:
-                if (_sendCacheSize > _args.SendCacheSize)
-                    throw new CNetException($"NET cli send cache full {_sendCacheSize} overflow {_args.SendCacheSize}");
+                case eTcpClientState.Connected:
+                    if (_sendCacheSize > _args.SendCacheSize)
+                        throw new CNetException($"NET cli send cache full {_sendCacheSize} overflow {_args.SendCacheSize}");
 
-                if (!_cache.CanAllocSendBuf)
-                    throw new CNetException($"NET cli g send cache used up {_cache.SendCacheSizeAlloc} {_cache.SendCacheSize}");
+                    if (!_cache.CanAllocSendBuf)
+                        throw new CNetException($"NET cli g send cache used up {_cache.SendCacheSizeAlloc} {_cache.SendCacheSize}");
 
-                var i = _fill.Fill(_head, _args.PkgSize, pkg, _cache);
-                _head.Fill(i.Array);
+                    var i = _fill.Fill(_head, _args.PkgSize, pkg, _cache);
+                    _head.Fill(i.Array);
 
-                if (_sending)
-                {
-                    lock (_sends)
+                    if (_sending)
                     {
-                        _sendCacheSize += i.Count;
-                        _sends.Enqueue(i);
-                    }
-                }
-                else
-                {
-                    _sendsPost.Add(i);
-
-                    var pass = false;
-                    try
-                    {
-                        _sendArgs.BufferList = _sendsPost;
-                        pass = true;
-                    }
-                    catch (Exception exception)
-                    {
-                        lock (_closeTag)
+                        lock (_sends)
                         {
-                            if (_closeTag.Reason == eTcpClientCloseReason.None)
-                                _closeTag.Set(eTcpClientCloseReason.Exception, exception, SocketError.Success);
+                            _sendCacheSize += i.Count;
+                            _sends.Enqueue(i);
                         }
                     }
-
-                    if (pass)
+                    else
                     {
-                        _sending = true;
-                        BeginSend();
+                        _sendsPost.Add(i);
+
+                        var pass = false;
+                        try
+                        {
+                            _sendArgs.BufferList = _sendsPost;
+                            pass = true;
+                        }
+                        catch (Exception exception)
+                        {
+                            lock (_closeTag)
+                            {
+                                if (_closeTag.Reason == eTcpClientCloseReason.None)
+                                    _closeTag.Set(eTcpClientCloseReason.Exception, exception, SocketError.Success);
+                            }
+                        }
+
+                        if (pass)
+                        {
+                            _sending = true;
+                            BeginSend();
+                        }
                     }
-                }
-                break;
-            case eTcpClientState.Closed:
-            case eTcpClientState.Connecting:
-            case eTcpClientState.Closing:
-            case eTcpClientState.ClosingWait:
-            default:
-                throw new CNetException($"NET cli tcp state {_state} expected {eTcpClientState.Connected}");
+                    break;
+                case eTcpClientState.Closed:
+                case eTcpClientState.Connecting:
+                case eTcpClientState.Closing:
+                case eTcpClientState.ClosingWait:
+                default:
+                    throw new CNetException($"NET cli tcp state {_state} expected {eTcpClientState.Connected}");
             }
         }
 
@@ -706,53 +706,53 @@ namespace Nirge.Core
         {
             switch (_state)
             {
-            case eTcpClientState.Closed:
-            case eTcpClientState.Connecting:
-                break;
-            case eTcpClientState.Connected:
-            case eTcpClientState.Closing:
-            case eTcpClientState.ClosingWait:
-                if (_sendArgs.BufferList != null)
-                {
-                    foreach (var i in _sendArgs.BufferList)
+                case eTcpClientState.Closed:
+                case eTcpClientState.Connecting:
+                    break;
+                case eTcpClientState.Connected:
+                case eTcpClientState.Closing:
+                case eTcpClientState.ClosingWait:
+                    if (_sendArgs.BufferList != null)
                     {
-                        _sendBlockSize += (ulong)i.Count;
-                        _cache.CollectSendBuf(i.Array);
+                        foreach (var i in _sendArgs.BufferList)
+                        {
+                            _sendBlockSize += (ulong)i.Count;
+                            _cache.CollectSendBuf(i.Array);
+                        }
+                        _sendArgs.BufferList.Clear();
+                        _sendArgs.BufferList = null;
                     }
-                    _sendArgs.BufferList.Clear();
-                    _sendArgs.BufferList = null;
-                }
-                break;
+                    break;
             }
 
             switch (_state)
             {
-            case eTcpClientState.Connected:
-            case eTcpClientState.Closing:
-                switch (e.SocketError)
-                {
-                case SocketError.Success:
-                    if (_sends.Count > 0)
-                        Send();
-                    else
-                        _sending = false;
-                    break;
-                default:
-                    lock (_closeTag)
+                case eTcpClientState.Connected:
+                case eTcpClientState.Closing:
+                    switch (e.SocketError)
                     {
-                        if (_closeTag.Reason == eTcpClientCloseReason.None)
-                            _closeTag.Set(eTcpClientCloseReason.Exception, null, e.SocketError);
-                    }
+                        case SocketError.Success:
+                            if (_sends.Count > 0)
+                                Send();
+                            else
+                                _sending = false;
+                            break;
+                        default:
+                            lock (_closeTag)
+                            {
+                                if (_closeTag.Reason == eTcpClientCloseReason.None)
+                                    _closeTag.Set(eTcpClientCloseReason.Exception, null, e.SocketError);
+                            }
 
+                            _sending = false;
+                            break;
+                    }
+                    break;
+                case eTcpClientState.Closed:
+                case eTcpClientState.Connecting:
+                case eTcpClientState.ClosingWait:
                     _sending = false;
                     break;
-                }
-                break;
-            case eTcpClientState.Closed:
-            case eTcpClientState.Connecting:
-            case eTcpClientState.ClosingWait:
-                _sending = false;
-                break;
             }
         }
 
@@ -807,92 +807,92 @@ namespace Nirge.Core
         {
             switch (_state)
             {
-            case eTcpClientState.Connected:
-                switch (e.SocketError)
-                {
-                case SocketError.Success:
-                    if (e.BytesTransferred > 0)
+                case eTcpClientState.Connected:
+                    switch (e.SocketError)
                     {
-                        try
-                        {
-                            _recvSeg.Write(_recv, 0, e.BytesTransferred);
-
-                            for (; _recvSeg.UsedSize > _head.PkgHeadSize;)
+                        case SocketError.Success:
+                            if (e.BytesTransferred > 0)
                             {
-                                _recvSeg.Peek(_head.RecvPkgHeadBuf, 0, _head.PkgHeadSize);
-                                _head.UnFill();
+                                try
+                                {
+                                    _recvSeg.Write(_recv, 0, e.BytesTransferred);
 
-                                if (_head.RecvPkgSize > _args.PkgSize)
-                                    throw new CNetException($"NET cli rev pkg size {_head.RecvPkgSize} overflow {_args.PkgSize}");
-                                if (_recvSeg.UsedSize < (_head.PkgHeadSize + _head.RecvPkgSize))
+                                    for (; _recvSeg.UsedSize > _head.PkgHeadSize;)
+                                    {
+                                        _recvSeg.Peek(_head.RecvPkgHeadBuf, 0, _head.PkgHeadSize);
+                                        _head.UnFill();
+
+                                        if (_head.RecvPkgSize > _args.PkgSize)
+                                            throw new CNetException($"NET cli rev pkg size {_head.RecvPkgSize} overflow {_args.PkgSize}");
+                                        if (_recvSeg.UsedSize < (_head.PkgHeadSize + _head.RecvPkgSize))
+                                            break;
+
+                                        _recvSeg.Skip(_head.PkgHeadSize);
+                                        var pkg = _cache.AllocRecvBuf(_head.RecvPkgSize);
+                                        _recvSeg.Read(pkg, 0, _head.RecvPkgSize);
+
+                                        _recvsPre.Enqueue(ValueTuple.Create(_head.RecvPkgType, new ArraySegment<byte>(pkg, 0, _head.RecvPkgSize)));
+                                    }
+                                }
+                                catch (Exception exception)
+                                {
+                                    lock (_closeTag)
+                                    {
+                                        if (_closeTag.Reason == eTcpClientCloseReason.None)
+                                            _closeTag.Set(eTcpClientCloseReason.Exception, exception, SocketError.Success);
+                                    }
+
+                                    _recving = false;
                                     break;
+                                }
 
-                                _recvSeg.Skip(_head.PkgHeadSize);
-                                var pkg = _cache.AllocRecvBuf(_head.RecvPkgSize);
-                                _recvSeg.Read(pkg, 0, _head.RecvPkgSize);
+                                if (_recvsPre.Count > 0)
+                                {
+                                    lock (_recvs)
+                                    {
+                                        while (_recvsPre.Count > 0)
+                                        {
+                                            var pkg = _recvsPre.Dequeue();
+                                            _recvCacheSize += pkg.Item2.Count;
+                                            _recvBlockSize += (ulong)pkg.Item2.Count;
+                                            _recvs.Enqueue(pkg);
+                                        }
+                                    }
+                                }
 
-                                _recvsPre.Enqueue(ValueTuple.Create(_head.RecvPkgType, new ArraySegment<byte>(pkg, 0, _head.RecvPkgSize)));
+                                if (PreRecv())
+                                    BeginRecv();
+                                else
+                                    _recving = false;
                             }
-                        }
-                        catch (Exception exception)
-                        {
+                            else
+                            {
+                                lock (_closeTag)
+                                {
+                                    if (_closeTag.Reason == eTcpClientCloseReason.None)
+                                        _closeTag.Set(eTcpClientCloseReason.Unactive, null, SocketError.Success);
+                                }
+
+                                _recving = false;
+                            }
+                            break;
+                        default:
                             lock (_closeTag)
                             {
                                 if (_closeTag.Reason == eTcpClientCloseReason.None)
-                                    _closeTag.Set(eTcpClientCloseReason.Exception, exception, SocketError.Success);
+                                    _closeTag.Set(eTcpClientCloseReason.Exception, null, e.SocketError);
                             }
 
                             _recving = false;
                             break;
-                        }
-
-                        if (_recvsPre.Count > 0)
-                        {
-                            lock (_recvs)
-                            {
-                                while (_recvsPre.Count > 0)
-                                {
-                                    var pkg = _recvsPre.Dequeue();
-                                    _recvCacheSize += pkg.Item2.Count;
-                                    _recvBlockSize += (ulong)pkg.Item2.Count;
-                                    _recvs.Enqueue(pkg);
-                                }
-                            }
-                        }
-
-                        if (PreRecv())
-                            BeginRecv();
-                        else
-                            _recving = false;
-                    }
-                    else
-                    {
-                        lock (_closeTag)
-                        {
-                            if (_closeTag.Reason == eTcpClientCloseReason.None)
-                                _closeTag.Set(eTcpClientCloseReason.Unactive, null, SocketError.Success);
-                        }
-
-                        _recving = false;
                     }
                     break;
-                default:
-                    lock (_closeTag)
-                    {
-                        if (_closeTag.Reason == eTcpClientCloseReason.None)
-                            _closeTag.Set(eTcpClientCloseReason.Exception, null, e.SocketError);
-                    }
-
+                case eTcpClientState.Closed:
+                case eTcpClientState.Connecting:
+                case eTcpClientState.Closing:
+                case eTcpClientState.ClosingWait:
                     _recving = false;
                     break;
-                }
-                break;
-            case eTcpClientState.Closed:
-            case eTcpClientState.Connecting:
-            case eTcpClientState.Closing:
-            case eTcpClientState.ClosingWait:
-                _recving = false;
-                break;
             }
         }
 
@@ -904,173 +904,172 @@ namespace Nirge.Core
         {
             switch (_state)
             {
-            case eTcpClientState.Closed:
-                break;
-            case eTcpClientState.Connecting:
-                switch (_connectTag.Result)
-                {
-                case eTcpClientConnectResult.Fail:
-                    eClose();
-
-                    var e = new CTcpClientConnectArgs(_connectTag.Result, _connectTag.Exception, _connectTag.SocketError);
-
-                    _connectTag.Set(eTcpClientConnectResult.None, null, SocketError.Success);
-                    _state = eTcpClientState.Closed;
-
-                    try
-                    {
-                        OnConnected(e);
-                    }
-                    catch (Exception exception)
-                    {
-                        _log.WriteLine(eLogPattern.Error, $"NET cli OnConnected exception connectArgs {e.Result} {e.SocketError}", exception);
-                    }
+                case eTcpClientState.Closed:
                     break;
-                case eTcpClientConnectResult.Success:
-                    Connect();
-                    _state = eTcpClientState.Connected;
-                    
-                    try
+                case eTcpClientState.Connecting:
+                    switch (_connectTag.Result)
                     {
-                        OnConnected(_connectTag);
-                    }
-                    catch (Exception exception)
-                    {
-                        _log.WriteLine(eLogPattern.Error, $"NET cli OnConnected exception addr {_cli.Client.LocalEndPoint} {_cli.Client.RemoteEndPoint}", exception);
-                    }
+                        case eTcpClientConnectResult.Fail:
+                            eClose();
 
-                    _connectTag.Set(eTcpClientConnectResult.None, null, SocketError.Success);
+                            var e = new CTcpClientConnectArgs(_connectTag.Result, _connectTag.Exception, _connectTag.SocketError);
 
-                    if (PreRecv())
-                    {
-                        _recving = true;
-                        BeginRecv();
-                    }
-                    break;
-                }
-                break;
-            case eTcpClientState.Connected:
-                switch (_closeTag.Reason)
-                {
-                case eTcpClientCloseReason.None:
-                    if (!_sending)
-                    {
-                        if (_sends.Count > 0)
-                        {
-                            _sending = true;
-                            Send();
-                        }
-                    }
+                            _connectTag.Set(eTcpClientConnectResult.None, null, SocketError.Success);
+                            _state = eTcpClientState.Closed;
 
-                    if (!_recving)
-                    {
-                        if (PreRecv())
-                        {
-                            _recving = true;
-                            BeginRecv();
-                        }
-                    }
-
-                    if (_recvs.Count > 0)
-                    {
-                        lock (_recvs)
-                        {
-                            while (_recvs.Count > 0)
-                                _recvsPost.Enqueue(_recvs.Dequeue());
-                            _recvCacheSize = 0;
-                        }
-                    }
-
-                    while (_recvsPost.Count > 0)
-                    {
-                        var i = _recvsPost.Dequeue();
-
-                        object pkg = null;
-                        try
-                        {
-                            pkg = _fill.UnFill(i.Item1, i.Item2, _cache);
-                        }
-                        catch (Exception exception)
-                        {
-                            _log.WriteLine(eLogPattern.Error, $"NET cli recv UnFill exception pkg {i.Item2.Count}", exception);
-                        }
-
-                        if (pkg != null)
-                        {
                             try
                             {
-                                if (Recved != null)
-                                    Recved(this, pkg);
+                                OnConnected(e);
                             }
                             catch (Exception exception)
                             {
-                                _log.WriteLine(eLogPattern.Error, $"NET cli Recved exception pkg {pkg}", exception);
+                                _log.WriteLine(eLogPattern.Error, $"NET cli OnConnected exception connectArgs {e.Result} {e.SocketError}", exception);
                             }
-                        }
+                            break;
+                        case eTcpClientConnectResult.Success:
+                            Connect();
+                            _state = eTcpClientState.Connected;
 
-                        _cache.CollectRecvBuf(i.Item2.Array);
+                            try
+                            {
+                                OnConnected(_connectTag);
+                            }
+                            catch (Exception exception)
+                            {
+                                _log.WriteLine(eLogPattern.Error, $"NET cli OnConnected exception addr {_cli.Client.LocalEndPoint} {_cli.Client.RemoteEndPoint}", exception);
+                            }
+
+                            _connectTag.Set(eTcpClientConnectResult.None, null, SocketError.Success);
+
+                            if (PreRecv())
+                            {
+                                _recving = true;
+                                BeginRecv();
+                            }
+                            break;
                     }
                     break;
-                case eTcpClientCloseReason.Active:
-                case eTcpClientCloseReason.Unactive:
-                case eTcpClientCloseReason.Exception:
-                case eTcpClientCloseReason.User:
-                    eClose();
-                    _state = eTcpClientState.ClosingWait;
-                    break;
-                }
-                break;
-            case eTcpClientState.Closing:
-                switch (_closeTag.Reason)
-                {
-                case eTcpClientCloseReason.None:
-                    if (!_sending)
+                case eTcpClientState.Connected:
+                    switch (_closeTag.Reason)
                     {
-                        if (_sends.Count > 0)
-                        {
-                            _sending = true;
-                            Send();
-                        }
-                        else
-                        {
-                            lock (_closeTag)
+                        case eTcpClientCloseReason.None:
+                            if (!_sending)
                             {
-                                if (_closeTag.Reason == eTcpClientCloseReason.None)
-                                    _closeTag.Set(eTcpClientCloseReason.Active, null, SocketError.Success);
+                                if (_sends.Count > 0)
+                                {
+                                    _sending = true;
+                                    Send();
+                                }
                             }
 
+                            if (!_recving)
+                            {
+                                if (PreRecv())
+                                {
+                                    _recving = true;
+                                    BeginRecv();
+                                }
+                            }
+
+                            if (_recvs.Count > 0)
+                            {
+                                lock (_recvs)
+                                {
+                                    while (_recvs.Count > 0)
+                                        _recvsPost.Enqueue(_recvs.Dequeue());
+                                    _recvCacheSize = 0;
+                                }
+                            }
+
+                            while (_recvsPost.Count > 0)
+                            {
+                                var i = _recvsPost.Dequeue();
+
+                                object pkg = null;
+                                try
+                                {
+                                    pkg = _fill.UnFill(i.Item1, i.Item2, _cache);
+                                }
+                                catch (Exception exception)
+                                {
+                                    _log.WriteLine(eLogPattern.Error, $"NET cli recv UnFill exception pkg {i.Item2.Count}", exception);
+                                }
+
+                                _cache.CollectRecvBuf(i.Item2.Array);
+
+                                if (pkg != null)
+                                {
+                                    try
+                                    {
+                                        Recved?.Invoke(this, pkg);
+                                    }
+                                    catch (Exception exception)
+                                    {
+                                        _log.WriteLine(eLogPattern.Error, $"NET cli Recved exception pkg {pkg}", exception);
+                                    }
+                                }
+                            }
+                            break;
+                        case eTcpClientCloseReason.Active:
+                        case eTcpClientCloseReason.Unactive:
+                        case eTcpClientCloseReason.Exception:
+                        case eTcpClientCloseReason.User:
                             eClose();
                             _state = eTcpClientState.ClosingWait;
-                        }
+                            break;
                     }
                     break;
-                case eTcpClientCloseReason.Active:
-                case eTcpClientCloseReason.Unactive:
-                case eTcpClientCloseReason.Exception:
-                case eTcpClientCloseReason.User:
-                    eClose();
-                    _state = eTcpClientState.ClosingWait;
-                    break;
-                }
-                break;
-            case eTcpClientState.ClosingWait:
-                if (!_sending)
-                    if (!_recving)
+                case eTcpClientState.Closing:
+                    switch (_closeTag.Reason)
                     {
-                        var e = new CTcpClientCloseArgs(_closeTag.Reason, _closeTag.Exception, _closeTag.SocketError);
-                        Clear();
-                        _state = eTcpClientState.Closed;
+                        case eTcpClientCloseReason.None:
+                            if (!_sending)
+                            {
+                                if (_sends.Count > 0)
+                                {
+                                    _sending = true;
+                                    Send();
+                                }
+                                else
+                                {
+                                    lock (_closeTag)
+                                    {
+                                        if (_closeTag.Reason == eTcpClientCloseReason.None)
+                                            _closeTag.Set(eTcpClientCloseReason.Active, null, SocketError.Success);
+                                    }
 
-                        try
-                        {
-                            OnClosed(e);
-                        }
-                        catch (Exception exception)
-                        {
-                            _log.WriteLine(eLogPattern.Error, $"NET cli OnClosed exception closeArgs {e.Reason} {e.SocketError}", exception);
-                        }
+                                    eClose();
+                                    _state = eTcpClientState.ClosingWait;
+                                }
+                            }
+                            break;
+                        case eTcpClientCloseReason.Active:
+                        case eTcpClientCloseReason.Unactive:
+                        case eTcpClientCloseReason.Exception:
+                        case eTcpClientCloseReason.User:
+                            eClose();
+                            _state = eTcpClientState.ClosingWait;
+                            break;
                     }
-                break;
+                    break;
+                case eTcpClientState.ClosingWait:
+                    if (!_sending)
+                        if (!_recving)
+                        {
+                            var e = new CTcpClientCloseArgs(_closeTag.Reason, _closeTag.Exception, _closeTag.SocketError);
+                            Clear();
+                            _state = eTcpClientState.Closed;
+
+                            try
+                            {
+                                OnClosed(e);
+                            }
+                            catch (Exception exception)
+                            {
+                                _log.WriteLine(eLogPattern.Error, $"NET cli OnClosed exception closeArgs {e.Reason} {e.SocketError}", exception);
+                            }
+                        }
+                    break;
             }
         }
 

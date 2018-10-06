@@ -285,25 +285,25 @@ namespace Nirge.Core
         {
             switch (_state)
             {
-            case eTcpServerState.Closed:
-                _args = null;
-                _log = null;
-                _cache.Clear();
-                _cache = null;
-                _fill = null;
+                case eTcpServerState.Closed:
+                    _args = null;
+                    _log = null;
+                    _cache.Clear();
+                    _cache = null;
+                    _fill = null;
 
-                _closeTag = null;
+                    _closeTag = null;
 
-                _clisPre = null;
-                _clisPost = null;
-                _clis = null;
-                _clisPool = null;
-                break;
-            case eTcpServerState.Opening:
-            case eTcpServerState.Opened:
-            case eTcpServerState.Closing:
-            case eTcpServerState.ClosingWait:
-                break;
+                    _clisPre = null;
+                    _clisPost = null;
+                    _clis = null;
+                    _clisPool = null;
+                    break;
+                case eTcpServerState.Opening:
+                case eTcpServerState.Opened:
+                case eTcpServerState.Closing:
+                case eTcpServerState.ClosingWait:
+                    break;
             }
         }
 
@@ -379,20 +379,20 @@ namespace Nirge.Core
 
             switch (_state)
             {
-            case eTcpServerState.Closed:
-                _state = eTcpServerState.Opening;
-                _lis = new TcpListener(endPoint);
-                _lis.Start();
-                _state = eTcpServerState.Opened;
-                _lising = true;
-                LisAsync();
-                break;
-            case eTcpServerState.Opening:
-            case eTcpServerState.Opened:
-            case eTcpServerState.Closing:
-            case eTcpServerState.ClosingWait:
-            default:
-                throw new CNetException($"NET ser tcp state {_state} expected {eTcpServerState.Closed}");
+                case eTcpServerState.Closed:
+                    _state = eTcpServerState.Opening;
+                    _lis = new TcpListener(endPoint);
+                    _lis.Start();
+                    _state = eTcpServerState.Opened;
+                    _lising = true;
+                    LisAsync();
+                    break;
+                case eTcpServerState.Opening:
+                case eTcpServerState.Opened:
+                case eTcpServerState.Closing:
+                case eTcpServerState.ClosingWait:
+                default:
+                    throw new CNetException($"NET ser tcp state {_state} expected {eTcpServerState.Closed}");
             }
         }
 
@@ -400,19 +400,19 @@ namespace Nirge.Core
         {
             switch (_state)
             {
-            case eTcpServerState.Opened:
-                _state = eTcpServerState.Closing;
-                lock (_closeTag)
-                {
-                    if (_closeTag.Reason == eTcpServerCloseReason.None)
-                        _closeTag.Set(eTcpServerCloseReason.Active, null, SocketError.Success);
-                }
-                break;
-            case eTcpServerState.Closed:
-            case eTcpServerState.Opening:
-            case eTcpServerState.Closing:
-            case eTcpServerState.ClosingWait:
-                break;
+                case eTcpServerState.Opened:
+                    _state = eTcpServerState.Closing;
+                    lock (_closeTag)
+                    {
+                        if (_closeTag.Reason == eTcpServerCloseReason.None)
+                            _closeTag.Set(eTcpServerCloseReason.Active, null, SocketError.Success);
+                    }
+                    break;
+                case eTcpServerState.Closed:
+                case eTcpServerState.Opening:
+                case eTcpServerState.Closing:
+                case eTcpServerState.ClosingWait:
+                    break;
             }
         }
 
@@ -442,15 +442,15 @@ namespace Nirge.Core
         {
             switch (_state)
             {
-            case eTcpServerState.Opened:
-                if (_clis.TryGetWithIndex(cli, out var e))
-                    e.Close(graceful: true);
-                break;
-            case eTcpServerState.Closed:
-            case eTcpServerState.Opening:
-            case eTcpServerState.Closing:
-            case eTcpServerState.ClosingWait:
-                break;
+                case eTcpServerState.Opened:
+                    if (_clis.TryGetWithIndex(cli, out var e))
+                        e.Close(graceful: true);
+                    break;
+                case eTcpServerState.Closed:
+                case eTcpServerState.Opening:
+                case eTcpServerState.Closing:
+                case eTcpServerState.ClosingWait:
+                    break;
             }
         }
 
@@ -478,21 +478,21 @@ namespace Nirge.Core
             {
                 switch (_state)
                 {
-                case eTcpServerState.Opened:
-                    lock (_clisPre)
-                    {
-                        _clisPre.Enqueue(cli);
-                    }
+                    case eTcpServerState.Opened:
+                        lock (_clisPre)
+                        {
+                            _clisPre.Enqueue(cli);
+                        }
 
-                    LisAsync();
-                    break;
-                case eTcpServerState.Closing:
-                case eTcpServerState.Closed:
-                case eTcpServerState.Opening:
-                case eTcpServerState.ClosingWait:
-                    eClose(cli);
-                    _lising = false;
-                    break;
+                        LisAsync();
+                        break;
+                    case eTcpServerState.Closing:
+                    case eTcpServerState.Closed:
+                    case eTcpServerState.Opening:
+                    case eTcpServerState.ClosingWait:
+                        eClose(cli);
+                        _lising = false;
+                        break;
                 }
             }
         }
@@ -508,18 +508,18 @@ namespace Nirge.Core
 
             switch (_state)
             {
-            case eTcpServerState.Opened:
-                if (_clis.TryGetWithIndex(cli, out var e))
-                    e.Send(pkg);
-                else
-                    throw new ArgumentOutOfRangeException(nameof(cli));
-                break;
-            case eTcpServerState.Closed:
-            case eTcpServerState.Opening:
-            case eTcpServerState.Closing:
-            case eTcpServerState.ClosingWait:
-            default:
-                throw new CNetException($"NET ser tcp state {_state} expected {eTcpServerState.Opened}");
+                case eTcpServerState.Opened:
+                    if (_clis.TryGetWithIndex(cli, out var e))
+                        e.Send(pkg);
+                    else
+                        throw new ArgumentOutOfRangeException(nameof(cli));
+                    break;
+                case eTcpServerState.Closed:
+                case eTcpServerState.Opening:
+                case eTcpServerState.Closing:
+                case eTcpServerState.ClosingWait:
+                default:
+                    throw new CNetException($"NET ser tcp state {_state} expected {eTcpServerState.Opened}");
             }
         }
 
@@ -537,151 +537,150 @@ namespace Nirge.Core
         {
             switch (_state)
             {
-            case eTcpServerState.Closed:
-            case eTcpServerState.Opening:
-                break;
-            case eTcpServerState.Opened:
-                switch (_closeTag.Reason)
-                {
-                case eTcpServerCloseReason.None:
-                    if (_clisPre.Count > 0)
+                case eTcpServerState.Closed:
+                case eTcpServerState.Opening:
+                    break;
+                case eTcpServerState.Opened:
+                    switch (_closeTag.Reason)
                     {
-                        lock (_clisPre)
+                        case eTcpServerCloseReason.None:
+                            if (_clisPre.Count > 0)
+                            {
+                                lock (_clisPre)
+                                {
+                                    while (_clisPre.Count > 0)
+                                        _clisPost.Enqueue(_clisPre.Dequeue());
+                                }
+                            }
+
+                            while (_clisPost.Count > 0)
+                            {
+                                if (_clis.IsFull)
+                                {
+                                    var cli = _clisPost.Dequeue();
+                                    eClose(cli);
+                                    _log.WriteLine(eLogPattern.Warn, $"NET ser IsFull clis {_clis.Count}");
+                                }
+                                else
+                                {
+                                    CTcpClient cli;
+                                    if (_clisPool.Count > 0)
+                                        cli = _clisPool.Dequeue();
+                                    else
+                                        cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.PkgSize, _args.SendCacheSize, _args.RecvCacheSize), _log, _cache, _fill);
+
+                                    var cliId = _clis.AddLast(cli);
+
+                                    EventHandler<CDataEventArgs<CTcpClientConnectArgs>> cbCliConnected = null;
+                                    EventHandler<CDataEventArgs<CTcpClientCloseArgs>> cbCliClosed = null;
+                                    Action<object, object> cbCliRecved = null;
+
+                                    cbCliConnected = (sender, e) =>
+                                    {
+                                        _log.WriteLine(eLogPattern.Info, $"NET ser cli {cliId} Connected");
+
+                                        try
+                                        {
+                                            OnCliConnected(cliId);
+                                        }
+                                        catch (Exception exception)
+                                        {
+                                            _log.WriteLine(eLogPattern.Error, $"NET ser cli {cliId} OnCliConnected exception", exception);
+                                        }
+                                    };
+                                    cbCliClosed = (sender, e) =>
+                                    {
+                                        cli.Connected -= cbCliConnected;
+                                        cli.Closed -= cbCliClosed;
+                                        cli.Recved -= cbCliRecved;
+
+                                        _clis.RemoveWithIndex(cliId);
+                                        _clisPool.Enqueue(cli);
+
+                                        _log.WriteLine(eLogPattern.Info, $"NET ser cli {cliId} Closed closeArgs {e.Arg1.Reason} {e.Arg1.SocketError}");
+
+                                        try
+                                        {
+                                            OnCliClosed(cliId, e.Arg1);
+                                        }
+                                        catch (Exception exception)
+                                        {
+                                            _log.WriteLine(eLogPattern.Error, $"NET ser cli {cliId} OnCliClosed exception closeArgs {e.Arg1.Reason} {e.Arg1.SocketError}", exception);
+                                        }
+                                    };
+                                    cbCliRecved = (sender, pkg) =>
+                                    {
+                                        try
+                                        {
+                                            CliRecved?.Invoke(this, cliId, pkg);
+                                        }
+                                        catch (Exception exception)
+                                        {
+                                            _log.WriteLine(eLogPattern.Error, $"NET ser cli {cliId} CliRecved exception", exception);
+                                        }
+                                    };
+
+                                    cli.Connected += cbCliConnected;
+                                    cli.Closed += cbCliClosed;
+                                    cli.Recved += cbCliRecved;
+
+                                    cli.Connect(_clisPost.Dequeue());
+                                }
+                            }
+
+                            foreach (var i in _clis)
+                                i.Exec();
+                            break;
+                        case eTcpServerCloseReason.Active:
+                        case eTcpServerCloseReason.Exception:
+                            eClose();
+                            foreach (var i in _clis)
+                                i.Close(graceful: false);
+                            _state = eTcpServerState.ClosingWait;
+                            break;
+                    }
+                    break;
+                case eTcpServerState.Closing:
+                    switch (_closeTag.Reason)
+                    {
+                        case eTcpServerCloseReason.None:
+                        case eTcpServerCloseReason.Active:
+                            eClose();
+                            foreach (var i in _clis)
+                                i.Close(graceful: true);
+                            _state = eTcpServerState.ClosingWait;
+                            break;
+                        case eTcpServerCloseReason.Exception:
+                            eClose();
+                            foreach (var i in _clis)
+                                i.Close(graceful: false);
+                            _state = eTcpServerState.ClosingWait;
+                            break;
+                    }
+                    break;
+                case eTcpServerState.ClosingWait:
+                    if (!_lising)
+                    {
+                        if (_clis.Count == 0)
                         {
-                            while (_clisPre.Count > 0)
-                                _clisPost.Enqueue(_clisPre.Dequeue());
+                            var e = new CTcpServerCloseArgs(_closeTag.Reason, _closeTag.Exception, _closeTag.SocketError);
+
+                            Clear();
+                            _state = eTcpServerState.Closed;
+
+                            _log.WriteLine(eLogPattern.Info, "NET ser Closed");
+
+                            try
+                            {
+                                OnClosed(e);
+                            }
+                            catch (Exception exception)
+                            {
+                                _log.WriteLine(eLogPattern.Error, $"NET ser OnClosed exception closeArgs {e.Reason} {e.SocketError}", exception);
+                            }
                         }
                     }
-
-                    while (_clisPost.Count > 0)
-                    {
-                        if (_clis.IsFull)
-                        {
-                            var cli = _clisPost.Dequeue();
-                            eClose(cli);
-                            _log.WriteLine(eLogPattern.Warn, $"NET ser IsFull clis {_clis.Count}");
-                        }
-                        else
-                        {
-                            CTcpClient cli;
-                            if (_clisPool.Count > 0)
-                                cli = _clisPool.Dequeue();
-                            else
-                                cli = new CTcpClient(new CTcpClientArgs(_args.SendBufSize, _args.RecvBufSize, _args.PkgSize, _args.SendCacheSize, _args.RecvCacheSize), _log, _cache, _fill);
-
-                            var cliId = _clis.AddLast(cli);
-
-                            EventHandler<CDataEventArgs<CTcpClientConnectArgs>> cbCliConnected = null;
-                            EventHandler<CDataEventArgs<CTcpClientCloseArgs>> cbCliClosed = null;
-                            Action<object, object> cbCliRecved = null;
-
-                            cbCliConnected = (sender, e) =>
-                            {
-                                _log.WriteLine(eLogPattern.Info, $"NET ser cli {cliId} Connected");
-
-                                try
-                                {
-                                    OnCliConnected(cliId);
-                                }
-                                catch (Exception exception)
-                                {
-                                    _log.WriteLine(eLogPattern.Error, $"NET ser cli {cliId} OnCliConnected exception", exception);
-                                }
-                            };
-                            cbCliClosed = (sender, e) =>
-                            {
-                                cli.Connected -= cbCliConnected;
-                                cli.Closed -= cbCliClosed;
-                                cli.Recved -= cbCliRecved;
-
-                                _clis.RemoveWithIndex(cliId);
-                                _clisPool.Enqueue(cli);
-
-                                _log.WriteLine(eLogPattern.Info, $"NET ser cli {cliId} Closed closeArgs {e.Arg1.Reason} {e.Arg1.SocketError}");
-
-                                try
-                                {
-                                    OnCliClosed(cliId, e.Arg1);
-                                }
-                                catch (Exception exception)
-                                {
-                                    _log.WriteLine(eLogPattern.Error, $"NET ser cli {cliId} OnCliClosed exception closeArgs {e.Arg1.Reason} {e.Arg1.SocketError}", exception);
-                                }
-                            };
-                            cbCliRecved = (sender, pkg) =>
-                            {
-                                try
-                                {
-                                    if (CliRecved != null)
-                                        CliRecved(this, cliId, pkg);
-                                }
-                                catch (Exception exception)
-                                {
-                                    _log.WriteLine(eLogPattern.Error, $"NET ser cli {cliId} CliRecved exception", exception);
-                                }
-                            };
-
-                            cli.Connected += cbCliConnected;
-                            cli.Closed += cbCliClosed;
-                            cli.Recved += cbCliRecved;
-
-                            cli.Connect(_clisPost.Dequeue());
-                        }
-                    }
-
-                    foreach (var i in _clis)
-                        i.Exec();
                     break;
-                case eTcpServerCloseReason.Active:
-                case eTcpServerCloseReason.Exception:
-                    eClose();
-                    foreach (var i in _clis)
-                        i.Close(graceful: false);
-                    _state = eTcpServerState.ClosingWait;
-                    break;
-                }
-                break;
-            case eTcpServerState.Closing:
-                switch (_closeTag.Reason)
-                {
-                case eTcpServerCloseReason.None:
-                case eTcpServerCloseReason.Active:
-                    eClose();
-                    foreach (var i in _clis)
-                        i.Close(graceful: true);
-                    _state = eTcpServerState.ClosingWait;
-                    break;
-                case eTcpServerCloseReason.Exception:
-                    eClose();
-                    foreach (var i in _clis)
-                        i.Close(graceful: false);
-                    _state = eTcpServerState.ClosingWait;
-                    break;
-                }
-                break;
-            case eTcpServerState.ClosingWait:
-                if (!_lising)
-                {
-                    if (_clis.Count == 0)
-                    {
-                        var e = new CTcpServerCloseArgs(_closeTag.Reason, _closeTag.Exception, _closeTag.SocketError);
-
-                        Clear();
-                        _state = eTcpServerState.Closed;
-
-                        _log.WriteLine(eLogPattern.Info, "NET ser Closed");
-
-                        try
-                        {
-                            OnClosed(e);
-                        }
-                        catch (Exception exception)
-                        {
-                            _log.WriteLine(eLogPattern.Error, $"NET ser OnClosed exception closeArgs {e.Reason} {e.SocketError}", exception);
-                        }
-                    }
-                }
-                break;
             }
         }
 
