@@ -13,6 +13,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Rpc\google\**" />
+    <EmbeddedResource Remove="Rpc\google\**" />
+    <None Remove="Rpc\google\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Rpc\protoc.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.6.1" />
     <PackageReference Include="log4net" Version="2.0.8" />
   </ItemGroup>

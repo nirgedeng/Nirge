@@ -13,7 +13,7 @@ using System.Reflection;
 
 namespace Nirge.Core
 {
-    //------------------------------------------------------------------
+    #region 
 
     public class CTcpClientPkgHead : ITcpClientPkgHead
     {
@@ -125,7 +125,9 @@ namespace Nirge.Core
         }
     }
 
-    //------------------------------------------------------------------
+    #endregion
+
+    #region 
 
     public class CTcpClientArraySegment : ITcpClientPkg
     {
@@ -319,7 +321,9 @@ namespace Nirge.Core
         }
     }
 
-    //------------------------------------------------------------------
+    #endregion
+
+    #region 
 
     public class CTcpClientPkgFill : ITcpClientPkgFill
     {
@@ -388,5 +392,5 @@ namespace Nirge.Core
         }
     }
 
-    //------------------------------------------------------------------
+    #endregion
 }

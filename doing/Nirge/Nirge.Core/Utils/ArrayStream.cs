@@ -144,6 +144,14 @@ namespace Nirge.Core
             }
         }
 
+        public ArraySegment<byte> Seg
+        {
+            get
+            {
+                return new ArraySegment<byte>(_buf, _l, Count);
+            }
+        }
+
         public byte[] ToArray()
         {
             var e = new byte[Count];
