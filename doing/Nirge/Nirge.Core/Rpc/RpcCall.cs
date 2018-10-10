@@ -170,6 +170,15 @@ namespace Nirge.Core
 
         public CRpcCallStub(ulong serial, ServiceDescriptor descriptor, int service, int call, DateTime time)
         {
+            if (descriptor == null)
+                throw new ArgumentNullException(nameof(descriptor));
+            if (service < 0)
+                throw new ArgumentOutOfRangeException(nameof(service));
+            if (call < 0)
+                throw new ArgumentOutOfRangeException(nameof(call));
+            if (time == null)
+                throw new ArgumentNullException(nameof(time));
+
             _serial = serial;
             _descriptor = descriptor;
             _service = service;
@@ -260,7 +269,7 @@ namespace Nirge.Core
             {
                 DelStub(i);
 
-                _log.WriteLine(eLogPattern.Info, $"RPC stub Break serial {i.Serial} service {i.Service} {i.Descriptor.FullName} call {i.Call} {i.Descriptor.GetCall(i.Call).Name} time {i.Time}");
+                _log.WriteLine(eLogPattern.Info, $"RPC stub Break serial {i.Serial} service {i.Service} {i.Descriptor.FullName} call {i.Call} {i.Descriptor.GetCall(i.Call)?.Name} time {i.Time}");
 
                 try
                 {
@@ -268,7 +277,7 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _log.WriteLine(eLogPattern.Error, $"RPC stub Break exception serial {i.Serial} service {i.Service} {i.Descriptor.FullName} call {i.Call} {i.Descriptor.GetCall(i.Call).Name} time {i.Time}", exception);
+                    _log.WriteLine(eLogPattern.Error, $"RPC stub Break exception serial {i.Serial} service {i.Service} {i.Descriptor.FullName} call {i.Call} {i.Descriptor.GetCall(i.Call)?.Name} time {i.Time}", exception);
                 }
             }
         }
@@ -282,7 +291,7 @@ namespace Nirge.Core
 
                 DelStub(i);
 
-                _log.WriteLine(eLogPattern.Warn, $"RPC stub timeout serial {i.Serial} service {i.Service} {i.Descriptor.FullName} call {i.Call} {i.Descriptor.GetCall(i.Call).Name} time {i.Time}");
+                _log.WriteLine(eLogPattern.Warn, $"RPC stub timeout serial {i.Serial} service {i.Service} {i.Descriptor.FullName} call {i.Call} {i.Descriptor.GetCall(i.Call)?.Name} time {i.Time}");
 
                 try
                 {
@@ -290,7 +299,7 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _log.WriteLine(eLogPattern.Error, $"RPC stub timeout exception serial {i.Serial} service {i.Service} {i.Descriptor.FullName} call {i.Call} {i.Descriptor.GetCall(i.Call).Name} time {i.Time}", exception);
+                    _log.WriteLine(eLogPattern.Error, $"RPC stub timeout exception serial {i.Serial} service {i.Service} {i.Descriptor.FullName} call {i.Call} {i.Descriptor.GetCall(i.Call)?.Name} time {i.Time}", exception);
                 }
             }
         }
@@ -314,7 +323,7 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                _log.WriteLine(eLogPattern.Error, $"RPC stub rsp exception serial {stub.Serial} service {stub.Service} {stub.Descriptor.FullName} call {stub.Call} {stub.Descriptor.GetCall(stub.Call).Name} time {stub.Time} ret {rsp.Ret.Length}", exception);
+                _log.WriteLine(eLogPattern.Error, $"RPC stub rsp exception serial {stub.Serial} service {stub.Service} {stub.Descriptor.FullName} call {stub.Call} {stub.Descriptor.GetCall(stub.Call)?.Name} time {stub.Time} ret {rsp.Ret.Length}", exception);
             }
         }
 
@@ -331,14 +340,14 @@ namespace Nirge.Core
 
             DelStub(stub);
 
-            _log.WriteLine(eLogPattern.Info, $"RPC stub exceptionRsp serial {stub.Serial} service {stub.Service} {stub.Descriptor.FullName} call {stub.Call} {stub.Descriptor.GetCall(stub.Call).Name} time {stub.Time} exception {rsp.Exception}");
+            _log.WriteLine(eLogPattern.Info, $"RPC stub exceptionRsp serial {stub.Serial} service {stub.Service} {stub.Descriptor.FullName} call {stub.Call} {stub.Descriptor.GetCall(stub.Call)?.Name} time {stub.Time} exception {rsp.Exception}");
 
             try
             {
             }
             catch (Exception exception)
             {
-                _log.WriteLine(eLogPattern.Error, $"RPC stub exceptionRsp exception serial {stub.Serial} service {stub.Service} {stub.Descriptor.FullName} call {stub.Call} {stub.Descriptor.GetCall(stub.Call).Name} time {stub.Time} exception {rsp.Exception}", exception);
+                _log.WriteLine(eLogPattern.Error, $"RPC stub exceptionRsp exception serial {stub.Serial} service {stub.Service} {stub.Descriptor.FullName} call {stub.Call} {stub.Descriptor.GetCall(stub.Call)?.Name} time {stub.Time} exception {rsp.Exception}", exception);
             }
         }
     }
