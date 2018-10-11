@@ -169,7 +169,6 @@ void TableStruct::InitDefaultsImpl() {
 
   ::google::protobuf::internal::InitProtobufDefaults();
   ::google::protobuf::protobuf_google_2fprotobuf_2fdescriptor_2eproto::InitDefaults();
-  ::Nirge::Core::protobuf_Proto_2eproto::InitDefaults();
   _RpcServiceOption_default_instance_.DefaultConstruct();
   _RpcServiceCallOption_default_instance_.DefaultConstruct();
   _RpcCallArgsEmpty_default_instance_.DefaultConstruct();
@@ -195,28 +194,27 @@ void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] = {
       "\n\016RpcProto.proto\022\nNirge.Core\032 google/pro"
-      "tobuf/descriptor.proto\032\013Proto.proto\"\037\n\020R"
-      "pcServiceOption\022\013\n\003Uid\030\001 \001(\005\"5\n\024RpcServi"
-      "ceCallOption\022\013\n\003Uid\030\001 \001(\005\022\020\n\010IsOneWay\030\002 "
-      "\001(\010\"\022\n\020RpcCallArgsEmpty\"I\n\nRpcCallReq\022\016\n"
-      "\006Serial\030\001 \001(\005\022\017\n\007Service\030\002 \001(\005\022\014\n\004Call\030\003"
-      " \001(\005\022\014\n\004Args\030\004 \001(\014\"H\n\nRpcCallRsp\022\016\n\006Seri"
-      "al\030\001 \001(\005\022\017\n\007Service\030\002 \001(\005\022\014\n\004Call\030\003 \001(\005\022"
-      "\013\n\003Ret\030\004 \001(\014\"W\n\023RpcCallExceptionRsp\022\016\n\006S"
-      "erial\030\001 \001(\005\022\017\n\007Service\030\002 \001(\005\022\014\n\004Call\030\003 \001"
-      "(\005\022\021\n\tException\030\004 \001(\005:S\n\nRpcService\022\037.go"
-      "ogle.protobuf.ServiceOptions\030\305\325\003 \001(\0132\034.N"
-      "irge.Core.RpcServiceOption:Z\n\016RpcService"
-      "Call\022\036.google.protobuf.MethodOptions\030\251\326\003"
-      " \001(\0132 .Nirge.Core.RpcServiceCallOptionB\r"
-      "\252\002\nNirge.Coreb\006proto3"
+      "tobuf/descriptor.proto\"\037\n\020RpcServiceOpti"
+      "on\022\013\n\003Uid\030\001 \001(\005\"5\n\024RpcServiceCallOption\022"
+      "\013\n\003Uid\030\001 \001(\005\022\020\n\010IsOneWay\030\002 \001(\010\"\022\n\020RpcCal"
+      "lArgsEmpty\"I\n\nRpcCallReq\022\016\n\006Serial\030\001 \001(\004"
+      "\022\017\n\007Service\030\002 \001(\005\022\014\n\004Call\030\003 \001(\005\022\014\n\004Args\030"
+      "\004 \001(\014\"H\n\nRpcCallRsp\022\016\n\006Serial\030\001 \001(\004\022\017\n\007S"
+      "ervice\030\002 \001(\005\022\014\n\004Call\030\003 \001(\005\022\013\n\003Ret\030\004 \001(\014\""
+      "W\n\023RpcCallExceptionRsp\022\016\n\006Serial\030\001 \001(\004\022\017"
+      "\n\007Service\030\002 \001(\005\022\014\n\004Call\030\003 \001(\005\022\021\n\tExcepti"
+      "on\030\004 \001(\005:S\n\nRpcService\022\037.google.protobuf"
+      ".ServiceOptions\030\305\325\003 \001(\0132\034.Nirge.Core.Rpc"
+      "ServiceOption:Z\n\016RpcServiceCall\022\036.google"
+      ".protobuf.MethodOptions\030\251\326\003 \001(\0132 .Nirge."
+      "Core.RpcServiceCallOptionB\r\252\002\nNirge.Core"
+      "b\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 621);
+      descriptor, 608);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "RpcProto.proto", &protobuf_RegisterTypes);
   ::google::protobuf::protobuf_google_2fprotobuf_2fdescriptor_2eproto::AddDescriptors();
-  ::Nirge::Core::protobuf_Proto_2eproto::AddDescriptors();
   ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 } // anonymous namespace
@@ -1026,13 +1024,13 @@ bool RpcCallReq::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // int32 Serial = 1;
+      // uint64 Serial = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &serial_)));
         } else {
           goto handle_unusual;
@@ -1107,9 +1105,9 @@ void RpcCallReq::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 Serial = 1;
+  // uint64 Serial = 1;
   if (this->serial() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->serial(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->serial(), output);
   }
 
   // int32 Service = 2;
@@ -1138,9 +1136,9 @@ void RpcCallReq::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 Serial = 1;
+  // uint64 Serial = 1;
   if (this->serial() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->serial(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(1, this->serial(), target);
   }
 
   // int32 Service = 2;
@@ -1175,10 +1173,10 @@ size_t RpcCallReq::ByteSizeLong() const {
         this->args());
   }
 
-  // int32 Serial = 1;
+  // uint64 Serial = 1;
   if (this->serial() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
         this->serial());
   }
 
@@ -1278,15 +1276,15 @@ void RpcCallReq::InternalSwap(RpcCallReq* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // RpcCallReq
 
-// int32 Serial = 1;
+// uint64 Serial = 1;
 void RpcCallReq::clear_serial() {
-  serial_ = 0;
+  serial_ = GOOGLE_ULONGLONG(0);
 }
-::google::protobuf::int32 RpcCallReq::serial() const {
+::google::protobuf::uint64 RpcCallReq::serial() const {
   // @@protoc_insertion_point(field_get:Nirge.Core.RpcCallReq.Serial)
   return serial_;
 }
-void RpcCallReq::set_serial(::google::protobuf::int32 value) {
+void RpcCallReq::set_serial(::google::protobuf::uint64 value) {
   
   serial_ = value;
   // @@protoc_insertion_point(field_set:Nirge.Core.RpcCallReq.Serial)
@@ -1465,13 +1463,13 @@ bool RpcCallRsp::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // int32 Serial = 1;
+      // uint64 Serial = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &serial_)));
         } else {
           goto handle_unusual;
@@ -1546,9 +1544,9 @@ void RpcCallRsp::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 Serial = 1;
+  // uint64 Serial = 1;
   if (this->serial() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->serial(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->serial(), output);
   }
 
   // int32 Service = 2;
@@ -1577,9 +1575,9 @@ void RpcCallRsp::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 Serial = 1;
+  // uint64 Serial = 1;
   if (this->serial() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->serial(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(1, this->serial(), target);
   }
 
   // int32 Service = 2;
@@ -1614,10 +1612,10 @@ size_t RpcCallRsp::ByteSizeLong() const {
         this->ret());
   }
 
-  // int32 Serial = 1;
+  // uint64 Serial = 1;
   if (this->serial() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
         this->serial());
   }
 
@@ -1717,15 +1715,15 @@ void RpcCallRsp::InternalSwap(RpcCallRsp* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // RpcCallRsp
 
-// int32 Serial = 1;
+// uint64 Serial = 1;
 void RpcCallRsp::clear_serial() {
-  serial_ = 0;
+  serial_ = GOOGLE_ULONGLONG(0);
 }
-::google::protobuf::int32 RpcCallRsp::serial() const {
+::google::protobuf::uint64 RpcCallRsp::serial() const {
   // @@protoc_insertion_point(field_get:Nirge.Core.RpcCallRsp.Serial)
   return serial_;
 }
-void RpcCallRsp::set_serial(::google::protobuf::int32 value) {
+void RpcCallRsp::set_serial(::google::protobuf::uint64 value) {
   
   serial_ = value;
   // @@protoc_insertion_point(field_set:Nirge.Core.RpcCallRsp.Serial)
@@ -1897,13 +1895,13 @@ bool RpcCallExceptionRsp::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // int32 Serial = 1;
+      // uint64 Serial = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &serial_)));
         } else {
           goto handle_unusual;
@@ -1980,9 +1978,9 @@ void RpcCallExceptionRsp::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 Serial = 1;
+  // uint64 Serial = 1;
   if (this->serial() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->serial(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->serial(), output);
   }
 
   // int32 Service = 2;
@@ -2010,9 +2008,9 @@ void RpcCallExceptionRsp::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 Serial = 1;
+  // uint64 Serial = 1;
   if (this->serial() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->serial(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(1, this->serial(), target);
   }
 
   // int32 Service = 2;
@@ -2038,10 +2036,10 @@ size_t RpcCallExceptionRsp::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:Nirge.Core.RpcCallExceptionRsp)
   size_t total_size = 0;
 
-  // int32 Serial = 1;
+  // uint64 Serial = 1;
   if (this->serial() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
         this->serial());
   }
 
@@ -2147,15 +2145,15 @@ void RpcCallExceptionRsp::InternalSwap(RpcCallExceptionRsp* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // RpcCallExceptionRsp
 
-// int32 Serial = 1;
+// uint64 Serial = 1;
 void RpcCallExceptionRsp::clear_serial() {
-  serial_ = 0;
+  serial_ = GOOGLE_ULONGLONG(0);
 }
-::google::protobuf::int32 RpcCallExceptionRsp::serial() const {
+::google::protobuf::uint64 RpcCallExceptionRsp::serial() const {
   // @@protoc_insertion_point(field_get:Nirge.Core.RpcCallExceptionRsp.Serial)
   return serial_;
 }
-void RpcCallExceptionRsp::set_serial(::google::protobuf::int32 value) {
+void RpcCallExceptionRsp::set_serial(::google::protobuf::uint64 value) {
   
   serial_ = value;
   // @@protoc_insertion_point(field_set:Nirge.Core.RpcCallExceptionRsp.Serial)

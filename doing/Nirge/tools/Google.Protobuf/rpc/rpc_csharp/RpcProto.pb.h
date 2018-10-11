@@ -30,7 +30,6 @@
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
 #include <google/protobuf/unknown_field_set.h>
 #include <google/protobuf/descriptor.pb.h>
-#include "Proto.pb.h"
 // @@protoc_insertion_point(includes)
 namespace Nirge {
 namespace Core {
@@ -392,11 +391,11 @@ class RpcCallReq : public ::google::protobuf::Message /* @@protoc_insertion_poin
   ::std::string* release_args();
   void set_allocated_args(::std::string* args);
 
-  // int32 Serial = 1;
+  // uint64 Serial = 1;
   void clear_serial();
   static const int kSerialFieldNumber = 1;
-  ::google::protobuf::int32 serial() const;
-  void set_serial(::google::protobuf::int32 value);
+  ::google::protobuf::uint64 serial() const;
+  void set_serial(::google::protobuf::uint64 value);
 
   // int32 Service = 2;
   void clear_service();
@@ -415,7 +414,7 @@ class RpcCallReq : public ::google::protobuf::Message /* @@protoc_insertion_poin
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr args_;
-  ::google::protobuf::int32 serial_;
+  ::google::protobuf::uint64 serial_;
   ::google::protobuf::int32 service_;
   ::google::protobuf::int32 call_;
   mutable int _cached_size_;
@@ -501,11 +500,11 @@ class RpcCallRsp : public ::google::protobuf::Message /* @@protoc_insertion_poin
   ::std::string* release_ret();
   void set_allocated_ret(::std::string* ret);
 
-  // int32 Serial = 1;
+  // uint64 Serial = 1;
   void clear_serial();
   static const int kSerialFieldNumber = 1;
-  ::google::protobuf::int32 serial() const;
-  void set_serial(::google::protobuf::int32 value);
+  ::google::protobuf::uint64 serial() const;
+  void set_serial(::google::protobuf::uint64 value);
 
   // int32 Service = 2;
   void clear_service();
@@ -524,7 +523,7 @@ class RpcCallRsp : public ::google::protobuf::Message /* @@protoc_insertion_poin
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr ret_;
-  ::google::protobuf::int32 serial_;
+  ::google::protobuf::uint64 serial_;
   ::google::protobuf::int32 service_;
   ::google::protobuf::int32 call_;
   mutable int _cached_size_;
@@ -596,11 +595,11 @@ class RpcCallExceptionRsp : public ::google::protobuf::Message /* @@protoc_inser
 
   // accessors -------------------------------------------------------
 
-  // int32 Serial = 1;
+  // uint64 Serial = 1;
   void clear_serial();
   static const int kSerialFieldNumber = 1;
-  ::google::protobuf::int32 serial() const;
-  void set_serial(::google::protobuf::int32 value);
+  ::google::protobuf::uint64 serial() const;
+  void set_serial(::google::protobuf::uint64 value);
 
   // int32 Service = 2;
   void clear_service();
@@ -624,7 +623,7 @@ class RpcCallExceptionRsp : public ::google::protobuf::Message /* @@protoc_inser
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::int32 serial_;
+  ::google::protobuf::uint64 serial_;
   ::google::protobuf::int32 service_;
   ::google::protobuf::int32 call_;
   ::google::protobuf::int32 exception_;
@@ -701,15 +700,15 @@ inline void RpcServiceCallOption::set_isoneway(bool value) {
 
 // RpcCallReq
 
-// int32 Serial = 1;
+// uint64 Serial = 1;
 inline void RpcCallReq::clear_serial() {
-  serial_ = 0;
+  serial_ = GOOGLE_ULONGLONG(0);
 }
-inline ::google::protobuf::int32 RpcCallReq::serial() const {
+inline ::google::protobuf::uint64 RpcCallReq::serial() const {
   // @@protoc_insertion_point(field_get:Nirge.Core.RpcCallReq.Serial)
   return serial_;
 }
-inline void RpcCallReq::set_serial(::google::protobuf::int32 value) {
+inline void RpcCallReq::set_serial(::google::protobuf::uint64 value) {
   
   serial_ = value;
   // @@protoc_insertion_point(field_set:Nirge.Core.RpcCallReq.Serial)
@@ -800,15 +799,15 @@ inline void RpcCallReq::set_allocated_args(::std::string* args) {
 
 // RpcCallRsp
 
-// int32 Serial = 1;
+// uint64 Serial = 1;
 inline void RpcCallRsp::clear_serial() {
-  serial_ = 0;
+  serial_ = GOOGLE_ULONGLONG(0);
 }
-inline ::google::protobuf::int32 RpcCallRsp::serial() const {
+inline ::google::protobuf::uint64 RpcCallRsp::serial() const {
   // @@protoc_insertion_point(field_get:Nirge.Core.RpcCallRsp.Serial)
   return serial_;
 }
-inline void RpcCallRsp::set_serial(::google::protobuf::int32 value) {
+inline void RpcCallRsp::set_serial(::google::protobuf::uint64 value) {
   
   serial_ = value;
   // @@protoc_insertion_point(field_set:Nirge.Core.RpcCallRsp.Serial)
@@ -899,15 +898,15 @@ inline void RpcCallRsp::set_allocated_ret(::std::string* ret) {
 
 // RpcCallExceptionRsp
 
-// int32 Serial = 1;
+// uint64 Serial = 1;
 inline void RpcCallExceptionRsp::clear_serial() {
-  serial_ = 0;
+  serial_ = GOOGLE_ULONGLONG(0);
 }
-inline ::google::protobuf::int32 RpcCallExceptionRsp::serial() const {
+inline ::google::protobuf::uint64 RpcCallExceptionRsp::serial() const {
   // @@protoc_insertion_point(field_get:Nirge.Core.RpcCallExceptionRsp.Serial)
   return serial_;
 }
-inline void RpcCallExceptionRsp::set_serial(::google::protobuf::int32 value) {
+inline void RpcCallExceptionRsp::set_serial(::google::protobuf::uint64 value) {
   
   serial_ = value;
   // @@protoc_insertion_point(field_set:Nirge.Core.RpcCallExceptionRsp.Serial)

@@ -1,6 +1,5 @@
 #include "csharp_service.h"
 #include "csharp_helpers.h"
-#include "Proto.pb.h"
 #include "RpcProto.pb.h"
 
 #include <string>
