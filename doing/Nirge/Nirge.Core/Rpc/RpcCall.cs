@@ -14,6 +14,8 @@ using System.Text;
 
 namespace Nirge.Core
 {
+    #region 
+
     public class CClientRpcTransfer : IRpcTransfer
     {
         CTcpClient _cli;
@@ -112,6 +114,10 @@ namespace Nirge.Core
             _codedOutputStream = new CodedOutputStream(_outputStream, true);
         }
     }
+
+    #endregion
+
+    #region 
 
     public class CRpcCallStub : IRpcCallStub
     {
@@ -373,4 +379,6 @@ namespace Nirge.Core
             return sb.ToString();
         }
     }
+
+    #endregion
 }

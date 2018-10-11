@@ -146,7 +146,6 @@ namespace Nirge.Core
                 throw new ArgumentNullException(nameof(call));
 
             var e = CallAsync<TArgs, TRet>(channel, req, call, out var args, out var ret);
-
             switch (e)
             {
             case eRpcException.None:
@@ -168,7 +167,7 @@ namespace Nirge.Core
                 catch (Exception exception)
                 {
                     _log.WriteLine(eLogPattern.Error, $"RPC callee Call exception " +
-                        $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} args {args} ret {ret}", exception);
+                        $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} args {args} ret {ret} exception {e}", exception);
                 }
                 break;
             }
