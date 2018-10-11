@@ -189,4 +189,25 @@ namespace Nirge.Core
         {
         }
     }
+
+    public class CCalleeArgsDeserializeRpcException : CRpcException
+    {
+        public CCalleeArgsDeserializeRpcException()
+        {
+        }
+    }
+
+    public class CCalleeExecRpcException : CRpcException
+    {
+        public CCalleeExecRpcException()
+        {
+        }
+    }
+
+    public class CCalleeRetSerializeRpcException : CRpcException
+    {
+        public CCalleeRetSerializeRpcException()
+        {
+        }
+    }
 }

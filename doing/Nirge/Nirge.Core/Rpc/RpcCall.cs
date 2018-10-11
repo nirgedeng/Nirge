@@ -366,6 +366,21 @@ namespace Nirge.Core
 
             try
             {
+                switch ((eRpcException)rsp.Exception)
+                {
+                case eRpcException.CalleeArgsDeserialize:
+                    stub.Wait.SetException(new CCalleeArgsDeserializeRpcException());
+                    break;
+                case eRpcException.CalleeExec:
+                    stub.Wait.SetException(new CCalleeExecRpcException());
+                    break;
+                case eRpcException.CalleeRetSerialize:
+                    stub.Wait.SetException(new CCalleeRetSerializeRpcException());
+                    break;
+                default:
+                    stub.Wait.SetException(new CRpcException());
+                    break;
+                }
             }
             catch (Exception exception)
             {
