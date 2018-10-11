@@ -331,7 +331,8 @@ namespace Nirge.Core
 
             if (!TryGetStub(rsp.Serial, out var stub))
             {
-                _log.WriteLine(eLogPattern.Warn, $"RPC stub rsp disappear serial {rsp.Serial} service {rsp.Service} call {rsp.Call} ret {rsp.Ret.Length}");
+                _log.WriteLine(eLogPattern.Warn, $"RPC stub rsp disappear " +
+                    $"serial {rsp.Serial} service {rsp.Service} call {rsp.Call} ret {rsp.Ret.Length}");
                 return;
             }
 
@@ -354,13 +355,14 @@ namespace Nirge.Core
 
             if (!TryGetStub(rsp.Serial, out var stub))
             {
-                _log.WriteLine(eLogPattern.Warn, $"RPC stub exceptionRsp disappear serial {rsp.Serial} service {rsp.Service} call {rsp.Call} exception {rsp.Exception}");
+                _log.WriteLine(eLogPattern.Warn, $"RPC stub exceptionRsp disappear " +
+                    $"serial {rsp.Serial} service {rsp.Service} call {rsp.Call} exception {rsp.Exception}");
                 return;
             }
 
             DelStub(stub);
 
-            _log.WriteLine(eLogPattern.Info, $"RPC stub exceptionRsp {stub} exception {rsp.Exception}");
+            _log.WriteLine(eLogPattern.Warn, $"RPC stub exceptionRsp {stub} exception {rsp.Exception}");
 
             try
             {
