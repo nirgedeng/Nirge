@@ -192,6 +192,7 @@ namespace Nirge.Core
             _codes = new Dictionary<int, uint>();
             _parsers = new Dictionary<uint, MessageParser>();
 
+            Collect(Assembly.GetEntryAssembly());
             Collect(Assembly.GetExecutingAssembly());
         }
 
