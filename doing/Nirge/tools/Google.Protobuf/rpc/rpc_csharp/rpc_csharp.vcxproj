@@ -23,19 +23,13 @@
     <ClCompile Include="csharp_helpers.cpp" />
     <ClCompile Include="csharp_rpc.cpp" />
     <ClCompile Include="csharp_service.cpp" />
-    <ClCompile Include="Proto.pb.cc" />
     <ClCompile Include="RpcProto.pb.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="csharp_generator.h" />
     <ClInclude Include="csharp_helpers.h" />
     <ClInclude Include="csharp_service.h" />
-    <ClInclude Include="Proto.pb.h" />
     <ClInclude Include="RpcProto.pb.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Proto.proto" />
-    <None Include="RpcProto.proto" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5CB571F1-EFB0-4DD0-87E3-94E81537D47C}</ProjectGuid>
