@@ -156,7 +156,7 @@ for (const auto& i : _methods)
                 {
                     printer->Print("public class $callerName$ : CRpcCaller {\n", "callerName", _callerName);
                     printer->Indent();
-                    printer->Print("public $callerName$(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)\n\t: base(args, log, stream, communicator, stubs, $descriptor_accessor$, $uid$) {}\n"
+                    printer->Print("public $callerName$(CRpcCallerArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, CRpcCallStubProvider stubs)\n\t: base(args, log, stream, transfer, stubs, $descriptor_accessor$, $uid$) {}\n"
                                    , "callerName", _callerName
                                    , "descriptor_accessor", _descriptor_accessor
                                    , "uid", boost::lexical_cast<std::string>(_uid));
@@ -200,7 +200,7 @@ for (const auto& i : _methods)
                                    , "calleeName", _calleeName
                                    , "interfaceName", _interfaceName);
                     printer->Indent();
-                    printer->Print("public $calleeName$(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, $interfaceName$ service)\n\t: base(args, log, stream, communicator, $descriptor_accessor$, service) {}\n"
+                    printer->Print("public $calleeName$(CRpcCalleeArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, $interfaceName$ service)\n\t: base(args, log, stream, transfer, $descriptor_accessor$, service) {}\n"
                                    , "calleeName", _calleeName
                                    , "interfaceName", _interfaceName
                                    , "descriptor_accessor", _descriptor_accessor);

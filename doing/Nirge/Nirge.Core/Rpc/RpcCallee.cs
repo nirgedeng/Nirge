@@ -25,12 +25,12 @@ namespace Nirge.Core
 
         CRpcCalleeArgs _args;
         ILog _log;
-        CRpcStream _stream;
+        IRpcStream _stream;
         IRpcTransfer _transfer;
         ServiceDescriptor _descriptor;
         protected TRpcService _service;
 
-        public CRpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, IRpcTransfer transfer, ServiceDescriptor descriptor, TRpcService service)
+        public CRpcCallee(CRpcCalleeArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, ServiceDescriptor descriptor, TRpcService service)
         {
             if (args == null)
                 throw new ArgumentNullException(nameof(args));

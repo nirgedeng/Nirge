@@ -26,8 +26,8 @@ namespace Nirge.Core {
     Nirge.Core.hret h(int channel, Nirge.Core.hargs args);
   }
   public class CARpcCaller : CRpcCaller {
-    public CARpcCaller(CRpcCallerArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, CRpcCallStubProvider stubs)
-    	: base(args, log, stream, communicator, stubs, global::Nirge.Core.AReflection.Descriptor.Services[0], 1) {}
+    public CARpcCaller(CRpcCallerArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, CRpcCallStubProvider stubs)
+    	: base(args, log, stream, transfer, stubs, global::Nirge.Core.AReflection.Descriptor.Services[0], 1) {}
     public void a(int channel = 0){
       Call<Nirge.Core.RpcCallArgsEmpty>(channel, 1, ArgsEmpty);
     }
@@ -55,8 +55,8 @@ namespace Nirge.Core {
   }
   [CRpcService(1)]
   public class CARpcCallee : CRpcCallee<IARpcService> {
-    public CARpcCallee(CRpcCalleeArgs args, ILog log, CRpcStream stream, CRpcCommunicator communicator, IARpcService service)
-    	: base(args, log, stream, communicator, global::Nirge.Core.AReflection.Descriptor.Services[0], service) {}
+    public CARpcCallee(CRpcCalleeArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, IARpcService service)
+    	: base(args, log, stream, transfer, global::Nirge.Core.AReflection.Descriptor.Services[0], service) {}
     public override void Call(int channel, Nirge.Core.RpcCallReq req) {
       switch (req.Call) {
       case 1:
