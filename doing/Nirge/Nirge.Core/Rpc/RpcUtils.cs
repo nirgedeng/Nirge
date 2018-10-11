@@ -135,7 +135,7 @@ namespace Nirge.Core
             get;
         }
 
-        TaskCompletionSource<object> Wait
+        TaskCompletionSource<ByteString> Wait
         {
             get;
         }
@@ -143,6 +143,7 @@ namespace Nirge.Core
 
     public interface IRpcCallStubProvider
     {
+        ulong CreateSerial();
         IRpcCallStub CreateStub(ulong serial, ServiceDescriptor descriptor, int service, int call, TimeSpan timeout);
         bool TryGetStub(ulong serial, out IRpcCallStub stub);
         void DelStub(IRpcCallStub stub);
@@ -155,6 +156,10 @@ namespace Nirge.Core
     public enum eRpcException
     {
         None,
+        CalleeTransfer,
+        CalleeArgsDeserialize,
+        CalleeExec,
+        CalleeRetSerialize,
     }
 
     public class CRpcException : Exception

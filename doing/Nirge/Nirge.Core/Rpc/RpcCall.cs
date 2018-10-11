@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Reflection;
 using log4net;
+using System.IO;
+using System.Text;
 
 namespace Nirge.Core
 {
@@ -118,7 +120,7 @@ namespace Nirge.Core
         int _service;
         int _call;
         DateTime _time;
-        TaskCompletionSource<object> _wait;
+        TaskCompletionSource<ByteString> _wait;
 
         public ulong Serial
         {
@@ -160,7 +162,7 @@ namespace Nirge.Core
             }
         }
 
-        public TaskCompletionSource<object> Wait
+        public TaskCompletionSource<ByteString> Wait
         {
             get
             {
@@ -184,7 +186,12 @@ namespace Nirge.Core
             _service = service;
             _call = call;
             _time = time;
-            _wait = new TaskCompletionSource<object>();
+            _wait = new TaskCompletionSource<ByteString>();
+        }
+
+        public override string ToString()
+        {
+            return $"serial {_serial} service {_service} {_descriptor.FullName} call {_call} {_descriptor.GetCall(_call)?.Name} time {_time}";
         }
     }
 
@@ -213,6 +220,7 @@ namespace Nirge.Core
     {
         CRpcCallStubProviderArgs _args;
         ILog _log;
+        ulong _serial;
         CArrayLinkedList<IRpcCallStub> _stubs;
         Dictionary<ulong, IRpcCallStub> _stubsDict;
 
@@ -226,8 +234,14 @@ namespace Nirge.Core
             _args = args;
             _log = log;
 
+            _serial = 0;
             _stubs = new CArrayLinkedList<IRpcCallStub>(_args.Capacity);
             _stubsDict = new Dictionary<ulong, IRpcCallStub>();
+        }
+
+        public ulong CreateSerial()
+        {
+            return ++_serial;
         }
 
         public IRpcCallStub CreateStub(ulong serial, ServiceDescriptor descriptor, int service, int call, TimeSpan timeout)
@@ -269,7 +283,7 @@ namespace Nirge.Core
             {
                 DelStub(i);
 
-                _log.WriteLine(eLogPattern.Info, $"RPC stub Break serial {i.Serial} service {i.Service} {i.Descriptor.FullName} call {i.Call} {i.Descriptor.GetCall(i.Call)?.Name} time {i.Time}");
+                _log.WriteLine(eLogPattern.Info, $"RPC stub Break {i}");
 
                 try
                 {
@@ -277,7 +291,7 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _log.WriteLine(eLogPattern.Error, $"RPC stub Break exception serial {i.Serial} service {i.Service} {i.Descriptor.FullName} call {i.Call} {i.Descriptor.GetCall(i.Call)?.Name} time {i.Time}", exception);
+                    _log.WriteLine(eLogPattern.Error, $"RPC stub Break exception {i}", exception);
                 }
             }
         }
@@ -291,7 +305,7 @@ namespace Nirge.Core
 
                 DelStub(i);
 
-                _log.WriteLine(eLogPattern.Warn, $"RPC stub timeout serial {i.Serial} service {i.Service} {i.Descriptor.FullName} call {i.Call} {i.Descriptor.GetCall(i.Call)?.Name} time {i.Time}");
+                _log.WriteLine(eLogPattern.Warn, $"RPC stub timeout {i}");
 
                 try
                 {
@@ -299,7 +313,7 @@ namespace Nirge.Core
                 }
                 catch (Exception exception)
                 {
-                    _log.WriteLine(eLogPattern.Error, $"RPC stub timeout exception serial {i.Serial} service {i.Service} {i.Descriptor.FullName} call {i.Call} {i.Descriptor.GetCall(i.Call)?.Name} time {i.Time}", exception);
+                    _log.WriteLine(eLogPattern.Error, $"RPC stub timeout exception {i}", exception);
                 }
             }
         }
@@ -323,7 +337,7 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                _log.WriteLine(eLogPattern.Error, $"RPC stub rsp exception serial {stub.Serial} service {stub.Service} {stub.Descriptor.FullName} call {stub.Call} {stub.Descriptor.GetCall(stub.Call)?.Name} time {stub.Time} ret {rsp.Ret.Length}", exception);
+                _log.WriteLine(eLogPattern.Error, $"RPC stub rsp exception {stub} ret {rsp.Ret.Length}", exception);
             }
         }
 
@@ -340,15 +354,23 @@ namespace Nirge.Core
 
             DelStub(stub);
 
-            _log.WriteLine(eLogPattern.Info, $"RPC stub exceptionRsp serial {stub.Serial} service {stub.Service} {stub.Descriptor.FullName} call {stub.Call} {stub.Descriptor.GetCall(stub.Call)?.Name} time {stub.Time} exception {rsp.Exception}");
+            _log.WriteLine(eLogPattern.Info, $"RPC stub exceptionRsp {stub} exception {rsp.Exception}");
 
             try
             {
             }
             catch (Exception exception)
             {
-                _log.WriteLine(eLogPattern.Error, $"RPC stub exceptionRsp exception serial {stub.Serial} service {stub.Service} {stub.Descriptor.FullName} call {stub.Call} {stub.Descriptor.GetCall(stub.Call)?.Name} time {stub.Time} exception {rsp.Exception}", exception);
+                _log.WriteLine(eLogPattern.Error, $"RPC stub exceptionRsp exception {stub} exception {rsp.Exception}", exception);
             }
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            foreach (var i in _stubs)
+                sb.AppendLine(i.ToString());
+            return sb.ToString();
         }
     }
 }
