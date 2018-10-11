@@ -24,7 +24,7 @@ namespace Nirge.Core
 
             if (count == 0)
                 return;
-            else if (count > 8)
+            else if (count > 12)
                 Buffer.BlockCopy(src, srcOffset, dst, dstOffset, count);
             else
             {

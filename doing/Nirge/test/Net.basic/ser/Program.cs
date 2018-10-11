@@ -17,7 +17,6 @@ namespace ser
             XmlConfigurator.Configure(LogManager.CreateRepository("ser"), new FileInfo("../../Net.basic.log.ser.xml"));
             var cache = new CTcpClientCache(new CTcpClientCacheArgs(104857600, 104857600), LogManager.Exists("ser", "all"));
             var fill = new CTcpClientPkgFill();
-            fill.Register(typeof(byte[]), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
             fill.Register(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
             var code = new CTcpClientProtobufCode();
             code.Collect(typeof(G2C_PULSE_GEMON).Assembly);
@@ -50,7 +49,9 @@ namespace ser
 
         private static void Ser_CliRecved(object arg1, int arg2, object pkg)
         {
-            //Console.WriteLine("cli {0} recv msg {1}", arg2, pkg);
+            CTcpServer ser = (CTcpServer)arg1;
+
+            ser.Send(arg2, pkg);
         }
 
         private static void Ser_CliClosed(object sender, CDataEventArgs<int, CTcpClientCloseArgs> e)

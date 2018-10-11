@@ -141,9 +141,8 @@ namespace Nirge.Core
                 throw new ArgumentOutOfRangeException(nameof(gPkgSize));
             if (pkg == null)
                 throw new ArgumentNullException(nameof(pkg));
-            if (!(pkg is byte[] || pkg is ArraySegment<byte>))
+            if (!(pkg is ArraySegment<byte> seg))
                 throw new ArgumentOutOfRangeException(nameof(pkg));
-            var seg = (ArraySegment<byte>)pkg;
             if (seg.Count == 0)
                 throw new ArgumentOutOfRangeException(nameof(pkg));
             var pkgSize = pkgHead.PkgHeadSize + seg.Count;
@@ -168,8 +167,8 @@ namespace Nirge.Core
             if (cache == null)
                 throw new ArgumentNullException(nameof(cache));
 
-            var pkg = new byte[pkgSeg.Count];
-            CArrayUtils.Copy(pkgSeg.Array, pkgSeg.Offset, pkg, 0, pkgSeg.Count);
+            var pkg = new ArraySegment<byte>(new byte[pkgSeg.Count]);
+            CArrayUtils.Copy(pkgSeg.Array, pkgSeg.Offset, pkg.Array, pkg.Offset, pkgSeg.Count);
 
             return pkg;
         }
@@ -274,9 +273,8 @@ namespace Nirge.Core
                 throw new ArgumentOutOfRangeException(nameof(gPkgSize));
             if (pkg == null)
                 throw new ArgumentNullException(nameof(pkg));
-            if (!(pkg is IMessage))
+            if (!(pkg is IMessage seg))
                 throw new ArgumentOutOfRangeException(nameof(pkg));
-            var seg = (IMessage)pkg;
             var pbSize = seg.CalculateSize();
             var pkgSize = pkgHead.PkgHeadSize + gPkgCodeSize + pbSize;
             if (pkgSize > gPkgSize)
