@@ -13,6 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="google\**" />
+    <EmbeddedResource Remove="google\**" />
+    <None Remove="google\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="protoc.exe" />
   </ItemGroup>
 
