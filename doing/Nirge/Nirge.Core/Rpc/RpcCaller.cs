@@ -129,8 +129,6 @@ namespace Nirge.Core
                 throw new ArgumentOutOfRangeException(nameof(call));
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
-            if (_stubs.IsFull)
-                throw new ArgumentOutOfRangeException(nameof(call));
 
             var stub = _stubs.CreateStub(_descriptor, _service, call, _args.Timeout);
 
