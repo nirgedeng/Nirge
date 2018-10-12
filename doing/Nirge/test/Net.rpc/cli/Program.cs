@@ -8,6 +8,7 @@ using System.Net;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Google.Protobuf;
+using System.Linq;
 
 namespace cli
 {
@@ -110,6 +111,7 @@ namespace cli
                     t = Environment.TickCount;
                     Console.WriteLine(cache.Stat);
                     Console.WriteLine($"stubs {_stubs.Count}");
+                    Console.WriteLine($"CallsCount {aCallers.Sum(i => (long)i.CallsCount)}");
                 }
 
                 //

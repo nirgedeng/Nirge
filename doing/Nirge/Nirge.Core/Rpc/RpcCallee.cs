@@ -29,6 +29,23 @@ namespace Nirge.Core
         IRpcTransfer _transfer;
         ServiceDescriptor _descriptor;
         protected TRpcService _service;
+        ulong _callsCount;
+
+        public CRpcCalleeArgs Args
+        {
+            get
+            {
+                return _args;
+            }
+        }
+
+        public ulong CallsCount
+        {
+            get
+            {
+                return _callsCount;
+            }
+        }
 
         public CRpcCallee(CRpcCalleeArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, ServiceDescriptor descriptor, TRpcService service)
         {
@@ -51,6 +68,7 @@ namespace Nirge.Core
             _transfer = transfer;
             _descriptor = descriptor;
             _service = service;
+            _callsCount = 0;
         }
 
         eRpcException Call<TArgs, TRet>(int channel, RpcCallReq req, Func<int, TArgs, TRet> call, out TArgs args, out TRet ret) where TArgs : IMessage<TArgs>, new() where TRet : IMessage<TRet>
@@ -79,6 +97,8 @@ namespace Nirge.Core
                     $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} args {args} exception {eRpcException.CalleeExec}", exception);
                 return eRpcException.CalleeExec;
             }
+
+            ++_callsCount;
 
             return eRpcException.None;
         }

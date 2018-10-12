@@ -43,6 +43,31 @@ namespace Nirge.Core
         IRpcCallStubProvider _stubs;
         ServiceDescriptor _descriptor;
         protected int _service;
+        ulong _callsCount;
+
+        public CRpcCallerArgs Args
+        {
+            get
+            {
+                return _args;
+            }
+        }
+
+        public int Service
+        {
+            get
+            {
+                return _service;
+            }
+        }
+
+        public ulong CallsCount
+        {
+            get
+            {
+                return _callsCount;
+            }
+        }
 
         public CRpcCaller(CRpcCallerArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, IRpcCallStubProvider stubs, ServiceDescriptor descriptor, int service)
         {
@@ -68,12 +93,14 @@ namespace Nirge.Core
             _stubs = stubs;
             _descriptor = descriptor;
             _service = service;
+            _callsCount = 0;
         }
 
         void Call<TArgs>(int channel, TArgs args, RpcCallReq pkg) where TArgs : IMessage<TArgs>
         {
             pkg.Args = args.ToByteString();
             _transfer.Send(channel, pkg);
+            ++_callsCount;
         }
 
         protected void Call<TArgs>(int channel, int call, TArgs args) where TArgs : IMessage<TArgs>
