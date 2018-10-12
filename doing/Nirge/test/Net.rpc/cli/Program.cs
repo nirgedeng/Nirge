@@ -17,18 +17,62 @@ namespace cli
 
         async static void f(CARpcCaller caller)
         {
-            caller.a();
-            caller.b();
-            caller.c(new cargs() { A = 1, B = 1, C = "c", });
-            caller.d(new dargs() { A = 1, B = 1, C = "d", });
-            await caller.e();
-            var fret = caller.f();
-            await fret;
-            //Console.WriteLine($"fret {fret.Result}");
-            await caller.g(new gargs() { A = 1, B = 1, C = "c", });
-            var hret = caller.h(new hargs() { A = 1, B = 1, C = "d", });
-            await hret;
-            //Console.WriteLine($"hret {hret.Result}");
+            try
+            {
+                caller.a();
+            }
+            catch
+            {
+            }
+            try
+            {
+                caller.b();
+            }
+            catch
+            {
+            }
+            try
+            {
+                caller.c(new cargs() { A = 1, B = 1, C = "c", });
+            }
+            catch
+            {
+            }
+            try
+            {
+                caller.d(new dargs() { A = 1, B = 1, C = "d", });
+            }
+            catch
+            {
+            }
+            try
+            {
+                await caller.e();
+                var fret = caller.f();
+                await fret;
+                Console.WriteLine($"fret {fret.Result}");
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                await caller.g(new gargs() { A = 1, B = 1, C = "c", });
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                var hret = caller.h(new hargs() { A = 1, B = 1, C = "d", });
+                await hret;
+                Console.WriteLine($"hret {hret.Result}");
+            }
+            catch
+            {
+            }
         }
 
         static void Main(string[] args)
@@ -43,7 +87,7 @@ namespace cli
             fill.Register(typeof(IMessage<>), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
             //
-            const int gCapacity = 200;
+            const int gCapacity = 1;
             var clis = new CTcpClient[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
             {
@@ -70,7 +114,7 @@ namespace cli
             var aCallers = new CARpcCaller[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
             {
-                var aCaller = new CARpcCaller(new CRpcCallerArgs(TimeSpan.FromSeconds(4)), LogManager.Exists("cli", "all"), rpcStream, transfers[i], _stubs);
+                var aCaller = new CARpcCaller(new CRpcCallerArgs(TimeSpan.FromMinutes(1)), LogManager.Exists("cli", "all"), rpcStream, transfers[i], _stubs);
                 aCallers[i] = aCaller;
             }
 

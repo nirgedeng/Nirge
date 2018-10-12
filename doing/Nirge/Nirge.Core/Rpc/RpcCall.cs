@@ -260,6 +260,8 @@ namespace Nirge.Core
                 throw new ArgumentOutOfRangeException(nameof(call));
             if (timeout == null)
                 throw new ArgumentNullException(nameof(timeout));
+            if (_stubs.IsFull)
+                throw new ArgumentOutOfRangeException(nameof(call));
 
             var stub = new CRpcCallStub(serial, descriptor, service, call, DateTime.Now.Add(timeout));
             _stubs.AddLast(stub);
