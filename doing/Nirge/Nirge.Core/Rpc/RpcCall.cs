@@ -238,6 +238,14 @@ namespace Nirge.Core
             }
         }
 
+        public bool IsFull
+        {
+            get
+            {
+                return _stubs.IsFull;
+            }
+        }
+
         public CRpcCallStubProvider(CRpcCallStubProviderArgs args, ILog log)
         {
             if (args == null)

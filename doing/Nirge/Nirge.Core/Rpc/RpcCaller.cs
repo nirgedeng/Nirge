@@ -112,6 +112,8 @@ namespace Nirge.Core
                 throw new ArgumentOutOfRangeException(nameof(call));
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
+            if (_stubs.IsFull)
+                throw new ArgumentOutOfRangeException(nameof(call));
 
             var pkg = new RpcCallReq()
             {
