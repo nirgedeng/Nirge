@@ -86,6 +86,26 @@ namespace cli
             }
         }
 
+        async static void g(CARpcCaller caller)
+        {
+            try
+            {
+                caller.a();
+                caller.b();
+                caller.c(new cargs() { A = 1, B = 1, C = "c", });
+                caller.d(new dargs() { A = 1, B = 1, C = "d", });
+                await caller.e();
+                var fret = caller.f();
+                await fret;
+                await caller.g(new gargs() { A = 1, B = 1, C = "c", });
+                var hret = caller.h(new hargs() { A = 1, B = 1, C = "d", });
+                await hret;
+            }
+            catch
+            {
+            }
+        }
+
         static void Main(string[] args)
         {
             //
