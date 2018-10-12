@@ -11,6 +11,9 @@ namespace ser
 {
     class Program
     {
+        static CTcpServer _ser;
+        static CARpcCallee _aCallee;
+
         static void Main(string[] args)
         {
             //
@@ -23,18 +26,24 @@ namespace ser
             fill.Register(typeof(IMessage<>), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
             //
-            var ser = new CTcpServer(new CTcpServerArgs(capacity: 10240), LogManager.Exists("ser", "all"), cache, fill);
-            ser.Closed += Ser_Closed;
-            ser.CliConnected += Ser_CliConnected;
-            ser.CliClosed += Ser_CliClosed;
-            ser.CliRecved += Ser_CliRecved;
-            ser.Open(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
+            _ser = new CTcpServer(new CTcpServerArgs(capacity: 10240), LogManager.Exists("ser", "all"), cache, fill);
+            _ser.Closed += Ser_Closed;
+            _ser.CliConnected += Ser_CliConnected;
+            _ser.CliClosed += Ser_CliClosed;
+            _ser.CliRecved += Ser_CliRecved;
+            _ser.Open(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
+
+            //
+            var rpcStream = new CRpcStream(new byte[8192]);
+            var rpcTransfer = new CServerRpcTransfer(_ser);
+            var aService = new CARpcService();
+            _aCallee = new CARpcCallee(new CRpcCalleeArgs(), LogManager.Exists("ser", "all")
+                , rpcStream, rpcTransfer, aService);
 
             var t = Environment.TickCount;
-
             while (true)
             {
-                ser.Exec();
+                _ser.Exec();
 
                 if (Environment.TickCount > t + 10000)
                 {
@@ -49,6 +58,9 @@ namespace ser
         private static void Ser_CliRecved(object arg1, int arg2, object pkg)
         {
             CTcpServer ser = (CTcpServer)arg1;
+
+            if (pkg is RpcCallReq e)
+                _aCallee.Call(arg2, e);
         }
 
         private static void Ser_CliClosed(object sender, CDataEventArgs<int, CTcpClientCloseArgs> e)
