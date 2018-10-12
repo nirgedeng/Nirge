@@ -20,89 +20,21 @@ namespace cli
             try
             {
                 caller.a();
-            }
-            catch
-            {
-            }
-
-            try
-            {
                 caller.b();
-            }
-            catch
-            {
-            }
-
-            try
-            {
                 caller.c(new cargs() { A = 1, B = 1, C = "c", });
-            }
-            catch
-            {
-            }
-
-            try
-            {
                 caller.d(new dargs() { A = 1, B = 1, C = "d", });
-            }
-            catch
-            {
-            }
-
-            try
-            {
                 await caller.e();
-            }
-            catch
-            {
-            }
-
-            try
-            {
                 var fret = caller.f();
                 await fret;
                 //Console.WriteLine($"fret {fret.Result}");
-            }
-            catch
-            {
-            }
-
-            try
-            {
                 await caller.g(new gargs() { A = 1, B = 1, C = "c", });
-            }
-            catch
-            {
-            }
-
-            try
-            {
                 var hret = caller.h(new hargs() { A = 1, B = 1, C = "d", });
                 await hret;
                 //Console.WriteLine($"hret {hret.Result}");
             }
-            catch
+            catch (Exception exception)
             {
-            }
-        }
-
-        async static void g(CARpcCaller caller)
-        {
-            try
-            {
-                caller.a();
-                caller.b();
-                caller.c(new cargs() { A = 1, B = 1, C = "c", });
-                caller.d(new dargs() { A = 1, B = 1, C = "d", });
-                await caller.e();
-                var fret = caller.f();
-                await fret;
-                await caller.g(new gargs() { A = 1, B = 1, C = "c", });
-                var hret = caller.h(new hargs() { A = 1, B = 1, C = "d", });
-                await hret;
-            }
-            catch
-            {
+                Console.WriteLine(exception);
             }
         }
 
@@ -135,7 +67,7 @@ namespace cli
 
             //
             var rpcStream = new CRpcStream(new byte[8192]);
-            _stubs = new CRpcCallStubProvider(new CRpcCallStubProviderArgs(102400), LogManager.Exists("cli", "all"));
+            _stubs = new CRpcCallStubProvider(new CRpcCallStubProviderArgs(10240), LogManager.Exists("cli", "all"));
             var transfers = new CClientRpcTransfer[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
             {
@@ -157,19 +89,19 @@ namespace cli
                     var cli = clis[i];
                     var aCaller = aCallers[i];
                     cli.Exec();
+                    _stubs.Exec();
                     switch (cli.State)
                     {
-                    case eTcpClientState.Connected:
-                        try
-                        {
-                            g(aCaller);
-                            _stubs.Exec();
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
-                        }
-                        break;
+                        case eTcpClientState.Connected:
+                            try
+                            {
+                                f(aCaller);
+                            }
+                            catch (Exception exception)
+                            {
+                                Console.WriteLine(exception);
+                            }
+                            break;
                     }
                 }
 
