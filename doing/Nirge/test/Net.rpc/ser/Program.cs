@@ -59,8 +59,8 @@ namespace ser
         {
             CTcpServer ser = (CTcpServer)arg1;
 
-            if (pkg is RpcCallReq e)
-                _aCallee.Call(arg2, e);
+            if (pkg is RpcCallReq req)
+                _aCallee.Call(arg2, req);
         }
 
         private static void Ser_CliClosed(object sender, CDataEventArgs<int, CTcpClientCloseArgs> e)

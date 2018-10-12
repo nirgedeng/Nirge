@@ -279,8 +279,8 @@ namespace Nirge.Core
 
             if (_stubsDict.Remove(stub.Serial))
                 _stubs.Remove(stub);
-
-            throw new ArgumentOutOfRangeException(nameof(stub));
+            else
+                throw new ArgumentOutOfRangeException(nameof(stub));
         }
 
         public void Break()

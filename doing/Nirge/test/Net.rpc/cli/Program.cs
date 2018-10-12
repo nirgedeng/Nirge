@@ -24,11 +24,11 @@ namespace cli
             await caller.e();
             var fret = caller.f();
             await fret;
-            Console.WriteLine($"fret {fret}");
+            //Console.WriteLine($"fret {fret.Result}");
             await caller.g(new gargs() { A = 1, B = 1, C = "c", });
             var hret = caller.h(new hargs() { A = 1, B = 1, C = "d", });
             await hret;
-            Console.WriteLine($"hret {hret}");
+            //Console.WriteLine($"hret {hret.Result}");
         }
 
         static void Main(string[] args)
@@ -43,7 +43,7 @@ namespace cli
             fill.Register(typeof(IMessage<>), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
             //
-            const int gCapacity = 1;
+            const int gCapacity = 200;
             var clis = new CTcpClient[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
             {
@@ -58,6 +58,7 @@ namespace cli
                 cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
             }
 
+            //
             var rpcStream = new CRpcStream(new byte[8192]);
             _stubs = new CRpcCallStubProvider(new CRpcCallStubProviderArgs(), LogManager.Exists("cli", "all"));
             var transfers = new CClientRpcTransfer[gCapacity];
