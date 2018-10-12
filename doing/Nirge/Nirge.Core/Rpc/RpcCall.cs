@@ -230,6 +230,14 @@ namespace Nirge.Core
         CArrayLinkedList<IRpcCallStub> _stubs;
         Dictionary<ulong, IRpcCallStub> _stubsDict;
 
+        public int Count
+        {
+            get
+            {
+                return _stubs.Count;
+            }
+        }
+
         public CRpcCallStubProvider(CRpcCallStubProviderArgs args, ILog log)
         {
             if (args == null)

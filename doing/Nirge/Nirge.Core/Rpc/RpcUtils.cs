@@ -143,6 +143,10 @@ namespace Nirge.Core
 
     public interface IRpcCallStubProvider
     {
+        int Count
+        {
+            get;
+        }
         ulong CreateSerial();
         IRpcCallStub CreateStub(ulong serial, ServiceDescriptor descriptor, int service, int call, TimeSpan timeout);
         bool TryGetStub(ulong serial, out IRpcCallStub stub);

@@ -61,7 +61,7 @@ namespace cli
             {
                 var fret = caller.f();
                 await fret;
-                Console.WriteLine($"fret {fret.Result}");
+                //Console.WriteLine($"fret {fret.Result}");
             }
             catch
             {
@@ -79,7 +79,7 @@ namespace cli
             {
                 var hret = caller.h(new hargs() { A = 1, B = 1, C = "d", });
                 await hret;
-                Console.WriteLine($"hret {hret.Result}");
+                //Console.WriteLine($"hret {hret.Result}");
             }
             catch
             {
@@ -98,7 +98,7 @@ namespace cli
             fill.Register(typeof(IMessage<>), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
             //
-            const int gCapacity = 1;
+            const int gCapacity = 1000;
             var clis = new CTcpClient[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
             {
@@ -115,7 +115,7 @@ namespace cli
 
             //
             var rpcStream = new CRpcStream(new byte[8192]);
-            _stubs = new CRpcCallStubProvider(new CRpcCallStubProviderArgs(), LogManager.Exists("cli", "all"));
+            _stubs = new CRpcCallStubProvider(new CRpcCallStubProviderArgs(102400), LogManager.Exists("cli", "all"));
             var transfers = new CClientRpcTransfer[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
             {
@@ -125,7 +125,7 @@ namespace cli
             var aCallers = new CARpcCaller[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
             {
-                var aCaller = new CARpcCaller(new CRpcCallerArgs(TimeSpan.FromMinutes(1)), LogManager.Exists("cli", "all"), rpcStream, transfers[i], _stubs);
+                var aCaller = new CARpcCaller(new CRpcCallerArgs(TimeSpan.FromSeconds(8)), LogManager.Exists("cli", "all"), rpcStream, transfers[i], _stubs);
                 aCallers[i] = aCaller;
             }
 
@@ -157,6 +157,7 @@ namespace cli
                 {
                     t = Environment.TickCount;
                     Console.WriteLine(cache.Stat);
+                    Console.WriteLine($"stubs {_stubs.Count}");
                 }
 
                 //
