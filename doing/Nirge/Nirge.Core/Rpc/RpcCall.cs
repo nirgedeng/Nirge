@@ -217,8 +217,8 @@ namespace Nirge.Core
         {
             _capacity = capacity;
 
-            if (_capacity < 10240)
-                _capacity = 10240;
+            if (_capacity < 1024)
+                _capacity = 1024;
         }
     }
 
@@ -261,12 +261,12 @@ namespace Nirge.Core
             _stubsDict = new Dictionary<ulong, IRpcCallStub>();
         }
 
-        public ulong CreateSerial()
+        ulong CreateSerial()
         {
             return ++_serial;
         }
 
-        public IRpcCallStub CreateStub(ulong serial, ServiceDescriptor descriptor, int service, int call, TimeSpan timeout)
+        public IRpcCallStub CreateStub(ServiceDescriptor descriptor, int service, int call, TimeSpan timeout)
         {
             if (descriptor == null)
                 throw new ArgumentNullException(nameof(descriptor));
@@ -279,6 +279,7 @@ namespace Nirge.Core
             if (_stubs.IsFull)
                 throw new ArgumentOutOfRangeException(nameof(call));
 
+            var serial = CreateSerial();
             var stub = new CRpcCallStub(serial, descriptor, service, call, DateTime.Now.Add(timeout));
             _stubs.AddLast(stub);
             _stubsDict.Add(serial, stub);
@@ -386,21 +387,21 @@ namespace Nirge.Core
             {
                 switch ((eRpcException)rsp.Exception)
                 {
-                case eRpcException.CalleeArgsDeserialize:
-                    stub.Wait.SetException(new CCalleeArgsDeserializeRpcException());
-                    break;
-                case eRpcException.CalleeExec:
-                    stub.Wait.SetException(new CCalleeExecRpcException());
-                    break;
-                case eRpcException.CalleeRetSerialize:
-                    stub.Wait.SetException(new CCalleeRetSerializeRpcException());
-                    break;
-                case eRpcException.CalleeInvalid:
-                    stub.Wait.SetException(new CCalleeInvalidRpcException());
-                    break;
-                default:
-                    stub.Wait.SetException(new CRpcException());
-                    break;
+                    case eRpcException.CalleeArgsDeserialize:
+                        stub.Wait.SetException(new CCalleeArgsDeserializeRpcException());
+                        break;
+                    case eRpcException.CalleeExec:
+                        stub.Wait.SetException(new CCalleeExecRpcException());
+                        break;
+                    case eRpcException.CalleeRetSerialize:
+                        stub.Wait.SetException(new CCalleeRetSerializeRpcException());
+                        break;
+                    case eRpcException.CalleeInvalid:
+                        stub.Wait.SetException(new CCalleeInvalidRpcException());
+                        break;
+                    default:
+                        stub.Wait.SetException(new CRpcException());
+                        break;
                 }
             }
             catch (Exception exception)

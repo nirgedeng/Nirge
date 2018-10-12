@@ -147,12 +147,13 @@ namespace Nirge.Core
         {
             get;
         }
+
         bool IsFull
         {
             get;
         }
-        ulong CreateSerial();
-        IRpcCallStub CreateStub(ulong serial, ServiceDescriptor descriptor, int service, int call, TimeSpan timeout);
+
+        IRpcCallStub CreateStub(ServiceDescriptor descriptor, int service, int call, TimeSpan timeout);
         bool TryGetStub(ulong serial, out IRpcCallStub stub);
         void DelStub(IRpcCallStub stub);
         void Break();

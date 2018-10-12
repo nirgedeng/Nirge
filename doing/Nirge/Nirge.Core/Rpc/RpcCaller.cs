@@ -94,17 +94,7 @@ namespace Nirge.Core
             Call<TArgs>(channel, args, pkg);
         }
 
-        async Task<TRet> CallAsync<TArgs, TRet>(int channel, ulong serial, int call, TArgs args, RpcCallReq pkg) where TArgs : IMessage<TArgs> where TRet : IMessage<TRet>, new()
-        {
-            var stub = _stubs.CreateStub(serial, _descriptor, _service, call, _args.Timeout);
-            var task = stub.Wait.Task;
-            await task;
-            var ret = new TRet();
-            ret.MergeFrom(task.Result);
-            return ret;
-        }
-
-        protected Task<TRet> CallAsync<TArgs, TRet>(int channel, int call, TArgs args) where TArgs : IMessage<TArgs> where TRet : IMessage<TRet>, new()
+        protected async Task<TRet> CallAsync<TArgs, TRet>(int channel, int call, TArgs args) where TArgs : IMessage<TArgs> where TRet : IMessage<TRet>, new()
         {
             if (channel < 0)
                 throw new ArgumentOutOfRangeException(nameof(channel));
@@ -115,18 +105,31 @@ namespace Nirge.Core
             if (_stubs.IsFull)
                 throw new ArgumentOutOfRangeException(nameof(call));
 
+            var stub = _stubs.CreateStub(_descriptor, _service, call, _args.Timeout);
+
             var pkg = new RpcCallReq()
             {
                 Service = _service,
                 Call = call,
+                Serial = stub.Serial,
             };
 
-            var serial = _stubs.CreateSerial();
-            pkg.Serial = serial;
+            try
+            {
+                Call<TArgs>(channel, args, pkg);
+            }
+            catch (Exception exception)
+            {
+                _stubs.DelStub(stub);
+                throw exception;
+            }
 
-            Call<TArgs>(channel, args, pkg);
+            var task = stub.Wait.Task;
+            await task;
+            var ret = new TRet();
+            ret.MergeFrom(task.Result);
 
-            return CallAsync<TArgs, TRet>(channel, serial, call, args, pkg);
+            return ret;
         }
     }
 }
