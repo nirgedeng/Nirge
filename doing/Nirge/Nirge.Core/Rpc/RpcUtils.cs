@@ -164,6 +164,7 @@ namespace Nirge.Core
         CalleeArgsDeserialize,
         CalleeExec,
         CalleeRetSerialize,
+        CalleeInvalid,
     }
 
     public class CRpcException : Exception
@@ -211,6 +212,13 @@ namespace Nirge.Core
     public class CCalleeRetSerializeRpcException : CRpcException
     {
         public CCalleeRetSerializeRpcException()
+        {
+        }
+    }
+
+    public class CCalleeInvalidRpcException : CRpcException
+    {
+        public CCalleeInvalidRpcException()
         {
         }
     }

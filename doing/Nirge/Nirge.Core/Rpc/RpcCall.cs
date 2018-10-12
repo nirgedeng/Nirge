@@ -387,6 +387,9 @@ namespace Nirge.Core
                 case eRpcException.CalleeRetSerialize:
                     stub.Wait.SetException(new CCalleeRetSerializeRpcException());
                     break;
+                case eRpcException.CalleeInvalid:
+                    stub.Wait.SetException(new CCalleeInvalidRpcException());
+                    break;
                 default:
                     stub.Wait.SetException(new CRpcException());
                     break;

@@ -182,6 +182,24 @@ namespace Nirge.Core
 
             _log.WriteLine(eLogPattern.Warn, $"RPC callee Call base " +
                 $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} req {req}");
+
+            var pkg = new RpcCallExceptionRsp()
+            {
+                Serial = req.Serial,
+                Service = req.Service,
+                Call = req.Call,
+                Exception = (int)eRpcException.CalleeInvalid,
+            };
+
+            try
+            {
+                _transfer.Send(channel, pkg);
+            }
+            catch (Exception exception)
+            {
+                _log.WriteLine(eLogPattern.Error, $"RPC callee Call exception " +
+                    $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} exception {eRpcException.CalleeInvalid}", exception);
+            }
         }
     }
 }
