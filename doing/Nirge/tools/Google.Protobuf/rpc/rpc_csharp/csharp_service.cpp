@@ -156,7 +156,7 @@ for (const auto& i : _methods)
                 {
                     printer->Print("public class $callerName$ : CRpcCaller {\n", "callerName", _callerName);
                     printer->Indent();
-                    printer->Print("public $callerName$(CRpcCallerArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, CRpcCallStubProvider stubs)\n\t: base(args, log, stream, transfer, stubs, $descriptor_accessor$, $uid$) {}\n"
+                    printer->Print("public $callerName$(CRpcCallerArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, IRpcCallStubProvider stubs)\n\t: base(args, log, stream, transfer, stubs, $descriptor_accessor$, $uid$) {}\n"
                                    , "callerName", _callerName
                                    , "descriptor_accessor", _descriptor_accessor
                                    , "uid", boost::lexical_cast<std::string>(_uid));

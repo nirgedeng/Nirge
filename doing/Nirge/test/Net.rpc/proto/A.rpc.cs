@@ -26,7 +26,7 @@ namespace Nirge.Core {
     Nirge.Core.hret h(int channel, Nirge.Core.hargs args);
   }
   public class CARpcCaller : CRpcCaller {
-    public CARpcCaller(CRpcCallerArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, CRpcCallStubProvider stubs)
+    public CARpcCaller(CRpcCallerArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, IRpcCallStubProvider stubs)
     	: base(args, log, stream, transfer, stubs, global::Nirge.Core.AReflection.Descriptor.Services[0], 1) {}
     public void a(int channel = 0){
       Call<Nirge.Core.RpcCallArgsEmpty>(channel, 1, ArgsEmpty);
