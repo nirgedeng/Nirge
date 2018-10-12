@@ -24,6 +24,7 @@ namespace cli
             catch
             {
             }
+
             try
             {
                 caller.b();
@@ -31,6 +32,7 @@ namespace cli
             catch
             {
             }
+
             try
             {
                 caller.c(new cargs() { A = 1, B = 1, C = "c", });
@@ -38,6 +40,7 @@ namespace cli
             catch
             {
             }
+
             try
             {
                 caller.d(new dargs() { A = 1, B = 1, C = "d", });
@@ -45,9 +48,17 @@ namespace cli
             catch
             {
             }
+
             try
             {
                 await caller.e();
+            }
+            catch
+            {
+            }
+
+            try
+            {
                 var fret = caller.f();
                 await fret;
                 Console.WriteLine($"fret {fret.Result}");
