@@ -162,7 +162,7 @@ namespace cli
                     case eTcpClientState.Connected:
                         try
                         {
-                            f(aCaller);
+                            g(aCaller);
                             _stubs.Exec();
                         }
                         catch (Exception exception)
