@@ -27,11 +27,11 @@ namespace cli
                 await caller.e();
                 var fret = caller.f();
                 await fret;
-                //Console.WriteLine($"fret {fret.Result}");
-                await caller.g(new gargs() { A = 1, B = 1, C = "c", });
-                var hret = caller.h(new hargs() { A = 1, B = 1, C = "d", });
+                Console.WriteLine($"fret {fret.Result}");
+                await caller.g(new gargs() { A = 1, B = 1, C = "g", });
+                var hret = caller.h(new hargs() { A = 1, B = 1, C = "h", });
                 await hret;
-                //Console.WriteLine($"hret {hret.Result}");
+                Console.WriteLine($"hret {hret.Result}");
             }
             catch (Exception exception)
             {
@@ -51,7 +51,7 @@ namespace cli
             fill.Register(typeof(IMessage<>), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
             //
-            const int gCapacity = 1000;
+            const int gCapacity = 1;
             var clis = new CTcpClient[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
             {
