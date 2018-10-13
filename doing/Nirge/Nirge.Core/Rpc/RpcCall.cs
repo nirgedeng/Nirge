@@ -334,7 +334,7 @@ namespace Nirge.Core
 
                 try
                 {
-                    i.Wait.SetException(new CCallerBreakRpcException());
+                    i.Wait.SetException(new CCallerTimeoutRpcException());
                 }
                 catch (Exception exception)
                 {
@@ -342,7 +342,7 @@ namespace Nirge.Core
                 }
             }
         }
-
+        
         public void Exec(RpcCallRsp rsp)
         {
             if (rsp == null)
@@ -375,13 +375,13 @@ namespace Nirge.Core
             if (!TryGetStub(rsp.Serial, out var stub))
             {
                 _log.WriteLine(eLogPattern.Warn, $"RPC stub exceptionRsp disappear " +
-                    $"serial {rsp.Serial} service {rsp.Service} call {rsp.Call} exception {rsp.Exception}");
+                    $"serial {rsp.Serial} service {rsp.Service} call {rsp.Call} exception {(eRpcException)rsp.Exception}");
                 return;
             }
 
             DelStub(stub);
 
-            _log.WriteLine(eLogPattern.Warn, $"RPC stub exceptionRsp {stub} exception {rsp.Exception}");
+            _log.WriteLine(eLogPattern.Warn, $"RPC stub exceptionRsp {stub} exception {(eRpcException)rsp.Exception}");
 
             try
             {
@@ -406,7 +406,7 @@ namespace Nirge.Core
             }
             catch (Exception exception)
             {
-                _log.WriteLine(eLogPattern.Error, $"RPC stub exceptionRsp exception {stub} exception {rsp.Exception}", exception);
+                _log.WriteLine(eLogPattern.Error, $"RPC stub exceptionRsp exception {stub} exception {(eRpcException)rsp.Exception}", exception);
             }
         }
 

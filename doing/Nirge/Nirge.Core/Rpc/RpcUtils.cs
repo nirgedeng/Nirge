@@ -200,6 +200,13 @@ namespace Nirge.Core
         }
     }
 
+    public class CCallerTimeoutRpcException : CRpcException
+    {
+        public CCallerTimeoutRpcException()
+        {
+        }
+    }
+
     public class CCalleeArgsDeserializeRpcException : CRpcException
     {
         public CCalleeArgsDeserializeRpcException()
