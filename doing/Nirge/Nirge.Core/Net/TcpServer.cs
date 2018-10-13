@@ -243,6 +243,14 @@ namespace Nirge.Core
             }
         }
 
+        public IEnumerator<int> Clis
+        {
+            get
+            {
+                return _clis.Indexs;
+            }
+        }
+
         public CTcpServer(CTcpServerArgs args, ILog log, ITcpClientCache cache, CTcpClientPkgFill fill)
         {
             Alloc(args, log, cache, fill);
@@ -443,7 +451,7 @@ namespace Nirge.Core
             switch (_state)
             {
                 case eTcpServerState.Opened:
-                    if (_clis.TryGetWithIndex(cli, out var e))
+                    if (_clis.TryGetVal(cli, out var e))
                         e.Close(graceful: true);
                     break;
                 case eTcpServerState.Closed:
@@ -509,7 +517,7 @@ namespace Nirge.Core
             switch (_state)
             {
                 case eTcpServerState.Opened:
-                    if (_clis.TryGetWithIndex(cli, out var e))
+                    if (_clis.TryGetVal(cli, out var e))
                         e.Send(pkg);
                     else
                         throw new ArgumentOutOfRangeException(nameof(cli));
@@ -594,7 +602,7 @@ namespace Nirge.Core
                                         cli.Closed -= cbCliClosed;
                                         cli.Recved -= cbCliRecved;
 
-                                        _clis.RemoveWithIndex(cliId);
+                                        _clis.Remove(cliId);
                                         _clisPool.Enqueue(cli);
 
                                         _log.WriteLine(eLogPattern.Info, $"NET ser cli {cliId} Closed closeArgs {e.Arg1.Reason} {e.Arg1.SocketError}");

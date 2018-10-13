@@ -117,6 +117,19 @@ namespace Nirge.Core
             }
         }
 
+        public IEnumerator<int> Indexs
+        {
+            get
+            {
+                for (int i = _head; i != -1;)
+                {
+                    var v = _nodes[i].Next;
+                    yield return i;
+                    i = v;
+                }
+            }
+        }
+
         public CArrayLinkedList(int capacity)
         {
             if (capacity == 0)
@@ -184,7 +197,7 @@ namespace Nirge.Core
             return _tail;
         }
 
-        public void RemoveWithIndex(int index)
+        public void Remove(int index)
         {
             if (_count == 0)
                 throw new InvalidOperationException(nameof(index));
@@ -272,7 +285,7 @@ namespace Nirge.Core
             return _nodes[i].Val;
         }
 
-        public T GetWithIndex(int index)
+        public T GetVal(int index)
         {
             if (_count == 0)
                 throw new InvalidOperationException(nameof(index));
@@ -284,7 +297,7 @@ namespace Nirge.Core
             return _nodes[index].Val;
         }
 
-        public bool TryGetWithIndex(int index, out T val)
+        public bool TryGetVal(int index, out T val)
         {
             if (_count > 0
                 && index >= 0 && index < Capacity
