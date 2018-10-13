@@ -14,22 +14,6 @@ namespace Nirge.Core
         int _tail;
         int _usedSize;
 
-        public bool IsEmpty
-        {
-            get
-            {
-                return _usedSize == 0;
-            }
-        }
-
-        public bool IsFull
-        {
-            get
-            {
-                return _usedSize == _buf.Length;
-            }
-        }
-
         public int UsedSize
         {
             get
@@ -43,6 +27,22 @@ namespace Nirge.Core
             get
             {
                 return _buf.Length - _usedSize;
+            }
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return _usedSize == 0;
+            }
+        }
+
+        public bool IsFull
+        {
+            get
+            {
+                return _usedSize == _buf.Length;
             }
         }
 
