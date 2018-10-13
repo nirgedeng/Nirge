@@ -243,6 +243,14 @@ namespace Nirge.Core
             }
         }
 
+        public int ClisCount
+        {
+            get
+            {
+                return _clis.Count;
+            }
+        }
+
         public IEnumerator<int> Clis
         {
             get
