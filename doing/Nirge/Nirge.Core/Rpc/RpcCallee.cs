@@ -80,10 +80,10 @@ namespace Nirge.Core
             {
                 args.MergeFrom(req.Args);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
                 _log.WriteLine(eLogPattern.Error, $"RPC callee Call exception " +
-                    $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} exception {eRpcException.CalleeArgsDeserialize}", exception);
+                    $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} exception {eRpcException.CalleeArgsDeserialize}", ex);
                 return eRpcException.CalleeArgsDeserialize;
             }
 
@@ -91,10 +91,10 @@ namespace Nirge.Core
             {
                 ret = call(channel, args);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
                 _log.WriteLine(eLogPattern.Error, $"RPC callee Call exception " +
-                    $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} args {args} exception {eRpcException.CalleeExec}", exception);
+                    $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} args {args} exception {eRpcException.CalleeExec}", ex);
                 return eRpcException.CalleeExec;
             }
 
@@ -132,10 +132,10 @@ namespace Nirge.Core
                 {
                     pkg.Ret = ret.ToByteString();
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
                     _log.WriteLine(eLogPattern.Error, $"RPC callee Call exception " +
-                        $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} args {args} ret {ret} exception {eRpcException.CalleeRetSerialize}", exception);
+                        $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} args {args} ret {ret} exception {eRpcException.CalleeRetSerialize}", ex);
                     return eRpcException.CalleeRetSerialize;
                 }
 
@@ -143,10 +143,10 @@ namespace Nirge.Core
                 {
                     _transfer.Send(channel, pkg);
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
                     _log.WriteLine(eLogPattern.Error, $"RPC callee Call exception " +
-                        $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} args {args} ret {ret} exception {eRpcException.CalleeTransfer}", exception);
+                        $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} args {args} ret {ret} exception {eRpcException.CalleeTransfer}", ex);
                     return eRpcException.CalleeTransfer;
                 }
 
@@ -184,10 +184,10 @@ namespace Nirge.Core
                 {
                     _transfer.Send(channel, pkg);
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
                     _log.WriteLine(eLogPattern.Error, $"RPC callee Call exception " +
-                        $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} args {args} ret {ret} exception {e}", exception);
+                        $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} args {args} ret {ret} exception {e}", ex);
                 }
                 break;
             }
@@ -215,10 +215,10 @@ namespace Nirge.Core
             {
                 _transfer.Send(channel, pkg);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
                 _log.WriteLine(eLogPattern.Error, $"RPC callee Call exception " +
-                    $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} exception {eRpcException.CalleeInvalid}", exception);
+                    $"channel {channel} serial {req.Serial} service {req.Service} {_descriptor.FullName} call {req.Call} {_descriptor.GetCall(req.Call)?.Name} exception {eRpcException.CalleeInvalid}", ex);
             }
         }
     }

@@ -10,9 +10,9 @@ namespace Nirge.Core
 {
     public static class CTcpUtils
     {
-        public static System.Net.Sockets.SocketError SocketError(this Exception exception)
+        public static System.Net.Sockets.SocketError SocketError(this Exception ex)
         {
-            if (exception is SocketException e)
+            if (ex is SocketException e)
                 return e.SocketErrorCode;
             else
                 return System.Net.Sockets.SocketError.Success;

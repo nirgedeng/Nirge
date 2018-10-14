@@ -33,9 +33,9 @@ namespace cli
                 await hret;
                 Console.WriteLine($"hret {hret.Result}");
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                Console.WriteLine(exception);
+                Console.WriteLine(ex);
             }
         }
 
@@ -98,9 +98,9 @@ namespace cli
                             {
                                 f(aCaller);
                             }
-                            catch (Exception exception)
+                            catch (Exception ex)
                             {
-                                Console.WriteLine(exception);
+                                Console.WriteLine(ex);
                             }
                             break;
                     }

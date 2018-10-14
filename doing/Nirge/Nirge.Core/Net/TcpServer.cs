@@ -117,7 +117,7 @@ namespace Nirge.Core
     public class CTcpServerOpenArgs
     {
         eTcpServerOpenResult _result;
-        Exception _exception;
+        Exception _ex;
         SocketError _socketError;
 
         public eTcpServerOpenResult Result
@@ -132,7 +132,7 @@ namespace Nirge.Core
         {
             get
             {
-                return _exception;
+                return _ex;
             }
         }
 
@@ -144,16 +144,16 @@ namespace Nirge.Core
             }
         }
 
-        public void Set(eTcpServerOpenResult result, Exception exception, SocketError socketError)
+        public void Set(eTcpServerOpenResult result, Exception ex, SocketError socketError)
         {
             _result = result;
-            _exception = exception;
+            _ex = ex;
             _socketError = socketError;
         }
 
-        public CTcpServerOpenArgs(eTcpServerOpenResult result, Exception exception, SocketError socketError)
+        public CTcpServerOpenArgs(eTcpServerOpenResult result, Exception ex, SocketError socketError)
         {
-            Set(result, exception, socketError);
+            Set(result, ex, socketError);
         }
     }
 
@@ -167,7 +167,7 @@ namespace Nirge.Core
     public class CTcpServerCloseArgs
     {
         eTcpServerCloseReason _reason;
-        Exception _exception;
+        Exception _ex;
         SocketError _socketError;
 
         public eTcpServerCloseReason Reason
@@ -182,7 +182,7 @@ namespace Nirge.Core
         {
             get
             {
-                return _exception;
+                return _ex;
             }
         }
 
@@ -194,16 +194,16 @@ namespace Nirge.Core
             }
         }
 
-        public void Set(eTcpServerCloseReason reason, Exception exception, SocketError socketError)
+        public void Set(eTcpServerCloseReason reason, Exception ex, SocketError socketError)
         {
             _reason = reason;
-            _exception = exception;
+            _ex = ex;
             _socketError = socketError;
         }
 
-        public CTcpServerCloseArgs(eTcpServerCloseReason reason, Exception exception, SocketError socketError)
+        public CTcpServerCloseArgs(eTcpServerCloseReason reason, Exception ex, SocketError socketError)
         {
-            Set(reason, exception, socketError);
+            Set(reason, ex, socketError);
         }
     }
 
@@ -481,12 +481,12 @@ namespace Nirge.Core
             {
                 cli = await _lis.AcceptTcpClientAsync();
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
                 lock (_closeTag)
                 {
                     if (_closeTag.Reason == eTcpServerCloseReason.None)
-                        _closeTag.Set(eTcpServerCloseReason.Exception, exception, SocketError.Success);
+                        _closeTag.Set(eTcpServerCloseReason.Exception, ex, SocketError.Success);
                 }
             }
 
@@ -599,9 +599,9 @@ namespace Nirge.Core
                                         {
                                             OnCliConnected(cliId);
                                         }
-                                        catch (Exception exception)
+                                        catch (Exception ex)
                                         {
-                                            _log.WriteLine(eLogPattern.Error, $"NET ser cli {cliId} OnCliConnected exception", exception);
+                                            _log.WriteLine(eLogPattern.Error, $"NET ser cli {cliId} OnCliConnected exception", ex);
                                         }
                                     };
                                     cbCliClosed = (sender, e) =>
@@ -619,9 +619,9 @@ namespace Nirge.Core
                                         {
                                             OnCliClosed(cliId, e.Arg1);
                                         }
-                                        catch (Exception exception)
+                                        catch (Exception ex)
                                         {
-                                            _log.WriteLine(eLogPattern.Error, $"NET ser cli {cliId} OnCliClosed exception closeArgs {e.Arg1.Reason} {e.Arg1.SocketError}", exception);
+                                            _log.WriteLine(eLogPattern.Error, $"NET ser cli {cliId} OnCliClosed exception closeArgs {e.Arg1.Reason} {e.Arg1.SocketError}", ex);
                                         }
                                     };
                                     cbCliRecved = (sender, pkg) =>
@@ -630,9 +630,9 @@ namespace Nirge.Core
                                         {
                                             CliRecved?.Invoke(this, cliId, pkg);
                                         }
-                                        catch (Exception exception)
+                                        catch (Exception ex)
                                         {
-                                            _log.WriteLine(eLogPattern.Error, $"NET ser cli {cliId} CliRecved exception", exception);
+                                            _log.WriteLine(eLogPattern.Error, $"NET ser cli {cliId} CliRecved exception", ex);
                                         }
                                     };
 
@@ -690,9 +690,9 @@ namespace Nirge.Core
                             {
                                 OnClosed(e);
                             }
-                            catch (Exception exception)
+                            catch (Exception ex)
                             {
-                                _log.WriteLine(eLogPattern.Error, $"NET ser OnClosed exception closeArgs {e.Reason} {e.SocketError}", exception);
+                                _log.WriteLine(eLogPattern.Error, $"NET ser OnClosed exception closeArgs {e.Reason} {e.SocketError}", ex);
                             }
                         }
                     }

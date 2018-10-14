@@ -143,10 +143,10 @@ namespace Nirge.Core
             {
                 Call<TArgs>(channel, args, pkg);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
                 _stubs.DelStub(stub);
-                throw exception;
+                throw ex;
             }
 
             var task = stub.Wait.Task;

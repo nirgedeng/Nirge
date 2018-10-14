@@ -314,9 +314,9 @@ namespace Nirge.Core
                 {
                     i.Wait.SetException(new CCallerBreakRpcException());
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
-                    _log.WriteLine(eLogPattern.Error, $"RPC stub Break exception {i}", exception);
+                    _log.WriteLine(eLogPattern.Error, $"RPC stub Break exception {i}", ex);
                 }
             }
         }
@@ -336,9 +336,9 @@ namespace Nirge.Core
                 {
                     i.Wait.SetException(new CCallerTimeoutRpcException());
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
-                    _log.WriteLine(eLogPattern.Error, $"RPC stub timeout exception {i}", exception);
+                    _log.WriteLine(eLogPattern.Error, $"RPC stub timeout exception {i}", ex);
                 }
             }
         }
@@ -361,9 +361,9 @@ namespace Nirge.Core
             {
                 stub.Wait.SetResult(rsp.Ret);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                _log.WriteLine(eLogPattern.Error, $"RPC stub rsp exception {stub} ret {rsp.Ret.Length}", exception);
+                _log.WriteLine(eLogPattern.Error, $"RPC stub rsp exception {stub} ret {rsp.Ret.Length}", ex);
             }
         }
 
@@ -404,9 +404,9 @@ namespace Nirge.Core
                         break;
                 }
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                _log.WriteLine(eLogPattern.Error, $"RPC stub exceptionRsp exception {stub} exception {(eRpcException)rsp.Exception}", exception);
+                _log.WriteLine(eLogPattern.Error, $"RPC stub exceptionRsp exception {stub} exception {(eRpcException)rsp.Exception}", ex);
             }
         }
 
