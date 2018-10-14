@@ -15,32 +15,32 @@ namespace Nirge.Core
     {
         public void a(int channel)
         {
-            Console.WriteLine("a");
+            //Console.WriteLine("a");
         }
 
         public void b(int channel)
         {
-            Console.WriteLine("b");
+            //Console.WriteLine("b");
         }
 
         public void c(int channel, cargs args)
         {
-            Console.WriteLine($"cargs {args}");
+            //Console.WriteLine($"cargs {args}");
         }
 
         public void d(int channel, dargs args)
         {
-            Console.WriteLine($"dargs {args}");
+            //Console.WriteLine($"dargs {args}");
         }
 
         public void e(int channel)
         {
-            Console.WriteLine("e");
+            //Console.WriteLine("e");
         }
 
         public fret f(int channel)
         {
-            Console.WriteLine("f");
+            //Console.WriteLine("f");
             return new fret()
             {
                 A = 1,
@@ -51,12 +51,12 @@ namespace Nirge.Core
 
         public void g(int channel, gargs args)
         {
-            Console.WriteLine($"gargs {args}");
+            //Console.WriteLine($"gargs {args}");
         }
 
         public hret h(int channel, hargs args)
         {
-            Console.WriteLine($"hargs {args}");
+            //Console.WriteLine($"hargs {args}");
             return new hret()
             {
                 A = 1,

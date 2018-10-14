@@ -27,11 +27,11 @@ namespace cli
                 await caller.e();
                 var fret = caller.f();
                 await fret;
-                Console.WriteLine($"fret {fret.Result}");
+                //Console.WriteLine($"fret {fret.Result}");
                 await caller.g(new gargs() { A = 1, B = 1, C = "g", });
                 var hret = caller.h(new hargs() { A = 1, B = 1, C = "h", });
                 await hret;
-                Console.WriteLine($"hret {hret.Result}");
+                //Console.WriteLine($"hret {hret.Result}");
             }
             catch (Exception ex)
             {
@@ -115,7 +115,7 @@ namespace cli
                 }
 
                 //
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
         }
 
