@@ -11,8 +11,6 @@ namespace ser
 {
     class Program
     {
-        static CTcpServer _ser;
-        static CARpcCaller _aCaller;
         static CRpcCallStubProvider _stubs;
 
         async static void f(CARpcCaller caller, int channel)
@@ -50,37 +48,38 @@ namespace ser
             fill.Register(typeof(IMessage<>), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
             //
-            _ser = new CTcpServer(new CTcpServerArgs(capacity: 10240), LogManager.Exists("ser", "all"), cache, fill);
-            _ser.Closed += Ser_Closed;
-            _ser.CliConnected += Ser_CliConnected;
-            _ser.CliClosed += Ser_CliClosed;
-            _ser.CliRecved += Ser_CliRecved;
-            _ser.Open(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
+            var ser = new CTcpServer(new CTcpServerArgs(capacity: 10240), LogManager.Exists("ser", "all"), cache, fill);
+            ser.Closed += Ser_Closed;
+            ser.CliConnected += Ser_CliConnected;
+            ser.CliClosed += Ser_CliClosed;
+            ser.CliRecved += Ser_CliRecved;
+            ser.Open(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
 
             //
             var rpcStream = new CRpcStream(new byte[8192]);
-            var rpcTransfer = new CServerRpcTransfer(_ser);
+            var rpcTransfer = new CServerRpcTransfer(ser);
             _stubs = new CRpcCallStubProvider(new CRpcCallStubProviderArgs(10240), LogManager.Exists("ser", "all"));
-            _aCaller = new CARpcCaller(new CRpcCallerArgs(TimeSpan.FromSeconds(8)), LogManager.Exists("ser", "all")
+            var aCaller = new CARpcCaller(new CRpcCallerArgs(TimeSpan.FromSeconds(8)), LogManager.Exists("ser", "all")
                 , rpcStream, rpcTransfer, _stubs);
 
             var t = Environment.TickCount;
             while (true)
             {
-                _ser.Exec();
+                ser.Exec();
                 _stubs.Exec();
+
+                foreach (var i in ser.Clis)
+                {
+                    f(aCaller, i);
+                }
 
                 if (Environment.TickCount > t + 10000)
                 {
                     t = Environment.TickCount;
                     Console.WriteLine(cache.Stat);
+                    Console.WriteLine($"stubs {_stubs.Count}");
+                    Console.WriteLine($"CallsCount {aCaller.CallsCount}");
                 }
-
-                foreach (var i in _ser.Clis)
-                {
-                    f(_aCaller, i);
-                }
-
 
                 Thread.Sleep(100);
             }
