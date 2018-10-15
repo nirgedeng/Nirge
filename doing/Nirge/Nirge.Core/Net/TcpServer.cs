@@ -251,7 +251,7 @@ namespace Nirge.Core
             }
         }
 
-        public IEnumerator<int> Clis
+        public IEnumerable<int> Clis
         {
             get
             {

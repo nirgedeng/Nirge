@@ -117,7 +117,7 @@ namespace Nirge.Core
             }
         }
 
-        public IEnumerator<int> Indexs
+        public IEnumerable<int> Indexs
         {
             get
             {
