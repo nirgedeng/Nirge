@@ -4,10 +4,6 @@
 
 #region Designer generated code
 
-using pbc = global::Google.Protobuf.Collections;
-using pbr = global::Google.Protobuf.Reflection;
-using pb = global::Google.Protobuf;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Nirge.Core;
 using log4net;

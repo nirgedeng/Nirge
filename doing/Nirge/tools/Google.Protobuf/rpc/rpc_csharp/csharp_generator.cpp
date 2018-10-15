@@ -92,14 +92,10 @@ namespace google
                             "\n"
                             "#region Designer generated code\n"
                             "\n"
-                            "using pbc = global::Google.Protobuf.Collections;\n"
-                            "using pbr = global::Google.Protobuf.Reflection;\n"
-                            "using pb = global::Google.Protobuf;\n"
-                            "using System.Collections.Generic;\n"
+                            "using System;\n"
                             "using System.Threading.Tasks;\n"
                             "using Nirge.Core;\n"
                             "using log4net;\n"
-                            "using System;\n"
                             "\n",
                             "file_name", file->name()
                         );
