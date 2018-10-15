@@ -24,11 +24,11 @@ namespace ser
                 await caller.e(channel);
                 var fret = caller.f(channel);
                 await fret;
-                Console.WriteLine($"fret {fret.Result}");
+                //Console.WriteLine($"fret {fret.Result}");
                 await caller.g(new gargs() { A = 1, B = 1, C = "g", }, channel);
                 var hret = caller.h(new hargs() { A = 1, B = 1, C = "h", }, channel);
                 await hret;
-                Console.WriteLine($"hret {hret.Result}");
+                //Console.WriteLine($"hret {hret.Result}");
             }
             catch (Exception ex)
             {
@@ -81,7 +81,7 @@ namespace ser
                     Console.WriteLine($"CallsCount {aCaller.CallsCount}");
                 }
 
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
         }
 
