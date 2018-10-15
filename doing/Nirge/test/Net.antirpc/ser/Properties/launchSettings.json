@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ser": {
+      "commandName": "Project",
+      "workingDirectory": "E:\\Nirge\\trunk\\doing\\Nirge\\test\\Net.antirpc\\bin\\Debug\\netcoreapp2.1"
+    }
+  }
+}

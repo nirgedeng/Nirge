@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+import "RpcProto.proto";
+
+package Nirge.Core;
+option csharp_namespace = "Nirge.Core";
+
+message bret
+{
+    int32 a = 1;
+    int64 b = 2;
+    string c = 3;
+}
+
+message cargs
+{
+    int32 a = 1;
+    int64 b = 2;
+    string c = 3;
+}
+
+message dargs
+{
+    int32 a = 1;
+    int64 b = 2;
+    string c = 3;
+}
+
+message dret
+{
+    int32 a = 1;
+    int64 b = 2;
+    string c = 3;
+}
+
+message fret
+{
+    int32 a = 1;
+    int64 b = 2;
+    string c = 3;
+}
+
+message gargs
+{
+    int32 a = 1;
+    int64 b = 2;
+    string c = 3;
+}
+
+message hargs
+{
+    int32 a = 1;
+    int64 b = 2;
+    string c = 3;
+}
+
+message hret
+{
+    int32 a = 1;
+    int64 b = 2;
+    string c = 3;
+}
+
+service A
+{
+    option (RpcService).Uid = 1;
+
+    rpc a (RpcCallArgsEmpty) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 1;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+    rpc b (RpcCallArgsEmpty) returns (bret)
+    {
+        option (RpcServiceCall).Uid = 2;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+    rpc c (cargs) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 3;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+    rpc d (dargs) returns (dret)
+    {
+        option (RpcServiceCall).Uid = 4;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+
+    rpc e (RpcCallArgsEmpty) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 5;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+    rpc f (RpcCallArgsEmpty) returns (fret)
+    {
+        option (RpcServiceCall).Uid = 6;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+    rpc g (gargs) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 7;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+    rpc h (hargs) returns (hret)
+    {
+        option (RpcServiceCall).Uid = 8;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+}
