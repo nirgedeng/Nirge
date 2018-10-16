@@ -107,3 +107,50 @@ service A
         option (RpcServiceCall).IsOneWay = false;
     }
 }
+
+service B
+{
+    option (RpcService).Uid = 1;
+
+    rpc a (RpcCallArgsEmpty) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 1;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+    rpc b (RpcCallArgsEmpty) returns (bret)
+    {
+        option (RpcServiceCall).Uid = 2;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+    rpc c (cargs) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 3;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+    rpc d (dargs) returns (dret)
+    {
+        option (RpcServiceCall).Uid = 4;
+        option (RpcServiceCall).IsOneWay = true;
+    }
+
+    rpc e (RpcCallArgsEmpty) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 5;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+    rpc f (RpcCallArgsEmpty) returns (fret)
+    {
+        option (RpcServiceCall).Uid = 6;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+    rpc g (gargs) returns (RpcCallArgsEmpty)
+    {
+        option (RpcServiceCall).Uid = 7;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+    rpc h (hargs) returns (hret)
+    {
+        option (RpcServiceCall).Uid = 8;
+        option (RpcServiceCall).IsOneWay = false;
+    }
+}
