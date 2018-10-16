@@ -81,8 +81,22 @@ namespace google
                     void Destroy();
 
                 public:
+                    std::string InterfaceNameNoPrefix() const
+                    {
+                        return _interfaceNameNoPrefix;
+                    }
+
+                    std::string CallerNameNoPrefix() const
+                    {
+                        return _callerNameNoPrefix;
+                    }
+
+                    std::string CalleeNameNoPrefix() const
+                    {
+                        return _calleeNameNoPrefix;
+                    }
+
                     void Generate(io::Printer* printer);
-                private:
                     void GenerateInterface(io::Printer* printer);
                     void GenerateCaller(io::Printer* printer);
                     void GenerateCallee(io::Printer* printer);
@@ -94,9 +108,12 @@ namespace google
 
                     int _uid;
                     std::string _interfaceName;
+                    std::string _interfaceNameNoPrefix;
                     std::string _serviceName;
                     std::string _callerName;
+                    std::string _callerNameNoPrefix;
                     std::string _calleeName;
+                    std::string _calleeNameNoPrefix;
                     std::string _descriptor_accessor;
                     std::vector<CMethod*> _methods;
 

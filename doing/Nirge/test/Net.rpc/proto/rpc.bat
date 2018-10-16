@@ -1,2 +1,2 @@
 ..\..\..\deps\tools\protoc.exe --csharp_out=. --proto_path="D:\Program Files\protobuf-3.1.0\include" --proto_path="..\..\..\Nirge.Core\Rpc" --proto_path=. a.proto
-..\..\..\deps\tools\protoc.exe --plugin=protoc-gen-grpc=..\..\..\deps\tools\rpc_csharp.exe --csharp_out=. --proto_path="D:\Program Files\protobuf-3.1.0\include" --proto_path="..\..\..\Nirge.Core\Rpc" --proto_path=. --grpc_out=. a.proto
+..\..\..\deps\tools\protoc.exe --plugin=protoc-gen-grpc=..\..\..\deps\tools\rpc_csharp.exe --csharp_out=. --proto_path="D:\Program Files\protobuf-3.1.0\include" --proto_path="..\..\..\Nirge.Core\Rpc" --proto_path=. --grpc_out=gen_caller,gen_callee:. a.proto

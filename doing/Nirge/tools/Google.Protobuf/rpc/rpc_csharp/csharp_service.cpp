@@ -55,10 +55,10 @@ namespace google
                 bool CServiceGenerator::CMethod::Init()
                 {
                     google::protobuf::internal::ExtensionIdentifier<::google::protobuf::MethodOptions
-                    , google::protobuf::internal::MessageTypeTraits<Nirge::Core::RpcServiceCallOption>
-                    , 11
-                    , false>
-                    args(60201, Nirge::Core::RpcServiceCallOption());
+                        , google::protobuf::internal::MessageTypeTraits<Nirge::Core::RpcServiceCallOption>
+                        , 11
+                        , false>
+                        args(Nirge::Core::kRpcServiceCallFieldNumber, Nirge::Core::RpcServiceCallOption());
                     Nirge::Core::RpcServiceCallOption option = _descriptor->options().GetExtension(args);
                     _uid = option.uid();
                     _isOneWay = option.isoneway();
@@ -89,17 +89,20 @@ namespace google
                 bool CServiceGenerator::Init()
                 {
                     google::protobuf::internal::ExtensionIdentifier<::google::protobuf::ServiceOptions
-                    , google::protobuf::internal::MessageTypeTraits<Nirge::Core::RpcServiceOption>
-                    , 11
-                    , false>
-                    args(60101, Nirge::Core::RpcServiceOption());
+                        , google::protobuf::internal::MessageTypeTraits<Nirge::Core::RpcServiceOption>
+                        , 11
+                        , false>
+                        args(Nirge::Core::kRpcServiceFieldNumber, Nirge::Core::RpcServiceOption());
                     Nirge::Core::RpcServiceOption option = _descriptor->options().GetExtension(args);
                     _uid = option.uid();
 
                     _interfaceName = gInterface + _descriptor->name() + gRpcService;
+                    _interfaceNameNoPrefix = _descriptor->name() + gRpcService;
                     _serviceName = gCls + _descriptor->name() + gRpcService;
                     _callerName = gCls + _descriptor->name() + gRpcCaller;
+                    _callerNameNoPrefix = _descriptor->name() + gRpcCaller;
                     _calleeName = gCls + _descriptor->name() + gRpcCallee;
+                    _calleeNameNoPrefix = _descriptor->name() + gRpcCallee;
                     _descriptor_accessor = boost::str(boost::format("%1%.Descriptor.Services[%2%]") % GetReflectionClassName(_descriptor->file()) % _descriptor->index());
 
                     for (int i = 0; i < _descriptor->method_count(); ++i)
@@ -114,7 +117,7 @@ namespace google
 
                 void CServiceGenerator::Destroy()
                 {
-for (auto& i : _methods)
+                    for (auto& i : _methods)
                     {
                         i->Destroy();
                         delete i;
@@ -137,11 +140,11 @@ for (auto& i : _methods)
                     printer->Print("public interface $interfaceName$ : IRpcService {\n", "interfaceName", _interfaceName);
                     printer->Indent();
 
-for (const auto& i : _methods)
+                    for (const auto& i : _methods)
                     {
                         printer->Print("$ret$ $call$(int channel"
-                                       , "ret", i->IsOneWay() ? gvoid : (i->Descriptor()->output_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gvoid : i->Descriptor()->output_type()->full_name())
-                                       , "call", i->CallName());
+                            , "ret", i->IsOneWay() ? gvoid : (i->Descriptor()->output_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gvoid : i->Descriptor()->output_type()->full_name())
+                            , "call", i->CallName());
                         if (i->ContainsArgs())
                             printer->Print(", $args$ args", "args", i->Descriptor()->input_type()->full_name());
                         printer->Print(");\n");
@@ -157,15 +160,15 @@ for (const auto& i : _methods)
                     printer->Print("public class $callerName$ : CRpcCaller {\n", "callerName", _callerName);
                     printer->Indent();
                     printer->Print("public $callerName$(CRpcCallerArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, IRpcCallStubProvider stubs)\n\t: base(args, log, stream, transfer, stubs, $descriptor_accessor$, $uid$) {}\n"
-                                   , "callerName", _callerName
-                                   , "descriptor_accessor", _descriptor_accessor
-                                   , "uid", boost::lexical_cast<std::string>(_uid));
+                        , "callerName", _callerName
+                        , "descriptor_accessor", _descriptor_accessor
+                        , "uid", boost::lexical_cast<std::string>(_uid));
 
-for (const auto& i : _methods)
+                    for (const auto& i : _methods)
                     {
                         printer->Print("public $ret$ $call$("
-                                       , "ret", i->IsOneWay() ? gvoid : boost::str(boost::format("Task<%1%>") % i->Descriptor()->output_type()->full_name())
-                                       , "call", i->CallName());
+                            , "ret", i->IsOneWay() ? gvoid : boost::str(boost::format("Task<%1%>") % i->Descriptor()->output_type()->full_name())
+                            , "call", i->CallName());
                         if (i->ContainsArgs())
                             printer->Print("$args$ args, ", "args", i->Descriptor()->input_type()->full_name());
                         printer->Print("int channel = 0){\n");
@@ -173,17 +176,17 @@ for (const auto& i : _methods)
                         if (i->IsOneWay())
                         {
                             printer->Print("Call<$targs$>(channel, $uid$, $args$);\n"
-                                           , "targs", i->Descriptor()->input_type()->full_name()
-                                           , "uid", boost::lexical_cast<std::string>(i->Uid())
-                                           , "args", i->Descriptor()->input_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gArgsEmpty : gargs);
+                                , "targs", i->Descriptor()->input_type()->full_name()
+                                , "uid", boost::lexical_cast<std::string>(i->Uid())
+                                , "args", i->Descriptor()->input_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gArgsEmpty : gargs);
                         }
                         else
                         {
                             printer->Print("return CallAsync<$targs$, $tret$>(channel, $uid$, $args$);\n"
-                                           , "targs", i->Descriptor()->input_type()->full_name()
-                                           , "tret", i->Descriptor()->output_type()->full_name()
-                                           , "uid", boost::lexical_cast<std::string>(i->Uid())
-                                           , "args", i->Descriptor()->input_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gArgsEmpty : gargs);
+                                , "targs", i->Descriptor()->input_type()->full_name()
+                                , "tret", i->Descriptor()->output_type()->full_name()
+                                , "uid", boost::lexical_cast<std::string>(i->Uid())
+                                , "args", i->Descriptor()->input_type()->full_name() == Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() ? gArgsEmpty : gargs);
                         }
                         printer->Outdent();
                         printer->Print("}\n");
@@ -197,25 +200,25 @@ for (const auto& i : _methods)
                 {
                     printer->Print("[CRpcService($uid$)]\n", "uid", boost::lexical_cast<std::string>(_uid));
                     printer->Print("public class $calleeName$ : CRpcCallee<$interfaceName$> {\n"
-                                   , "calleeName", _calleeName
-                                   , "interfaceName", _interfaceName);
+                        , "calleeName", _calleeName
+                        , "interfaceName", _interfaceName);
                     printer->Indent();
                     printer->Print("public $calleeName$(CRpcCalleeArgs args, ILog log, IRpcStream stream, IRpcTransfer transfer, $interfaceName$ service)\n\t: base(args, log, stream, transfer, $descriptor_accessor$, service) {}\n"
-                                   , "calleeName", _calleeName
-                                   , "interfaceName", _interfaceName
-                                   , "descriptor_accessor", _descriptor_accessor);
+                        , "calleeName", _calleeName
+                        , "interfaceName", _interfaceName
+                        , "descriptor_accessor", _descriptor_accessor);
                     printer->Print("public override void Call(int channel, $req$ req) {\n", "req", Nirge::Core::RpcCallReq::descriptor()->full_name());
                     printer->Indent();
                     printer->Print("switch (req.Call) {\n");
 
-for (const auto& i : _methods)
+                    for (const auto& i : _methods)
                     {
                         printer->Print("case $uid$:\n", "uid", boost::lexical_cast<std::string>(i->Uid()));
                         printer->Indent();
                         printer->Print("$call$<$targs$, $tret$>(channel, req, (_, args) => {\n"
-                                       , "call", i->IsOneWay() ? "Call" : "CallAsync"
-                                       , "targs", i->Descriptor()->input_type()->full_name()
-                                       , "tret", i->IsOneWay() ? Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() : i->Descriptor()->output_type()->full_name());
+                            , "call", i->IsOneWay() ? "Call" : "CallAsync"
+                            , "targs", i->Descriptor()->input_type()->full_name()
+                            , "tret", i->IsOneWay() ? Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name() : i->Descriptor()->output_type()->full_name());
                         printer->Indent();
                         if (!i->IsOneWay())
                             if (i->Descriptor()->output_type()->full_name() != Nirge::Core::RpcCallArgsEmpty::descriptor()->full_name())
