@@ -55,12 +55,13 @@ namespace cli
             var clis = new CTcpClient[gCapacity];
             for (var i = 0; i < clis.Length; ++i)
             {
+                var channel = i;
                 var cli = new CTcpClient(new CTcpClientArgs(), LogManager.Exists("cli", "all"), cache, fill);
                 cli.Connected += Cli_Connected;
                 cli.Closed += Cli_Closed;
                 cli.Recved += (sender, e) =>
                 {
-                    Cli_Recved(sender, i, e);
+                    Cli_Recved(sender, channel, e);
                 };
                 clis[i] = cli;
                 cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
