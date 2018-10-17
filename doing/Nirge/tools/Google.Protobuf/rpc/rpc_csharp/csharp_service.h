@@ -81,6 +81,11 @@ namespace google
                     void Destroy();
 
                 public:
+                    std::string InterfaceName() const
+                    {
+                        return _interfaceName;
+                    }
+
                     std::string InterfaceNameNoPrefix() const
                     {
                         return _interfaceNameNoPrefix;

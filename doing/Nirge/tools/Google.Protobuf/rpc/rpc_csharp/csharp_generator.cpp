@@ -121,7 +121,7 @@ namespace google
                         {
                             {
                                 std::string s;
-                                std::string f = i->InterfaceNameNoPrefix() + ".cs";
+                                std::string f = i->InterfaceName() + ".cs";
                                 {
                                     io::StringOutputStream stream(&s);
                                     io::Printer printer(&stream, '$');
