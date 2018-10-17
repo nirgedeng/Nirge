@@ -39,7 +39,7 @@ CALLEE，，，
 工具，，，
     服务描述包含参数定义、服务自身描述，
     无论服务是否集中在一个 PROTO 文件，服务接口、CALLER、CALLEE 都是单独文件，参数返回值默认文件，
-    针对 A 即 A.cs ARpcCaller.cs ARpcService.cs ARpcCallee.cs  几个文件，第一个是公共的，二是客户端需要的，三、四是服务器需要的，
+    针对 A 即 A.cs ARpcCaller.cs IARpcService.cs ARpcCallee.cs  几个文件，第一个是公共的，二是客户端需要的，三、四是服务器需要的，
 
 --------------------------------------
 --------------------------------------
