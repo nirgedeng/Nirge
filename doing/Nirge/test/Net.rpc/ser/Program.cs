@@ -51,7 +51,7 @@ namespace ser
                     Console.WriteLine(cache.Stat);
                 }
 
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
         }
 

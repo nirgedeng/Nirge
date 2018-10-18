@@ -44,7 +44,6 @@ namespace ser
 
                 Thread.Sleep(1);
             }
-
         }
 
         private static void Ser_CliRecved(object arg1, int arg2, object pkg)
