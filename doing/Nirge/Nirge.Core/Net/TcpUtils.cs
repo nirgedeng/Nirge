@@ -140,7 +140,7 @@ namespace Nirge.Core
 
     public interface ITcpClientPkgFill
     {
-        void Register(Type pkgType, int ePkgType, ITcpClientPkg pkg);
+        void AddPkg(Type pkgType, int ePkgType, ITcpClientPkg pkg);
         ArraySegment<byte> Fill(ITcpClientPkgHead pkgHead, int gPkgSize, object pkg, ITcpClientCache cache);
         object UnFill(int pkgType, ArraySegment<byte> pkgSeg, ITcpClientCache cache);
     }

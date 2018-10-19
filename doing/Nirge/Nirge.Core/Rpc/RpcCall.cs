@@ -261,6 +261,11 @@ namespace Nirge.Core
             _stubsDict = new Dictionary<ulong, IRpcCallStub>();
         }
 
+        public bool TryGetStub(ulong serial, out IRpcCallStub stub)
+        {
+            return _stubsDict.TryGetValue(serial, out stub);
+        }
+
         ulong CreateSerial()
         {
             return ++_serial;
@@ -284,11 +289,6 @@ namespace Nirge.Core
             _stubs.AddLast(stub);
             _stubsDict.Add(serial, stub);
             return stub;
-        }
-
-        public bool TryGetStub(ulong serial, out IRpcCallStub stub)
-        {
-            return _stubsDict.TryGetValue(serial, out stub);
         }
 
         public void DelStub(IRpcCallStub stub)

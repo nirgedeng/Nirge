@@ -333,7 +333,7 @@ namespace Nirge.Core
             _pkgs = new List<Tuple<Type, int, ITcpClientPkg>>();
         }
 
-        public void Register(Type pkgType, int ePkgType, ITcpClientPkg pkg)
+        public void AddPkg(Type pkgType, int ePkgType, ITcpClientPkg pkg)
         {
             if (pkgType == null)
                 throw new ArgumentNullException(nameof(pkgType));

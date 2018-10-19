@@ -20,10 +20,10 @@ namespace ser
             XmlConfigurator.Configure(LogManager.CreateRepository("ser"), new FileInfo("../../Net.rpc.log.ser.xml"));
             var cache = new CTcpClientCache(new CTcpClientCacheArgs(104857600, 104857600), LogManager.Exists("ser", "all"));
             var fill = new CTcpClientPkgFill();
-            fill.Register(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
+            fill.AddPkg(typeof(ArraySegment<byte>), (int)eTcpClientPkgType.ArraySegment, new CTcpClientArraySegment());
             var code = new CTcpClientProtobufCode();
             code.Collect(typeof(bret).Assembly);
-            fill.Register(typeof(IMessage<>), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
+            fill.AddPkg(typeof(IMessage<>), (int)eTcpClientPkgType.Protobuf, new CTcpClientProtobuf(code));
 
             //
             _ser = new CTcpServer(new CTcpServerArgs(capacity: 10240), LogManager.Exists("ser", "all"), cache, fill);

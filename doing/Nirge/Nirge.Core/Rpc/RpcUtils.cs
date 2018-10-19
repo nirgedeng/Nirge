@@ -153,8 +153,8 @@ namespace Nirge.Core
             get;
         }
 
-        IRpcCallStub CreateStub(ServiceDescriptor descriptor, int service, int call, TimeSpan timeout);
         bool TryGetStub(ulong serial, out IRpcCallStub stub);
+        IRpcCallStub CreateStub(ServiceDescriptor descriptor, int service, int call, TimeSpan timeout);
         void DelStub(IRpcCallStub stub);
         void Break();
         void Exec();
