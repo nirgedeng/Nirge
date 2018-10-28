@@ -2,7 +2,7 @@
   "profiles": {
     "cli": {
       "commandName": "Project",
-      "workingDirectory": "E:\\Nirge\\trunk\\doing\\Nirge\\test\\Net.rpc\\bin\\Debug\\netcoreapp2.1"
+      "workingDirectory": "E:\\Nirge.git\\trunk\\doing\\Nirge\\test\\Net.rpc\\bin\\Release\\netcoreapp2.1"
     }
   }
 }

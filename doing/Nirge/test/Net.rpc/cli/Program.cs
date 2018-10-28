@@ -64,7 +64,7 @@ namespace cli
                     Cli_Recved(sender, channel, e);
                 };
                 clis[i] = cli;
-                cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
+                cli.Connect(new IPEndPoint(IPAddress.Parse("192.168.31.158"), 9527));
             }
 
             //
