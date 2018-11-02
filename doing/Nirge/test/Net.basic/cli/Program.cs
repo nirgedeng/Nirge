@@ -147,6 +147,7 @@ namespace cli
                             try
                             {
                                 i.Send(pKG.GetPkg());
+                                i.Send(pKG.GetPkg());
                             }
                             catch (Exception exception)
                             {
