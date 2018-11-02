@@ -133,7 +133,7 @@ namespace cli
                 cli.Closed += Cli_Closed;
                 cli.Recved += Cli_Recved;
                 clis[i] = cli;
-                cli.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9527));
+                cli.Connect(new IPEndPoint(IPAddress.Parse("192.168.31.156"), 9527));
             }
 
             while (true)
